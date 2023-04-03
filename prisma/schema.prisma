@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id             String           @id @default(cuid())
+  name           String?
+  username       String?          @unique
+  password       String?
+  role           String?
+  status         String?
+  avatar         String?
+  Arena          Arena[]
+  Draft          Draft[]
+  CharacterDraft CharacterDraft[]
+}
+
+model Characters {
+  id             String           @id @default(cuid())
+  name           String?
+  description    String?
+  rarity         String
+  vision         String
+  weapon         String
+  draft_picture  String
+  pick_picture   String
+  flash_picture  String
+  is_visible     Boolean          @default(true)
+  CharacterDraft CharacterDraft[]
+}
+
+model Boss {
+  id             String  @id @default(cuid())
+  name           String
+  picture        String
+  picture_choose String
+  picture_flash  String
+  Draft          Draft[]
+}
+
+model Arena {
+  uid        String  @id @default(cuid())
+  host_id    String
+  player1_id String
+  player2_id String
+  mode       String
+  type       String
+  user       User    @relation(fields: [host_id], references: [id], onDelete: Cascade)
+  Draft      Draft[]
+
+  @@index([host_id])
+}
+
+model Draft {
+  uid                  String           @id @default(cuid())
+  arenaID              String
+  bossID               String
+  timer                Int
+  pause_timer          Int
+  current_status_draft String?
+  winner_user_id       String?
+  arena                Arena            @relation(fields: [arenaID], references: [uid], onDelete: Cascade)
+  boss                 Boss             @relation(fields: [bossID], references: [id], onDelete: Cascade)
+  user                 User?            @relation(fields: [winner_user_id], references: [id], onDelete: Cascade)
+  isFinish             Boolean
+  CharacterDraft       CharacterDraft[]
+
+  @@index([arenaID])
+  @@index([bossID])
+  @@index([winner_user_id])
+}
+
+model CharacterDraft {
+  uid         String      @id @default(cuid())
+  draftID     String
+  characterID String?
+  status      String?
+  playerID    String
+  character   Characters? @relation(fields: [characterID], references: [id], onDelete: Cascade)
+  draft       Draft       @relation(fields: [draftID], references: [uid], onDelete: Cascade)
+  user        User        @relation(fields: [playerID], references: [id], onDelete: Cascade)
+
+  @@index([characterID])
+  @@index([draftID])
+  @@index([playerID])
+}
