@@ -17,3 +17,5 @@ export const BackgroundEGVideo = styled.video`
     width: 100%;
     object-fit: cover;
 `
+
+
