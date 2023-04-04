@@ -22,6 +22,18 @@ model User {
   Arena          Arena[]
   Draft          Draft[]
   CharacterDraft CharacterDraft[]
+  player1        Arena[]          @relation(name: "player1")
+  player2        Arena[]          @relation(name: "player2")
+  Settings       Settings[]
+}
+
+model Settings {
+  uid              String @id @default(cuid())
+  user_settings_id String
+  bgVideo          String
+  userID           User   @relation(fields: [user_settings_id], references: [id], onDelete: Cascade)
+
+  @@index([user_settings_id])
 }
 
 model Characters {
@@ -34,6 +46,9 @@ model Characters {
   draft_picture  String
   pick_picture   String
   flash_picture  String
+  ban_picture    String
+  ban_audio      String
+  pick_audio     String
   is_visible     Boolean          @default(true)
   CharacterDraft CharacterDraft[]
 }
@@ -55,9 +70,13 @@ model Arena {
   mode       String
   type       String
   user       User    @relation(fields: [host_id], references: [id], onDelete: Cascade)
+  player1    User    @relation(fields: [player1_id], references: [id], onDelete: Cascade, name: "player1")
+  player2    User    @relation(fields: [player2_id], references: [id], onDelete: Cascade, name: "player2")
   Draft      Draft[]
 
   @@index([host_id])
+  @@index([player1_id])
+  @@index([player2_id])
 }
 
 model Draft {
@@ -73,6 +92,7 @@ model Draft {
   user                 User?            @relation(fields: [winner_user_id], references: [id], onDelete: Cascade)
   isFinish             Boolean
   CharacterDraft       CharacterDraft[]
+  created_date         DateTime?        @db.Timestamp(6)
 
   @@index([arenaID])
   @@index([bossID])
