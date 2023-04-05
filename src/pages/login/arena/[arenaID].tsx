@@ -84,7 +84,6 @@ export default function Arena() {
                   <Controller
                     render={({ field: { onChange, value, name } }) => (
                       <FormSelect
-                        type="text"
                         placeContent="Select Avatar"
                         onChange={onChange}
                         value={value}
