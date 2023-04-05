@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 
 
@@ -18,4 +19,9 @@ export const BackgroundEGVideo = styled.video`
     object-fit: cover;
 `
 
-
+export const CenterBox = styled(Box)`
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+`

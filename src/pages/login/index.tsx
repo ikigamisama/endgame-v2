@@ -1,6 +1,9 @@
 import Head from "next/head";
-
-import { BackgroundEGWrapper, BackgroundEGVideo } from "@/src/styles";
+import {
+  BackgroundEGWrapper,
+  BackgroundEGVideo,
+  CenterBox,
+} from "@/src/styles";
 import { useUserData } from "@/libs/providers/UserContext";
 import { Box, Center, FormControl, Image } from "@chakra-ui/react";
 import {
@@ -12,9 +15,22 @@ import {
   LoginCardWrapper,
 } from "@/src/styles/login";
 import { LoginImageLogo } from "@/libs/includes/image";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { GMLoginProps } from "@/libs/helpers/types";
 
 export default function Login() {
   const { state } = useUserData();
+  const { handleSubmit, control } = useForm<GMLoginProps>({
+    defaultValues: {
+      gm_name: "",
+      secret_key: "",
+      game_type: "",
+    },
+  });
+
+  const submitGMLogin: SubmitHandler<GMLoginProps> = (data) => {
+    console.log(data);
+  };
 
   return (
     <>
@@ -33,36 +49,72 @@ export default function Login() {
       </BackgroundEGWrapper>
 
       <Box position="relative" h="100vh">
-        <LoginCard>
-          <LoginCardWrapper>
-            <Center mb="75px">
-              <Image src={LoginImageLogo.src} w="400px" alt="login-image" />
-            </Center>
+        <CenterBox>
+          <LoginCard>
+            <LoginCardWrapper>
+              <Center mb="75px">
+                <Image src={LoginImageLogo.src} w="400px" alt="login-image" />
+              </Center>
 
-            <form method="post">
-              <FormControl mb="25px">
-                <FormLabelText>GM Name</FormLabelText>
-                <FormTextBox type="text" />
-              </FormControl>
+              <form method="post" onSubmit={handleSubmit(submitGMLogin)}>
+                <FormControl mb="25px">
+                  <FormLabelText>GM Name</FormLabelText>
+                  <Controller
+                    render={({ field: { onChange, value, name } }) => (
+                      <FormTextBox
+                        type="text"
+                        onChange={onChange}
+                        value={value}
+                        name={name}
+                      />
+                    )}
+                    name="gm_name"
+                    control={control}
+                  />
+                </FormControl>
 
-              <FormControl mb="25px">
-                <FormLabelText>Secret Key</FormLabelText>
-                <FormTextBox type="password" />
-              </FormControl>
+                <FormControl mb="25px">
+                  <FormLabelText>Secret Key</FormLabelText>
+                  <Controller
+                    render={({ field: { onChange, value, name } }) => (
+                      <FormTextBox
+                        type="password"
+                        onChange={onChange}
+                        value={value}
+                        name={name}
+                      />
+                    )}
+                    name="secret_key"
+                    control={control}
+                  />
+                </FormControl>
 
-              <FormControl mb="50px">
-                <FormLabelText>Game Type</FormLabelText>
-                <FormSelect value="Officials">
-                  <option value="Casuals">Casuals</option>
-                  <option value="Officials">Officials</option>
-                  <option value="Spiral Abyss">Spiral Abyss</option>
-                </FormSelect>
-              </FormControl>
+                <FormControl mb="50px">
+                  <FormLabelText>Game Type</FormLabelText>
+                  <Controller
+                    render={({ field: { onChange, value, name } }) => (
+                      <FormSelect
+                        variant="outline"
+                        placeholder="Select Game Type"
+                        onChange={onChange}
+                        name={name}
+                        value={value}
+                      >
+                        <option value="Casuals">Casuals</option>
+                        <option value="Officials">Officials</option>
+                        <option value="Spiral Abyss">Spiral Abyss</option>
+                      </FormSelect>
+                    )}
+                    name="game_type"
+                    control={control}
+                  />
+                </FormControl>
 
-              <FormSubmitButton type="submit">Create Room</FormSubmitButton>
-            </form>
-          </LoginCardWrapper>
-        </LoginCard>
+                <FormSubmitButton type="submit">Create Room</FormSubmitButton>
+              </form>
+            </LoginCardWrapper>
+          </LoginCard>
+        </CenterBox>
       </Box>
     </>
   );

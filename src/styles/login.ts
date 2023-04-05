@@ -2,16 +2,13 @@ import { Box, Button, FormLabel, Input, Select } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 
 
+
 export const LoginCard = styled(Box)`
     min-width: 600px;
     max-width: 850px;
     background-color: #ecdeb5;
     border-radius:15px;
     overflow: hidden;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
     box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
 `
 
@@ -68,7 +65,8 @@ export const FormSelect = styled(Select)`
     transition:  0.25s all;
     border: 2px solid #ecdeb5;
     font-family: 'GenshinFont', sans-serif;
-    padding: 22px 18px;
+    padding: 10px 18px;
+    height: auto;
 
     &:focus{
         outline: none !important;
