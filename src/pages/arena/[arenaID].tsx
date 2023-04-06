@@ -7,6 +7,7 @@ import {
   CenterBox,
   FontHeaderPopup,
   LinkTextMenu,
+  ToastText,
 } from "@/src/styles";
 import {
   AreaCardWrapper,
@@ -46,10 +47,11 @@ import {
   PopoverTrigger,
   SimpleGrid,
   useRadioGroup,
+  useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { BossImage } from "@/libs/includes/image";
-import { CopyIcon, SettingsIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, CopyIcon, SettingsIcon } from "@chakra-ui/icons";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ArenaDraftProps } from "@/libs/helpers/types";
 import { useRouter } from "next/navigation";
@@ -83,6 +85,7 @@ export default function Arena() {
   });
 
   const group = getRootProps();
+  const toastCopyLink = useToast();
   const watchCheckboxBoss = watch("is_manual_select_boss");
 
   const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
@@ -268,11 +271,27 @@ export default function Arena() {
                             <FormSubmitButton
                               type="button"
                               leftIcon={<CopyIcon />}
-                              onClick={() =>
+                              onClick={() => {
                                 navigator.clipboard.writeText(
                                   window.location.href
-                                )
-                              }
+                                );
+                                toastCopyLink({
+                                  duration: 3000,
+                                  render: () => (
+                                    <Box
+                                      bgColor="#1E223F"
+                                      p={4}
+                                      display="flex"
+                                      flexDirection="row"
+                                      alignItems="center"
+                                      gap={4}
+                                    >
+                                      <CheckCircleIcon boxSize={5} />
+                                      <ToastText>Link Copied</ToastText>
+                                    </Box>
+                                  ),
+                                });
+                              }}
                             >
                               Copy Link
                             </FormSubmitButton>
