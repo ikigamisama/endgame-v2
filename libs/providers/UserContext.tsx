@@ -1,35 +1,12 @@
 import { createContext, useContext, useReducer } from "react";
 import { video_list } from "@/libs/includes/videos";
+import { UserDataPropState, UserFeatureAction } from "@/libs/helpers/types";
 
 export enum USER_FEATURE {
   LOGIN_GM_USER = "LOGIN_GM_USER",
   LOGIN_PLAYER_USER = "LOGIN_PLAYER_USER",
   UPDATE_SETTINGS = "UPDATE_SETTINGS",
   LOGOUT_USER = "LOGOUT_USER",
-}
-
-interface UserFeatureAction {
-  type: USER_FEATURE;
-  payload: any;
-}
-
-type UserDataProp = {
-  email: string;
-  role: string;
-};
-
-type UserSettingsProp = {
-  video_bg: VideoPropsSettings;
-};
-
-type VideoPropsSettings = {
-  mp4: string;
-  webm: string;
-};
-
-interface UserDataPropState {
-  user: UserDataProp;
-  settings: UserSettingsProp;
 }
 
 const currentUserState = {

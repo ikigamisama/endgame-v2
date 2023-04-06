@@ -126,3 +126,5 @@ export const ArenaCheckbox = styled(Checkbox)`
         font-family: 'GenshinFont', sans-serif
     }
 `
+
+

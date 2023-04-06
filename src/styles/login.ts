@@ -2,7 +2,6 @@ import { Box, Button, FormLabel, Input, Select } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 
 
-
 export const LoginCard = styled(Box)`
     min-width: 600px;
     max-width: 850px;

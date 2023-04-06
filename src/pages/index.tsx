@@ -1,6 +1,6 @@
 import Head from "next/head";
-import { BackgroundEGVideo, BackgroundEGWrapper } from "@/src/styles";
 import { useUserData } from "@/libs/providers/UserContext";
+import BackgroundVid from "@/components/BackgroundVid";
 
 export default function Home() {
   const { state } = useUserData();
@@ -13,12 +13,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <BackgroundEGWrapper>
-        <BackgroundEGVideo autoPlay loop muted preload="auto">
-          <source type="video/mp4" src={state.settings.video_bg.mp4} />
-          <source type="video/webm" src={state.settings.video_bg.webm} />
-        </BackgroundEGVideo>
-      </BackgroundEGWrapper>
+      <BackgroundVid
+        mp4={state.settings.video_bg.mp4}
+        webm={state.settings.video_bg.webm}
+      />
     </>
   );
 }

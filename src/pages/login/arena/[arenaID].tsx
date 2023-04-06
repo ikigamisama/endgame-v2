@@ -1,11 +1,7 @@
 import Head from "next/head";
 import { LoginImageLogo } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
-import {
-  BackgroundEGVideo,
-  BackgroundEGWrapper,
-  CenterBox,
-} from "@/src/styles";
+import { CenterBox } from "@/src/styles";
 import {
   AvatarCircle,
   AvatarName,
@@ -23,6 +19,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Box, Center, FormControl, Image } from "@chakra-ui/react";
 import { avatarList } from "@/libs/includes/avatars";
 import { PlayerLoginProps } from "@/libs/helpers/types";
+import BackgroundVid from "@/components/BackgroundVid";
 
 export default function Arena() {
   const { state } = useUserData();
@@ -48,12 +45,10 @@ export default function Arena() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <BackgroundEGWrapper>
-        <BackgroundEGVideo autoPlay loop muted preload="auto">
-          <source type="video/mp4" src={state.settings.video_bg.mp4} />
-          <source type="video/webm" src={state.settings.video_bg.webm} />
-        </BackgroundEGVideo>
-      </BackgroundEGWrapper>
+      <BackgroundVid
+        mp4={state.settings.video_bg.mp4}
+        webm={state.settings.video_bg.webm}
+      />
 
       <Box position="relative" h="100vh">
         <CenterBox>

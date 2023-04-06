@@ -1,10 +1,12 @@
 import RadioListCard from "@/components/RadioListCard";
-import { useUserData } from "@/libs/providers/UserContext";
+import { USER_FEATURE, useUserData } from "@/libs/providers/UserContext";
 import { modeOption } from "@/libs/includes/forms";
+import { LogoutIcon, ProfileIcon } from "@/libs/includes/icons";
 import {
-  BackgroundEGVideo,
-  BackgroundEGWrapper,
+  ButtonPopUpNav,
   CenterBox,
+  FontHeaderPopup,
+  LinkTextMenu,
 } from "@/src/styles";
 import {
   AreaCardWrapper,
@@ -32,22 +34,60 @@ import {
   GridItem,
   HStack,
   Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverTrigger,
   SimpleGrid,
   useRadioGroup,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { BossImage } from "@/libs/includes/image";
-import { CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon, SettingsIcon } from "@chakra-ui/icons";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { ArenaDraftProps } from "@/libs/helpers/types";
+import { useRouter } from "next/navigation";
+import BackgroundVid from "@/components/BackgroundVid";
 
 export default function Arena() {
-  const { state } = useUserData();
+  const { state, dispatch } = useUserData();
+  const router = useRouter();
+  const { handleSubmit, control, watch, setValue } = useForm<ArenaDraftProps>({
+    defaultValues: {
+      user_gm_id: "",
+      mode: "4v4",
+      first_player: {
+        id: "",
+        name: "",
+      },
+      second_player: {
+        id: "",
+        name: "",
+      },
+      is_manual_select_boss: false,
+      boss_id: "",
+    },
+  });
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "mode",
     defaultValue: "4v4",
-    onChange: console.log,
+    onChange: (d) => {
+      setValue("mode", d);
+    },
   });
 
   const group = getRootProps();
+  const watchCheckboxBoss = watch("is_manual_select_boss");
+
+  const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
+    console.log(data);
+  };
 
   return (
     <>
@@ -58,16 +98,107 @@ export default function Arena() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <BackgroundEGWrapper>
-        <BackgroundEGVideo autoPlay loop muted preload="auto">
-          <source type="video/mp4" src={state.settings.video_bg.mp4} />
-          <source type="video/webm" src={state.settings.video_bg.webm} />
-        </BackgroundEGVideo>
-      </BackgroundEGWrapper>
+      <BackgroundVid
+        mp4={state.settings.video_bg.mp4}
+        webm={state.settings.video_bg.webm}
+      />
 
-      <Box>asd</Box>
+      <Box as="nav" w="100%">
+        <Flex
+          px={10}
+          py={5}
+          w="100%"
+          justifyContent="flex-end"
+          direction="row"
+          gap={4}
+        >
+          <Box>
+            <Popover placement="bottom-start">
+              <PopoverTrigger>
+                <ButtonPopUpNav>
+                  <SettingsIcon boxSize={7} />
+                </ButtonPopUpNav>
+              </PopoverTrigger>
+              <PopoverContent bgColor="#1e223f">
+                <FontHeaderPopup fontWeight="semibold" p={4}>
+                  Settings
+                </FontHeaderPopup>
+                <PopoverArrow />
 
-      <Box position="relative" h="100vh" w="100%">
+                <PopoverBody px={4} pb={5}>
+                  <FormControl>
+                    <FormLabelText>Background Video</FormLabelText>
+                    <FormSelect
+                      placeContent="random"
+                      value={state.settings.video_bg.mp4
+                        .replace("/video/bg/", "")
+                        .replace("_bg.mp4", "")}
+                      onChange={(e) =>
+                        dispatch({
+                          type: USER_FEATURE.UPDATE_SETTINGS,
+                          payload: {
+                            video_bg: {
+                              mp4: "/video/bg/" + e.target.value + "_bg.mp4",
+                              webm: "/video/bg/" + e.target.value + "_bg.webm",
+                            },
+                          },
+                        })
+                      }
+                    >
+                      <option value="stars">Default</option>
+                      <option value="anemo">Anemo</option>
+                      <option value="cryo">Cryo</option>
+                      <option value="dendro">Dendro</option>
+                      <option value="electro">Electro</option>
+                      <option value="geo">Geo</option>
+                      <option value="hydro">Hydro</option>
+                      <option value="pyro">Pyro</option>
+                    </FormSelect>
+                  </FormControl>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          </Box>
+          <Box>
+            <Menu>
+              <MenuButton>
+                <ButtonPopUpNav>
+                  <ProfileIcon />
+                </ButtonPopUpNav>
+              </MenuButton>
+              <MenuList bgColor="#1e223f">
+                <MenuItem
+                  bgColor="#1e223f"
+                  _hover={{
+                    transition: "0.25s all",
+                    backgroundColor: "#443C60",
+                  }}
+                  onClick={() => router.push("/arena/settings")}
+                >
+                  <HStack>
+                    <SettingsIcon boxSize={5} />
+                    <LinkTextMenu>Draft Settings</LinkTextMenu>
+                  </HStack>
+                </MenuItem>
+                <MenuItem
+                  bgColor="#1e223f"
+                  _hover={{
+                    transition: "0.25s all",
+                    backgroundColor: "#443C60",
+                  }}
+                >
+                  <HStack>
+                    <LogoutIcon />
+                    <LinkTextMenu>Logout</LinkTextMenu>
+                  </HStack>
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Box>
+        </Flex>
+      </Box>
+
+      <Box position="relative" h="calc(100vh - 90px)" w="100%">
         <CenterBox>
           <Container maxW="container.xl" minW="1200px">
             <HStack w="100%" gap={8}>
@@ -78,8 +209,11 @@ export default function Arena() {
                       <ArenaTitleText>Game Setup</ArenaTitleText>
                     </ArenaPaddingWrap>
 
-                    <form method="post">
-                      <ArenaPlayersListScroll heightarea="500px">
+                    <form
+                      method="post"
+                      onSubmit={handleSubmit(submitArenaToDraft)}
+                    >
+                      <ArenaPlayersListScroll heightarea="535px">
                         <ArenaPaddingWrap>
                           <FormControl mb="35px">
                             <FormLabelText>Mode</FormLabelText>
@@ -95,19 +229,6 @@ export default function Arena() {
                               })}
                             </HStack>
                           </FormControl>
-                          <HStack gap={4} alignItems="center" mb="35px">
-                            <FormControl>
-                              <FormLabelText>Boss Enemy</FormLabelText>
-                              <FormSelect placeContent="random">
-                                <option value="random">Random</option>
-                              </FormSelect>
-                            </FormControl>
-                            <Box>
-                              <ArenaBossCircleWrapper>
-                                <Image src={BossImage.src} w="100%" />
-                              </ArenaBossCircleWrapper>
-                            </Box>
-                          </HStack>
 
                           <SimpleGrid columns={2} spacing={8} mb="35px">
                             <FormControl>
@@ -158,19 +279,48 @@ export default function Arena() {
                           </FormControl>
 
                           <FormControl mb="35px">
-                            <ArenaCheckbox size="lg">
-                              Ban one Character randomly
-                            </ArenaCheckbox>
+                            <Controller
+                              render={({
+                                field: { onChange, value, name },
+                              }) => (
+                                <ArenaCheckbox
+                                  size="lg"
+                                  onChange={onChange}
+                                  checked={value}
+                                  name={name}
+                                >
+                                  Manually Select Boss
+                                </ArenaCheckbox>
+                              )}
+                              name="is_manual_select_boss"
+                              control={control}
+                            />
                           </FormControl>
 
-                          <HStack gap={4} alignItems="center" mb="35px">
+                          <HStack
+                            hidden={watchCheckboxBoss === false ? true : false}
+                            gap={4}
+                            alignItems="center"
+                            mb="35px"
+                          >
                             <FormControl>
-                              <FormLabelText>Banned Character</FormLabelText>
-                              <FormSelect placeContent="random">
-                                <option value="Kamisato Ayaka">
-                                  Kamisato Ayaka
-                                </option>
-                              </FormSelect>
+                              <FormLabelText>Boss Enemy</FormLabelText>
+                              <Controller
+                                render={({
+                                  field: { onChange, value, name },
+                                }) => (
+                                  <FormSelect
+                                    placeContent="random"
+                                    onChange={onChange}
+                                    value={value}
+                                    name={name}
+                                  >
+                                    <option value="random">Random</option>
+                                  </FormSelect>
+                                )}
+                                name="boss_id"
+                                control={control}
+                              />
                             </FormControl>
                             <Box>
                               <ArenaBossCircleWrapper>
@@ -199,7 +349,7 @@ export default function Arena() {
                       <ArenaTitleText>Players</ArenaTitleText>
                     </ArenaPaddingWrap>
 
-                    <ArenaPlayersListScroll heightarea="580px">
+                    <ArenaPlayersListScroll heightarea="605px">
                       <ArenaPaddingWrap>
                         <Grid templateColumns="repeat(1, 1fr)" gap={6}>
                           <GridItem>

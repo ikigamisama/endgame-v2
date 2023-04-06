@@ -1,9 +1,5 @@
 import Head from "next/head";
-import {
-  BackgroundEGWrapper,
-  BackgroundEGVideo,
-  CenterBox,
-} from "@/src/styles";
+import { CenterBox } from "@/src/styles";
 import { useUserData } from "@/libs/providers/UserContext";
 import { Box, Center, FormControl, Image } from "@chakra-ui/react";
 import {
@@ -17,6 +13,7 @@ import {
 import { LoginImageLogo } from "@/libs/includes/image";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { GMLoginProps } from "@/libs/helpers/types";
+import BackgroundVid from "@/components/BackgroundVid";
 
 export default function Login() {
   const { state } = useUserData();
@@ -41,12 +38,10 @@ export default function Login() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <BackgroundEGWrapper>
-        <BackgroundEGVideo autoPlay loop muted preload="auto">
-          <source type="video/mp4" src={state.settings.video_bg.mp4} />
-          <source type="video/webm" src={state.settings.video_bg.webm} />
-        </BackgroundEGVideo>
-      </BackgroundEGWrapper>
+      <BackgroundVid
+        mp4={state.settings.video_bg.mp4}
+        webm={state.settings.video_bg.webm}
+      />
 
       <Box position="relative" h="100vh">
         <CenterBox>
