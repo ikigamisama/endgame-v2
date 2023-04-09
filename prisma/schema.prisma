@@ -38,8 +38,8 @@ model Settings {
 
 model Characters {
   id             String           @id @default(cuid())
-  name           String?
-  description    String?
+  name           String
+  description    String
   rarity         String
   vision         String
   weapon         String
@@ -81,16 +81,16 @@ model Arena {
 
 model Draft {
   uid                  String           @id @default(cuid())
-  arenaID              String
-  bossID               String
-  timer                Int
-  pause_timer          Int
+  arenaID              String?
+  bossID               String?
+  timer                Int              @default(30)
+  pause_timer          Int              @default(3)
   current_status_draft String?
   winner_user_id       String?
-  arena                Arena            @relation(fields: [arenaID], references: [uid], onDelete: Cascade)
-  boss                 Boss             @relation(fields: [bossID], references: [id], onDelete: Cascade)
+  arena                Arena?           @relation(fields: [arenaID], references: [uid], onDelete: Cascade)
+  boss                 Boss?            @relation(fields: [bossID], references: [id], onDelete: Cascade)
   user                 User?            @relation(fields: [winner_user_id], references: [id], onDelete: Cascade)
-  isFinish             Boolean
+  isFinish             Boolean          @default(false)
   CharacterDraft       CharacterDraft[]
   created_date         DateTime?        @db.Timestamp(6)
 
@@ -100,14 +100,14 @@ model Draft {
 }
 
 model CharacterDraft {
-  uid         String      @id @default(cuid())
+  uid         String     @id @default(cuid())
   draftID     String
-  characterID String?
-  status      String?
+  characterID String
+  status      String
   playerID    String
-  character   Characters? @relation(fields: [characterID], references: [id], onDelete: Cascade)
-  draft       Draft       @relation(fields: [draftID], references: [uid], onDelete: Cascade)
-  user        User        @relation(fields: [playerID], references: [id], onDelete: Cascade)
+  character   Characters @relation(fields: [characterID], references: [id], onDelete: Cascade)
+  draft       Draft      @relation(fields: [draftID], references: [uid], onDelete: Cascade)
+  user        User       @relation(fields: [playerID], references: [id], onDelete: Cascade)
 
   @@index([characterID])
   @@index([draftID])

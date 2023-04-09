@@ -1,30 +1,40 @@
+import {
+  AnemoVisionIcon,
+  CryoVisionIcon,
+  DendroVisionIcon,
+  ElectroVisionIcon,
+  GeoVisionIcon,
+  HydroVisionIcon,
+  PyroVisionIcon,
+} from "./icons";
+
 export const vision = {
   anemo: {
     color: "#067b54",
-    logoSrc: "",
+    logoSrc: <AnemoVisionIcon />,
   },
   cryo: {
-    color: "#9FD6E3",
-    logoSrc: "",
+    color: "#EEFCFF",
+    logoSrc: <CryoVisionIcon />,
   },
   dendro: {
     color: "#387017",
-    logoSrc: "",
+    logoSrc: <DendroVisionIcon />,
   },
   electro: {
     color: "#3d1e8c",
-    logoSrc: "",
+    logoSrc: <ElectroVisionIcon />,
   },
   geo: {
-    color: "#FAB632",
-    logoSrc: "",
+    color: "#CA8C00",
+    logoSrc: <GeoVisionIcon />,
   },
   hydro: {
     color: "#063e77",
-    logoSrc: "",
+    logoSrc: <HydroVisionIcon />,
   },
   pyro: {
     color: "#8d1917",
-    logoSrc: "",
+    logoSrc: <PyroVisionIcon />,
   },
 };

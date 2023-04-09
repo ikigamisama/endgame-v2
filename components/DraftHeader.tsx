@@ -117,7 +117,11 @@ const DraftHeader: React.FC = () => {
           </BanCharactersListContainer>
           <BossDraftContainer>
             <BossDraftWrapper>
-              <Image src={SampleBossImg} w="100%" alt="boss-draft" />
+              <Image
+                src="http://endgame.otakuhobbitoysph.com/cdn/boss/center/Thunder_Manifestation.png"
+                w="100%"
+                alt="boss-draft"
+              />
               <BossNameWrapper>Thunder Manifestation</BossNameWrapper>
             </BossDraftWrapper>
           </BossDraftContainer>

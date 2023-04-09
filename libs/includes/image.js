@@ -15,15 +15,6 @@ import SampleCharacterBan6 from "@/assets/img/temp/character_ban_6.png";
 import SampleCharacterBan7 from "@/assets/img/temp/character_ban_7.png";
 import SampleCharacterBan8 from "@/assets/img/temp/character_ban_8.png";
 
-import SampleCharacterPick1 from "@/assets/img/temp/character_pick_1.png";
-import SampleCharacterPick2 from "@/assets/img/temp/character_pick_2.png";
-import SampleCharacterPick3 from "@/assets/img/temp/character_pick_3.png";
-import SampleCharacterPick4 from "@/assets/img/temp/character_pick_4.png";
-import SampleCharacterPick5 from "@/assets/img/temp/character_pick_5.png";
-import SampleCharacterPick6 from "@/assets/img/temp/character_pick_6.png";
-import SampleCharacterPick7 from "@/assets/img/temp/character_pick_7.png";
-import SampleCharacterPick8 from "@/assets/img/temp/character_pick_8.png";
-
 export const LoginImageLogo = LoginLogo.src;
 export const PaimonLoaderImg = PaimonLoader.src;
 export const LoaderElementsDarkImg = LoaderElementsDark.src;
@@ -42,12 +33,3 @@ export const CharacterSampleBan5 = SampleCharacterBan5.src;
 export const CharacterSampleBan6 = SampleCharacterBan6.src;
 export const CharacterSampleBan7 = SampleCharacterBan7.src;
 export const CharacterSampleBan8 = SampleCharacterBan8.src;
-
-export const CharacterSamplePick1 = SampleCharacterPick1.src;
-export const CharacterSamplePick2 = SampleCharacterPick2.src;
-export const CharacterSamplePick3 = SampleCharacterPick3.src;
-export const CharacterSamplePick4 = SampleCharacterPick4.src;
-export const CharacterSamplePick5 = SampleCharacterPick5.src;
-export const CharacterSamplePick6 = SampleCharacterPick6.src;
-export const CharacterSamplePick7 = SampleCharacterPick7.src;
-export const CharacterSamplePick8 = SampleCharacterPick8.src;

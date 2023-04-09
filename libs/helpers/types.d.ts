@@ -59,10 +59,16 @@ export type GetRandomNumberOptions = {
 };
 
 
-export  interface DraftPositionProps{
+export declare interface DraftPositionProps{
     aligndraft: 'left' | 'right' | string
     widthcharacter?: string
     colorcharacter?: string
     indexcharacter?: string
     statusdraft?: 'pick' | 'ban' | 'none' | string
+    currentpickdraft?: 'true' | 'false'
+}
+
+export declare interface IconSizeSVGProps{
+    width: string
+    height: string
 }
