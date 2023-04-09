@@ -173,7 +173,6 @@ export const DraftPickBanner = styled(Box)<DraftPositionProps>`
     border-radius: 15px;
     background-color: #ecdeb5;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    overflow: hidden;
     position: relative;
 
     ${(props) => (props.aligndraft === 'left' ? `
@@ -186,6 +185,8 @@ export const DraftPickBanner = styled(Box)<DraftPositionProps>`
             position: absolute;
             top: 0;
             left: 0;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
             
         }
     ` : `
@@ -198,6 +199,8 @@ export const DraftPickBanner = styled(Box)<DraftPositionProps>`
             position: absolute;
             top: 0;
             right: 0;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
         }
     `)};
 ` 
