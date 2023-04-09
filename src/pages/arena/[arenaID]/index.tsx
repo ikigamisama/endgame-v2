@@ -343,7 +343,7 @@ const Arena: NextPage = () => {
                             </FormControl>
                             <Box>
                               <ArenaBossCircleWrapper>
-                                <Image src={BossImage.src} w="100%" />
+                                <Image src={BossImage} w="100%" />
                               </ArenaBossCircleWrapper>
                             </Box>
                           </HStack>

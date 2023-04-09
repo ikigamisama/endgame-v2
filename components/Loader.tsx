@@ -30,7 +30,7 @@ const Loader: React.FC = (props?: Parameters<typeof useProgressbar>[0]) => {
   useEffect(() => {
     events.on("routeChangeStart", start);
     events.on("routeChangeComplete", complete);
-    events.on("routeChangeError", reset); // Typical case: "Route Cancelled"
+    events.on("routeChangeError", reset);
 
     return () => {
       events.off("routeChangeStart", start);
@@ -46,19 +46,15 @@ const Loader: React.FC = (props?: Parameters<typeof useProgressbar>[0]) => {
   return width > 0 ? (
     <LoaderScreenBox>
       <LoaderScreenContent>
-        <Image
-          src={PaimonLoaderImg.src}
-          width="150px"
-          alt="paimon-img-loader"
-        />
+        <Image src={PaimonLoaderImg} width="150px" alt="paimon-img-loader" />
       </LoaderScreenContent>
       <LoaderBelowWrapper>
         <LoaderBorder />
         <LoaderElementsWrapper>
-          <LoaderElementsPassieve imgsrc={LoaderElementsDarkImg.src} />
+          <LoaderElementsPassieve imgsrc={LoaderElementsDarkImg} />
 
           <LoaderElementsPrompt
-            src={LoaderElementsLightImg.src}
+            src={LoaderElementsLightImg}
             alt="loader-elements-dark"
             margin="0 auto"
             percentload={percentProgress(width)}

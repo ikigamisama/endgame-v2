@@ -56,7 +56,7 @@ const ArenaPlayerLogin: NextPage = () => {
           <LoginCard>
             <LoginCardWrapper>
               <Center mb="75px">
-                <Image src={LoginImageLogo.src} w="400px" alt="login-image" />
+                <Image src={LoginImageLogo} w="400px" alt="login-image" />
               </Center>
               <form method="post" onSubmit={handleSubmit(submitPlayerLogin)}>
                 <FormControl mb="25px">

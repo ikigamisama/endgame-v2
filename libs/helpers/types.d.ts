@@ -57,3 +57,11 @@ export declare interface ArenaDraftProps{
 export type GetRandomNumberOptions = {
     decimalPlaces?: number;
 };
+
+
+export  interface DraftPositionProps{
+    aligndraft: 'left' | 'right' | string
+    widthcharacter?: string
+    colorcharacter?: string
+    indexcharacter?: string
+}
