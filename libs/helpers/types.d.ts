@@ -72,3 +72,9 @@ export declare interface IconSizeSVGProps{
     width: string
     height: string
 }
+
+export declare interface ModalFeatures{
+    isOpen: boolean
+    onClose: () => void
+    title: string
+}
