@@ -1,5 +1,5 @@
 import { DraftPositionProps } from '@/libs/helpers/types'
-import { Box } from '@chakra-ui/react'
+import { Box, Image, Text } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 
 export const BossDraftContainer = styled(Box)`
@@ -24,6 +24,7 @@ export const BossDraftWrapper = styled(Box)`
         position: absolute;
         left: 0;
         top: 0;
+        z-index: 35;
     }
 `
 export const BossNameWrapper = styled(Box)`
@@ -32,8 +33,7 @@ export const BossNameWrapper = styled(Box)`
     width: 100%;
     height: 30px;
     display: flex;
-
-    background: linear-gradient( 0deg, rgb(0,0,0) 20%, rgba(0,0,0,0) 100%);
+    background: linear-gradient( 180deg, rgba(0,0,0,0) 100%, rgb(0,0,0) 0%);
     color: white;
     font-family: 'GenshinFont', sans-serif;
     text-align:center;
@@ -46,16 +46,18 @@ export const BanCharactersListContainer = styled(Box)<DraftPositionProps>`
     width: 550px;
     height: 100px;
     background-color: #ecdeb5;
-    ${(props) => (props.aligndraft === 'left' ? 'border-bottom-left-radius: 15px;' : 'border-bottom-right-radius: 15px;')}
     margin-inline-start: 0rem !important;
     display: flex;
+    ${(props) => (props.aligndraft === 'left' ? 'border-bottom-left-radius: 15px;' : 'border-bottom-right-radius: 15px;')}
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-end' : 'flex-start')};
+    ${(props) => (props.statusdraft === 'none' ? null : 'box-shadow: 0px 0px 16px 4px rgba(203, 53, 53, 1);background-color: #c93535;')}
+   
 ` 
 
 export const BanCharactersListWrapper = styled(Box)`
     width: 530px;
     height: 100%;
-    background-color: #ecdeb5;
+    background-color: inherit;
     position: relative;
     z-index: 10;
 `
@@ -73,9 +75,217 @@ export const BanCharacterWrapper = styled(Box)<DraftPositionProps>`
     overflow:hidden;
     display: flex;
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')};
+
+
+    & > img{
+        transform: scale(0.95);
+        height: 100%;
+        position: absolute;
+        bottom: -5px;
+    }
+`
+
+export const DraftRerollBanner = styled(Box)`
+    font-family: 'GenshinFont', sans-serif;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.004);
+    width: 250px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+`
+
+export const DraftCountdownCard = styled(Box)`
+    width: 200px;
+    height: 100px;
+    background-color: #ecdeb5;
+    border-radius:15px;
+    overflow: hidden;
+`
+
+export const DraftCountdownCardWrapper = styled(Box)`
+    background-color: #1e223f;
+    width: 165px;
+    height: 100%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+
+export const DraftCountdownText = styled(Text)`
+    font-family: 'GenshinFont', sans-serif;
+    font-size: 4rem;
+    line-height: 1;
 `
 
 
-export const DraftCountDownCard = styled(Box)`
+export const DraftPlayersNamePlate = styled(Box)`
+    width: 100%;
+    position: relative;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: #ecdeb5;
+    z-index: 20;
+    display: flex;
+    flex-direction: row;
+    padding: 4px 0;
+` 
 
+export const DraftPlayerTextWrapper = styled(Box)<DraftPositionProps> `
+    position: relative;
+    width: 43%;
+    display: flex;
+    justify-content: ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')}
+    
+`    
+export const DraftPlayerText = styled(Text)`
+    font-family: 'GenshinFont', sans-serif;
+    font-size: 2rem;
+    color:#3c343d;
+    width: 100%;
+    text-align:center;
+`    
+
+export const DraftPlayerVersusWrapper = styled(Box)`
+    width: 150px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: #1e223f;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 0);
+    z-index: 25;
+    text-align:center;
+`
+
+export const DraftPlayerVersusText = styled(Text)`
+    font-family: 'GenshinFont', sans-serif;
+    font-size: 3.5rem;
+    padding-top: 10px;
+`
+
+export const DraftPickBanner = styled(Box)<DraftPositionProps>`
+    width: 100%;
+    height: 100px;
+    border-radius: 15px;
+    background-color: #ecdeb5;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    overflow: hidden;
+    position: relative;
+
+    ${(props) => (props.aligndraft === 'left' ? `
+        &::before{
+            content: '';
+            width: 25px;
+            height: 100%;
+            background-color: rgb(103, 228, 100);
+            box-shadow: 0px 0px 16px 4px rgba(103, 228, 100, 1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            
+        }
+    ` : `
+        &::after{
+            content: '';
+            width: 25px;
+            height: 100%;
+            background-color: rgb(103, 228, 100);
+            box-shadow: 0px 0px 16px 4px rgba(103, 228, 100, 1);
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    `)};
+` 
+
+export const DraftPickBannerWrapper = styled(Box)`
+    background-color: #1e223f;
+    width: 96%;
+    height: 100%;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    
+` 
+
+export const DraftCharacterPickBanner = styled(Box)<DraftPositionProps>`
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')};
+    background-color: ${(props) => (props.colorcharacter)};
+    overflow: hidden;
+    position: relative;
+`
+
+export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
+    width: 55%;
+    position: relative;
+    display: flex;
+    justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')};
+    z-index: 12;
+
+    & > img{
+        position: absolute;
+        top: 0;
+        ${(props) => (props.aligndraft === 'left' ? 'left: 0;' : 'right: 0;')}
+        ${(props) => (props.aligndraft === 'right' ? 'transform:scaleX(-1)' : '')};
+        z-index: 22;
+        width: 75%;
+    }
+
+    & > div{
+         ${(props) => (props.aligndraft === 'left' ? 'left: 0;' : 'right: 0;')}
+         background: linear-gradient(${(props) => (props.aligndraft === 'left' ? '45deg' : '270deg')}, transparent 0%, rgba(0,0,0,1) 100%);
+        z-index: 15;
+    }
+
+
+    & > div > p{
+        ${(props) => (props.aligndraft === 'left' ? 'padding-right: 150px;text-align: right;' : 'padding-left: 150px;text-align: left;')}
+
+    }
+`
+
+export const DraftCharacterNameWrapper = styled(Box)`
+    position: absolute;
+    bottom:0;
+    width: 140%;
+    background: rgb(255,255,255);
+    
+`
+
+export const DraftCharacterName = styled(Text)`
+    font-family: 'GenshinFont',sans-serif;
+    font-size: 14px;
+    line-height: 1;
+`
+
+
+export const DraftBossCard = styled(Box)`
+    width: 550px;
+    height: 550px;
+    border-radius: 100%;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0);
+    z-index: 20;
+    background-color: #ecdeb5;   
+    border: 10px solid #ecdeb5;   
+    margin-top: 0 !important;
+`
+
+export const DraftBossCardBGImg = styled(Image)`
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top:0;
+    left: 0;
+    z-index: 30;
 `

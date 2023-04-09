@@ -64,4 +64,5 @@ export  interface DraftPositionProps{
     widthcharacter?: string
     colorcharacter?: string
     indexcharacter?: string
+    statusdraft?: 'pick' | 'ban' | 'none' | string
 }

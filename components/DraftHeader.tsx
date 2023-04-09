@@ -5,14 +5,14 @@ import {
   SwapIcon,
 } from "@/libs/includes/icons";
 import {
-  CharacterSample1,
-  CharacterSample2,
-  CharacterSample3,
-  CharacterSample4,
-  CharacterSample5,
-  CharacterSample6,
-  CharacterSample7,
-  CharacterSample8,
+  CharacterSampleBan1,
+  CharacterSampleBan2,
+  CharacterSampleBan3,
+  CharacterSampleBan4,
+  CharacterSampleBan5,
+  CharacterSampleBan6,
+  CharacterSampleBan7,
+  CharacterSampleBan8,
   SampleBossImg,
 } from "@/libs/includes/image";
 import {
@@ -63,7 +63,7 @@ const DraftHeader: React.FC = () => {
           </ButtonPopUpNav>
         </Flex>
         <Flex flex={1} justifyContent="center">
-          <BanCharactersListContainer aligndraft="left">
+          <BanCharactersListContainer aligndraft="left" statusdraft="none">
             <BanCharactersListWrapper>
               <BanCharacterWrapper
                 aligndraft="left"
@@ -72,10 +72,9 @@ const DraftHeader: React.FC = () => {
                 indexcharacter="55"
               >
                 <Image
-                  src={CharacterSample4}
+                  src={CharacterSampleBan4}
                   w="100%"
-                  height="100%"
-                  alt="ban-player-1-character"
+                  alt="ban-player-1-character-d"
                 />
               </BanCharacterWrapper>
               <BanCharacterWrapper
@@ -85,10 +84,9 @@ const DraftHeader: React.FC = () => {
                 indexcharacter="45"
               >
                 <Image
-                  src={CharacterSample3}
+                  src={CharacterSampleBan3}
                   w="50%"
-                  height="100%"
-                  alt="ban-player-1-character"
+                  alt="ban-player-1-character-c"
                 />
               </BanCharacterWrapper>
               <BanCharacterWrapper
@@ -98,10 +96,9 @@ const DraftHeader: React.FC = () => {
                 indexcharacter="35"
               >
                 <Image
-                  src={CharacterSample2}
+                  src={CharacterSampleBan2}
                   w="33%"
-                  height="100%"
-                  alt="ban-player-1-character"
+                  alt="ban-player-1-character-b"
                 />
               </BanCharacterWrapper>
               <BanCharacterWrapper
@@ -111,27 +108,20 @@ const DraftHeader: React.FC = () => {
                 indexcharacter="25"
               >
                 <Image
-                  src={CharacterSample1}
+                  src={CharacterSampleBan1}
                   w="25%"
-                  height="100%"
-                  alt="ban-player-1-character"
+                  alt="ban-player-1-character-a"
                 />
               </BanCharacterWrapper>
             </BanCharactersListWrapper>
           </BanCharactersListContainer>
           <BossDraftContainer>
             <BossDraftWrapper>
-              <Image
-                src={SampleBossImg}
-                w="100%"
-                height="100%"
-                alt="boss-draft"
-              />
-
+              <Image src={SampleBossImg} w="100%" alt="boss-draft" />
               <BossNameWrapper>Thunder Manifestation</BossNameWrapper>
             </BossDraftWrapper>
           </BossDraftContainer>
-          <BanCharactersListContainer aligndraft="right">
+          <BanCharactersListContainer aligndraft="right" statusdraft="ban">
             <BanCharactersListWrapper>
               <BanCharacterWrapper
                 aligndraft="right"
@@ -140,10 +130,9 @@ const DraftHeader: React.FC = () => {
                 indexcharacter="55"
               >
                 <Image
-                  src={CharacterSample8}
+                  src={CharacterSampleBan8}
                   w="100%"
-                  height="100%"
-                  alt="ban-player-1-character"
+                  alt="ban-player-2-characte-8"
                 />
               </BanCharacterWrapper>
               <BanCharacterWrapper
@@ -153,10 +142,9 @@ const DraftHeader: React.FC = () => {
                 indexcharacter="45"
               >
                 <Image
-                  src={CharacterSample7}
+                  src={CharacterSampleBan7}
                   w="50%"
-                  height="100%"
-                  alt="ban-player-1-character"
+                  alt="ban-player-2-character-7"
                 />
               </BanCharacterWrapper>
               <BanCharacterWrapper
@@ -166,10 +154,9 @@ const DraftHeader: React.FC = () => {
                 indexcharacter="35"
               >
                 <Image
-                  src={CharacterSample6}
+                  src={CharacterSampleBan6}
                   w="33%"
-                  height="100%"
-                  alt="ban-player-1-character"
+                  alt="ban-player-2-character-6"
                 />
               </BanCharacterWrapper>
               <BanCharacterWrapper
@@ -179,10 +166,9 @@ const DraftHeader: React.FC = () => {
                 indexcharacter="25"
               >
                 <Image
-                  src={CharacterSample5}
+                  src={CharacterSampleBan5}
                   w="25%"
-                  height="100%"
-                  alt="ban-player-1-character"
+                  alt="ban-player-2-character-5"
                 />
               </BanCharacterWrapper>
             </BanCharactersListWrapper>

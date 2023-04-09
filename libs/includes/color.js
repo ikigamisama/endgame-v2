@@ -1,6 +1,6 @@
 export const vision = {
   anemo: {
-    color: "#74C2A8",
+    color: "#067b54",
     logoSrc: "",
   },
   cryo: {
@@ -8,11 +8,11 @@ export const vision = {
     logoSrc: "",
   },
   dendro: {
-    color: "#A5C83B",
+    color: "#387017",
     logoSrc: "",
   },
   electro: {
-    color: "#AF8EC1",
+    color: "#3d1e8c",
     logoSrc: "",
   },
   geo: {
@@ -20,11 +20,11 @@ export const vision = {
     logoSrc: "",
   },
   hydro: {
-    color: "#4CC2F1",
+    color: "#063e77",
     logoSrc: "",
   },
   pyro: {
-    color: "#EF7938",
+    color: "#8d1917",
     logoSrc: "",
   },
 };
