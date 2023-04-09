@@ -53,3 +53,7 @@ export declare interface ArenaDraftProps{
     is_manual_select_boss: boolean | undefined
     boss_id?: string
 }
+
+export type GetRandomNumberOptions = {
+    decimalPlaces?: number;
+};

@@ -20,8 +20,9 @@ import { Box, Center, FormControl, Image } from "@chakra-ui/react";
 import { avatarList } from "@/libs/includes/avatars";
 import { PlayerLoginProps } from "@/libs/helpers/types";
 import BackgroundVid from "@/components/BackgroundVid";
+import { NextPage } from "next";
 
-export default function Arena() {
+const ArenaPlayerLogin: NextPage = () => {
   const { state } = useUserData();
   const { handleSubmit, control, watch } = useForm<PlayerLoginProps>({
     defaultValues: {
@@ -124,4 +125,6 @@ export default function Arena() {
       </Box>
     </>
   );
-}
+};
+
+export default ArenaPlayerLogin;

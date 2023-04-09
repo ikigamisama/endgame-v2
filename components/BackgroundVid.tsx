@@ -2,7 +2,7 @@ import { VideoPropsSettings } from "@/libs/helpers/types";
 import { BackgroundEGVideo, BackgroundEGWrapper } from "@/src/styles";
 import { useEffect, useRef } from "react";
 
-export default function BackgroundVid({ mp4, webm }: VideoPropsSettings) {
+const BackgroundVid: React.FC<VideoPropsSettings> = ({ mp4, webm }) => {
   const videoRef = useRef<any>(null);
 
   useEffect(() => {
@@ -17,4 +17,6 @@ export default function BackgroundVid({ mp4, webm }: VideoPropsSettings) {
       </BackgroundEGVideo>
     </BackgroundEGWrapper>
   );
-}
+};
+
+export default BackgroundVid;

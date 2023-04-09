@@ -14,8 +14,9 @@ import { LoginImageLogo } from "@/libs/includes/image";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { GMLoginProps } from "@/libs/helpers/types";
 import BackgroundVid from "@/components/BackgroundVid";
+import { NextPage } from "next";
 
-export default function Login() {
+const Login: NextPage = () => {
   const { state } = useUserData();
   const { handleSubmit, control } = useForm<GMLoginProps>({
     defaultValues: {
@@ -113,4 +114,6 @@ export default function Login() {
       </Box>
     </>
   );
-}
+};
+
+export default Login;

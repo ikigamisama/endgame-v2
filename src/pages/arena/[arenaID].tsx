@@ -42,7 +42,6 @@ import {
   Popover,
   PopoverArrow,
   PopoverBody,
-  PopoverCloseButton,
   PopoverContent,
   PopoverTrigger,
   SimpleGrid,
@@ -56,8 +55,9 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ArenaDraftProps } from "@/libs/helpers/types";
 import { useRouter } from "next/navigation";
 import BackgroundVid from "@/components/BackgroundVid";
+import { NextPage } from "next";
 
-export default function Arena() {
+const Arena: NextPage = () => {
   const { state, dispatch } = useUserData();
   const router = useRouter();
   const { handleSubmit, control, watch, setValue } = useForm<ArenaDraftProps>({
@@ -399,4 +399,6 @@ export default function Arena() {
       </Box>
     </>
   );
-}
+};
+
+export default Arena;
