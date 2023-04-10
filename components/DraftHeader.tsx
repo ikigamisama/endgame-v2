@@ -13,17 +13,15 @@ import {
   BossDraftWrapper,
   BossNameWrapper,
 } from "@/src/styles/Draft";
+
 import {
   Box,
-  Button,
   Flex,
   FormControl,
   HStack,
   Image,
   Modal,
   ModalBody,
-  ModalCloseButton,
-  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -40,7 +38,7 @@ import { SettingsIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { vision } from "@/libs/includes/color";
 import { useState } from "react";
-import { ModalFeatures } from "@/libs/helpers/types";
+import { CharacterDraftProps, ModalFeatures } from "@/libs/helpers/types";
 import {
   EndgameModalContent,
   EndgameModalWrapper,
@@ -86,7 +84,9 @@ const ModalFeatureDraft = ({ isOpen, onClose, title }: ModalFeatures) => {
   );
 };
 
-const DraftHeader: React.FC = () => {
+const DraftHeader: React.FC<CharacterDraftProps> = ({
+  onOpenCharacterModal,
+}) => {
   const router = useRouter();
   const { state, dispatch } = useUserData();
 
@@ -127,7 +127,7 @@ const DraftHeader: React.FC = () => {
             <ButtonPopUpNav onClick={() => router.push("/arena/123")}>
               <BackIcon />
             </ButtonPopUpNav>
-            <ButtonPopUpNav>
+            <ButtonPopUpNav onClick={onOpenCharacterModal}>
               <CharacterIcon />
             </ButtonPopUpNav>
           </Flex>
@@ -141,7 +141,7 @@ const DraftHeader: React.FC = () => {
                   indexcharacter="55"
                 >
                   <Image
-                    src="http://endgame.otakuhobbitoysph.com/cdn/characters/ban/Amber.png"
+                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Amber.png"
                     w="100%"
                     alt="ban-player-1-character-d"
                   />
@@ -153,7 +153,7 @@ const DraftHeader: React.FC = () => {
                   indexcharacter="45"
                 >
                   <Image
-                    src="http://endgame.otakuhobbitoysph.com/cdn/characters/ban/Aloy.png"
+                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Aloy.png"
                     w="50%"
                     alt="ban-player-1-character-c"
                   />
@@ -165,7 +165,7 @@ const DraftHeader: React.FC = () => {
                   indexcharacter="35"
                 >
                   <Image
-                    src="http://endgame.otakuhobbitoysph.com/cdn/characters/ban/Alhaitham.png"
+                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Alhaitham.png"
                     w="33%"
                     alt="ban-player-1-character-b"
                   />
@@ -177,7 +177,7 @@ const DraftHeader: React.FC = () => {
                   indexcharacter="25"
                 >
                   <Image
-                    src="http://endgame.otakuhobbitoysph.com/cdn/characters/ban/Albedo.png"
+                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Albedo.png"
                     w="25%"
                     alt="ban-player-1-character-a"
                   />
@@ -187,7 +187,7 @@ const DraftHeader: React.FC = () => {
             <BossDraftContainer>
               <BossDraftWrapper>
                 <Image
-                  src="http://endgame.otakuhobbitoysph.com/cdn/boss/center/Thunder_Manifestation.png"
+                  src="https://endgame.otakuhobbitoysph.com/cdn/boss/center/Thunder_Manifestation.png"
                   w="100%"
                   alt="boss-draft"
                 />
@@ -203,7 +203,7 @@ const DraftHeader: React.FC = () => {
                   indexcharacter="55"
                 >
                   <Image
-                    src="http://endgame.otakuhobbitoysph.com/cdn/characters/ban/Bennett.png"
+                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Bennett.png"
                     w="100%"
                     alt="ban-player-2-characte-8"
                   />
@@ -215,7 +215,7 @@ const DraftHeader: React.FC = () => {
                   indexcharacter="45"
                 >
                   <Image
-                    src="http://endgame.otakuhobbitoysph.com/cdn/characters/ban/Beidou.png"
+                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Beidou.png"
                     w="50%"
                     alt="ban-player-2-character-7"
                   />
@@ -227,7 +227,7 @@ const DraftHeader: React.FC = () => {
                   indexcharacter="35"
                 >
                   <Image
-                    src="http://endgame.otakuhobbitoysph.com/cdn/characters/ban/Barbara.png"
+                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Barbara.png"
                     w="33%"
                     alt="ban-player-2-character-6"
                   />
@@ -239,7 +239,7 @@ const DraftHeader: React.FC = () => {
                   indexcharacter="25"
                 >
                   <Image
-                    src="http://endgame.otakuhobbitoysph.com/cdn/characters/ban/Arataki_Itto.png"
+                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Arataki_Itto.png"
                     w="25%"
                     alt="ban-player-2-character-5"
                   />

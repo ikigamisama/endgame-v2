@@ -227,7 +227,7 @@ export const DraftCharacterPickBanner = styled(Box)<DraftPositionProps>`
 `
 
 export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
-    width: 55%;
+    width: 57.5%;
     position: relative;
     display: flex;
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')};
@@ -239,7 +239,7 @@ export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
         ${(props) => (props.aligndraft === 'left' ? 'left: 0;' : 'right: 0;')}
         ${(props) => (props.aligndraft === 'right' ? 'transform:scaleX(-1)' : '')};
         z-index: 22;
-        width: 75%;
+        width: 70%;
     }
 
     & > .character-vision-icon{
@@ -280,8 +280,6 @@ export const DraftCharacterName = styled(Text)`
     line-height: 1;
 `
 
-
-
 export const DraftBossCard = styled(Box)`
     width: 525px;
     height: 525px;
@@ -294,6 +292,7 @@ export const DraftBossCard = styled(Box)`
     background-color: #ecdeb5;   
     border: 10px solid #ecdeb5;   
     margin-top: 0 !important;
+    overflow: hidden;
 `
 
 export const DraftBossCardBGImg = styled(Image)`

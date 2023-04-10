@@ -118,10 +118,10 @@ export const SwapIcon = () => (
   </svg>
 );
 
-export const AnemoVisionIcon = () => (
+export const AnemoVisionIcon = ({ color = "#74c2a8" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314.09 314.09">
     <defs>
-      <style>{".cls-1-anemo{fill:#74c2a8;}.cls-2-anemo{fill:none;}"}</style>
+      <style>{`.cls-1-anemo{fill:${color};}.cls-2-anemo{fill:none;}`}</style>
     </defs>
     <g id="Livello_2" data-name="Livello 2">
       <g id="Livello_10" data-name="Livello 10">
@@ -151,10 +151,10 @@ export const AnemoVisionIcon = () => (
   </svg>
 );
 
-export const CryoVisionIcon = () => (
+export const CryoVisionIcon = ({ color = "#9fd6e3" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314.09 314.09">
     <defs>
-      <style>{".cls-1-cryo{fill:#9fd6e3;}.cls-2-cryo{fill:none;}"}</style>
+      <style>{`.cls-1-cryo{fill:${color};}.cls-2-cryo{fill:none;}`}</style>
     </defs>
     <g id="Livello_2" data-name="Livello 2">
       <g id="Livello_10" data-name="Livello 10">
@@ -213,10 +213,10 @@ export const CryoVisionIcon = () => (
   </svg>
 );
 
-export const DendroVisionIcon = () => (
+export const DendroVisionIcon = ({ color = "#a5c83b" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314.09 314.09">
     <defs>
-      <style>{".cls-1-dendro{fill:#a5c83b;}.cls-2-dendro{fill:none;}"}</style>
+      <style>{`.cls-1-dendro{fill:${color};}.cls-2-dendro{fill:none;}`}</style>
     </defs>
     <g id="Livello_2" data-name="Livello 2">
       <g id="Livello_10" data-name="Livello 10">
@@ -266,10 +266,10 @@ export const DendroVisionIcon = () => (
   </svg>
 );
 
-export const ElectroVisionIcon = () => (
+export const ElectroVisionIcon = ({ color = "#af8ec1" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314.09 314.09">
     <defs>
-      <style>{".cls-1-electro{fill:#af8ec1;}.cls-2-electro{fill:none;}"}</style>
+      <style>{`.cls-1-electro{fill:${color};}.cls-2-electro{fill:none;}`}</style>
     </defs>
     <g id="Livello_2" data-name="Livello 2">
       <g id="Livello_10" data-name="Livello 10">
@@ -283,10 +283,10 @@ export const ElectroVisionIcon = () => (
   </svg>
 );
 
-export const GeoVisionIcon = () => (
+export const GeoVisionIcon = ({ color = "#fab632" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314.09 314.09">
     <defs>
-      <style>{".cls-1-geo{fill:#fab632;}.cls-2-geo{fill:none;}"}</style>
+      <style>{`.cls-1-geo{fill:${color};}.cls-2-geo{fill:none;}`}</style>
     </defs>
     <g id="Livello_2" data-name="Livello 2">
       <g id="Livello_10" data-name="Livello 10">
@@ -304,10 +304,10 @@ export const GeoVisionIcon = () => (
   </svg>
 );
 
-export const HydroVisionIcon = () => (
+export const HydroVisionIcon = ({ color = "#4cc2f1" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314.09 314.09">
     <defs>
-      <style>{".cls-1-hydro{fill:#4cc2f1;}.cls-2-hydro{fill:none;}"}</style>
+      <style>{`.cls-1-hydro{fill:${color};}.cls-2-hydro{fill:none;}`}</style>
     </defs>
     <g id="Livello_2" data-name="Livello 2">
       <g id="Livello_10" data-name="Livello 10">
@@ -345,10 +345,10 @@ export const HydroVisionIcon = () => (
   </svg>
 );
 
-export const PyroVisionIcon = () => (
+export const PyroVisionIcon = ({ color = "#ef7938" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314.09 314.09">
     <defs>
-      <style>{".cls-1-pyro{fill:#ef7938;}.cls-2-pyro{fill:none;}"}</style>
+      <style>{`.cls-1-pyro{fill:${color};}.cls-2-pyro{fill:none;}`}</style>
     </defs>
     <g id="Livello_2" data-name="Livello 2">
       <g id="Livello_10" data-name="Livello 10">
@@ -362,6 +362,48 @@ export const PyroVisionIcon = () => (
         />
         <rect className="cls-2-pyro" width="314.09" height="314.09" />
       </g>
+    </g>
+  </svg>
+);
+
+export const AllElementVisionIcon = ({ color = "#495366" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.0"
+    width="48.000000pt"
+    height="44.000000pt"
+    viewBox="0 0 48.000000 44.000000"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <defs>
+      <style>{`.cls-1-all-elements{fill:${color};}.cls-2-all-elements{fill:none;}`}</style>
+    </defs>
+    <g
+      transform="translate(0.000000,44.000000) scale(0.100000,-0.100000)"
+      fill="#000000"
+      stroke="none"
+    >
+      <path d="M40 416 c-24 -9 -36 -20 -38 -36 -6 -40 17 -99 56 -142 l36 -40 8 27 c5 21 0 36 -23 68 -42 58 -36 81 20 85 25 2 55 1 69 -3 l25 -6 -26 -27 c-14 -15 -31 -40 -36 -55 -18 -47 -13 -133 10 -182 22 -47 70 -95 95 -95 26 0 92 77 100 115 3 20 4 38 1 41 -11 11 -39 -13 -61 -52 -29 -51 -54 -51 -83 1 -12 22 -23 49 -23 60 1 18 1 19 11 3 24 -42 169 -2 222 62 34 40 57 93 57 131 0 23 -6 32 -27 40 -34 13 -118 16 -157 6 -27 -8 -27 -9 -10 -22 11 -8 42 -15 69 -15 77 -1 85 -10 56 -65 -29 -55 -56 -74 -58 -42 -3 40 -56 101 -112 130 -60 30 -121 34 -181 13z m242 -143 c11 -25 18 -47 15 -49 -9 -10 -77 -16 -101 -10 -32 8 -33 29 -2 83 18 31 21 44 12 54 -6 7 4 2 23 -11 19 -13 42 -43 53 -67z" />
+      <path d="M204 275 c-4 -9 0 -23 9 -32 21 -21 49 -9 45 19 -4 28 -45 38 -54 13z" />
+    </g>
+  </svg>
+);
+
+export const CloseModalCharacterPick = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.0"
+    width="24.000000pt"
+    height="28.000000pt"
+    viewBox="0 0 24.000000 28.000000"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <g
+      transform="translate(0.000000,28.000000) scale(0.100000,-0.100000)"
+      fill="#495366"
+      stroke="none"
+    >
+      <path d="M7 273 c-15 -14 -5 -42 28 -87 l36 -46 -36 -46 c-36 -48 -44 -77 -23 -90 7 -5 29 11 55 42 42 47 45 48 58 30 28 -37 65 -76 73 -76 5 0 16 6 26 13 16 11 15 15 -15 47 -17 19 -38 45 -46 58 -17 25 -12 36 47 102 29 32 30 35 14 47 -26 19 -29 18 -75 -36 l-42 -49 -39 49 c-38 48 -48 55 -61 42z" />
     </g>
   </svg>
 );

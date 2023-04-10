@@ -78,3 +78,14 @@ export declare interface ModalFeatures{
     onClose: () => void
     title: string
 }
+
+export declare interface CharacterDraftDesignProps{
+    ischaractermodalactive?: 'true' | 'false' | string
+    isselectedeleemnt? : 'true' | 'false' | string
+}
+
+export declare interface CharacterDraftProps{
+    statusCharacterModal: boolean
+    onCloseCharacterModal?: () => void
+    onOpenCharacterModal?: () => void
+}
