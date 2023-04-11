@@ -59,6 +59,7 @@ model Boss {
   picture        String
   picture_choose String
   picture_flash  String
+  is_visible     Boolean @default(true)
   Draft          Draft[]
 }
 

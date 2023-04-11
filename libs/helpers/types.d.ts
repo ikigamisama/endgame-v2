@@ -12,7 +12,6 @@ export type VideoPropsSettings = {
     webm: string;
     height?: string;
 };
-  
 
 export declare interface UserFeatureAction {
     type: USER_FEATURE;
@@ -103,13 +102,38 @@ export declare interface CharacterDraftProps{
     onOpenCharacterModal?: () => void
 }
 
-
 export declare interface ProfileChanges{
+    id?: string,
     name: string
     role: string
     avatar: string 
     password?: string
     confirm_password?: string
+}
+
+export declare interface BossInfoProps{
+    id?: string,
+    boss_name: string,
+    picture: string,
+    picture_choose: string,
+    picture_flash: string
+    is_visible: boolean
+}
+
+
+export declare interface CharacterInfoProps{
+    id?: string,
+    character_name: string
+    display_name: string
+    rarity: string
+    vision: string
+    draft_picture: string
+    pick_picture: string
+    flash_picture: string
+    ban_picture: string
+    ban_audio:   string
+    pick_audio:  string
+    is_visible: boolean
 }
 
 export declare interface VideoProerties {

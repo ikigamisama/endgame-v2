@@ -20,6 +20,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 const Account: React.FC = () => {
   const { handleSubmit, control, watch } = useForm<ProfileChanges>({
     defaultValues: {
+      id: "",
       name: "",
       role: "",
       avatar: "",

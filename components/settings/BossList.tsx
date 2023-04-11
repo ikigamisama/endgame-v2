@@ -1,5 +1,101 @@
+import { BosstAvatarWrapperMini } from "@/src/styles/Settings";
+import { Box, Center, Grid, GridItem, Image } from "@chakra-ui/react";
+
 const BossList: React.FC = () => {
-  return <div>Boss List</div>;
+  return (
+    <Box w="100%">
+      <Grid templateColumns="repeat(4, 1fr)" gap={8}>
+        <GridItem>
+          <Center>
+            <BosstAvatarWrapperMini>
+              <Image
+                src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
+                alt="avatar"
+                width="100%"
+              />
+            </BosstAvatarWrapperMini>
+          </Center>
+        </GridItem>
+        <GridItem>
+          <Center>
+            <BosstAvatarWrapperMini>
+              <Image
+                src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
+                alt="avatar"
+                width="100%"
+              />
+            </BosstAvatarWrapperMini>
+          </Center>
+        </GridItem>
+        <GridItem>
+          <Center>
+            <BosstAvatarWrapperMini>
+              <Image
+                src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
+                alt="avatar"
+                width="100%"
+              />
+            </BosstAvatarWrapperMini>
+          </Center>
+        </GridItem>
+        <GridItem>
+          <Center>
+            <BosstAvatarWrapperMini>
+              <Image
+                src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
+                alt="avatar"
+                width="100%"
+              />
+            </BosstAvatarWrapperMini>
+          </Center>
+        </GridItem>
+        <GridItem>
+          <Center>
+            <BosstAvatarWrapperMini>
+              <Image
+                src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
+                alt="avatar"
+                width="100%"
+              />
+            </BosstAvatarWrapperMini>
+          </Center>
+        </GridItem>
+        <GridItem>
+          <Center>
+            <BosstAvatarWrapperMini>
+              <Image
+                src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
+                alt="avatar"
+                width="100%"
+              />
+            </BosstAvatarWrapperMini>
+          </Center>
+        </GridItem>
+        <GridItem>
+          <Center>
+            <BosstAvatarWrapperMini>
+              <Image
+                src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
+                alt="avatar"
+                width="100%"
+              />
+            </BosstAvatarWrapperMini>
+          </Center>
+        </GridItem>
+        <GridItem>
+          <Center>
+            <BosstAvatarWrapperMini>
+              <Image
+                src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
+                alt="avatar"
+                width="100%"
+              />
+            </BosstAvatarWrapperMini>
+          </Center>
+        </GridItem>
+      </Grid>
+    </Box>
+  );
 };
 
 export default BossList;

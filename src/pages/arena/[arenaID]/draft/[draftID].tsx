@@ -324,7 +324,13 @@ const Drafting: NextPage = () => {
                       src={isStartDraft === true ? WarpImgGIF : WarpImgPNG}
                     />
 
-                    <Box position="relative" zIndex="50"></Box>
+                    <Box position="relative" zIndex="50">
+                      <Image
+                        src="https://endgame.otakuhobbitoysph.com/cdn/characters/flash/Keqing.png"
+                        alt="placements-flash"
+                        width="100%"
+                      />
+                    </Box>
                   </Box>
                 </DraftBossCard>
               </VStack>
