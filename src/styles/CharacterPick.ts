@@ -380,6 +380,11 @@ export const CharacterTextFieldSearch = styled(Input)`
     &:hover{
         border: 2px solid #ecdeb5;
     }
+
+    &::placeholder{
+        color: #ecdeb5;
+        opacity: 0.5;
+    }
 `
 
 
@@ -390,6 +395,10 @@ export const CharacterSearchButton = styled(Button)`
     padding: 22px 50px;
     background-color: #ecdeb5;
     border-radius: 33px;
+
+    &:hover{
+        background-color: #ecdeb5;
+    }
 `
 
 //#495366

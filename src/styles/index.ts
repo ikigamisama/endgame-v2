@@ -1,9 +1,12 @@
+import { VideoProerties } from '@/libs/helpers/types'
 import { Box, PopoverCloseButton, PopoverHeader, Text } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 
-export const BackgroundEGWrapper = styled.div`
+
+
+export const BackgroundEGWrapper = styled.div<VideoProerties> `
    width: 100%;
-   height: 100vh;
+   height: ${(props) => (props.videoheight)};
    position: absolute;
    top: 0;
    left: 0;

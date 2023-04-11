@@ -1,17 +1,40 @@
 import BackgroundVid from "@/components/BackgroundVid";
+import Account from "@/components/settings/Account";
+import AccountList from "@/components/settings/AccountList";
+import Boss from "@/components/settings/Boss";
+import BossList from "@/components/settings/BossList";
+import CharacterList from "@/components/settings/CharacterList";
+import Characters from "@/components/settings/Characters";
+import { BackIcon } from "@/libs/includes/icons";
 import { useUserData } from "@/libs/providers/UserContext";
-import { CenterBox } from "@/src/styles";
+import { ButtonPopUpNav, CenterBox } from "@/src/styles";
 import {
   AreaCardWrapper,
   ArenaCard,
   ArenaPaddingWrap,
   ArenaTitleText,
 } from "@/src/styles/Arena";
-import { Box, Container } from "@chakra-ui/react";
+import { SettingsTabs } from "@/src/styles/Settings";
+import {
+  Box,
+  Container,
+  Flex,
+  Tab,
+  TabIndicator,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Settings() {
   const { state } = useUserData();
+  const router = useRouter();
+
+  const [tabIndex, setTabIndex] = useState<number>(0);
 
   return (
     <>
@@ -25,20 +48,79 @@ export default function Settings() {
       <BackgroundVid
         mp4={state.settings.video_bg.mp4}
         webm={state.settings.video_bg.webm}
+        height="102%"
       />
 
-      <Box position="relative" h="calc(100vh - 90px)" w="100%">
-        <CenterBox>
-          <Container maxW="container.xl" minW="1200px">
-            <ArenaCard>
-              <AreaCardWrapper widthgap="95%">
-                <ArenaPaddingWrap>
-                  <ArenaTitleText>Settings</ArenaTitleText>
-                </ArenaPaddingWrap>
-              </AreaCardWrapper>
-            </ArenaCard>
-          </Container>
-        </CenterBox>
+      <Box as="nav" w="100%">
+        <Flex
+          px={10}
+          py={5}
+          w="100%"
+          justifyContent="flex-start"
+          direction="row"
+          gap={4}
+        >
+          <Box>
+            <ButtonPopUpNav onClick={() => router.push("/arena/123")}>
+              <BackIcon />
+            </ButtonPopUpNav>
+          </Box>
+        </Flex>
+      </Box>
+
+      <Box position="relative" w="100%">
+        <Container maxW="container.xl" minW="1200px">
+          <ArenaCard>
+            <AreaCardWrapper widthgap="95%">
+              <ArenaPaddingWrap>
+                <ArenaTitleText>Settings</ArenaTitleText>
+
+                <Tabs
+                  onChange={(index) => setTabIndex(index)}
+                  isFitted
+                  variant="unstyled"
+                >
+                  <TabList>
+                    <SettingsTabs>Account</SettingsTabs>
+                    <SettingsTabs>Boss</SettingsTabs>
+                    <SettingsTabs>Characters</SettingsTabs>
+                  </TabList>
+                  <TabIndicator height="3px" bg="#ecdeb5" borderRadius="1px" />
+                  <TabPanels>
+                    <TabPanel>
+                      <Box py={4}>
+                        <Account />
+                      </Box>
+                    </TabPanel>
+                    <TabPanel>
+                      <Box py={4}>
+                        <Boss />
+                      </Box>
+                    </TabPanel>
+                    <TabPanel>
+                      <Box py={4}>
+                        <Characters />
+                      </Box>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
+              </ArenaPaddingWrap>
+            </AreaCardWrapper>
+          </ArenaCard>
+
+          <ArenaCard>
+            <AreaCardWrapper widthgap="95%">
+              <ArenaPaddingWrap>
+                <ArenaTitleText>List</ArenaTitleText>
+                <Box py={4}>
+                  {tabIndex === 0 && <AccountList />}
+                  {tabIndex === 1 && <BossList />}
+                  {tabIndex === 2 && <CharacterList />}
+                </Box>
+              </ArenaPaddingWrap>
+            </AreaCardWrapper>
+          </ArenaCard>
+        </Container>
       </Box>
     </>
   );

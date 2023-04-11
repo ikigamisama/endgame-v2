@@ -40,7 +40,6 @@ model Characters {
   id             String           @id @default(cuid())
   name           String
   display_name   String?
-  description    String
   rarity         String
   vision         String
   weapon         String

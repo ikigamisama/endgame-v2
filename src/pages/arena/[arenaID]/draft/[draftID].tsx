@@ -5,7 +5,7 @@ import DraftFooter from "@/components/DraftFooter";
 import DraftHeader from "@/components/DraftHeader";
 import { ModalBoss } from "@/libs/helpers/types";
 import { vision } from "@/libs/includes/color";
-import { WarpImg } from "@/libs/includes/image";
+import { WarpImgPNG, WarpImgGIF } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
 import { ModalCharacterPickBlur } from "@/src/styles/CharacterPick";
 import {
@@ -90,9 +90,11 @@ const ModalBoss = ({
 
 const Drafting: NextPage = () => {
   const { state } = useUserData();
+
   const [applyCharacterModal, setApplyCharacterModal] =
     useState<boolean>(false);
-  const [applyBossModal, setApplyBossModal] = useState<boolean>(true);
+  const [applyBossModal, setApplyBossModal] = useState<boolean>(false);
+  const [isStartDraft, setIsStartDraft] = useState<boolean>(false);
 
   const onToggleCharacterPickModal = () => {
     setApplyCharacterModal(!applyCharacterModal);
@@ -318,7 +320,9 @@ const Drafting: NextPage = () => {
 
                 <DraftBossCard>
                   <Box position="relative" zIndex="25" w="100%" h="100%">
-                    <DraftBossCardBGImg src={WarpImg} />
+                    <DraftBossCardBGImg
+                      src={isStartDraft === true ? WarpImgGIF : WarpImgPNG}
+                    />
 
                     <Box position="relative" zIndex="50"></Box>
                   </Box>

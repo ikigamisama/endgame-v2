@@ -90,6 +90,8 @@ const Arena: NextPage = () => {
 
   const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
     console.log(data);
+
+    router.push("/arena/123/draft/123");
   };
 
   return (

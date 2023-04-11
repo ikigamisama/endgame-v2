@@ -10,6 +10,7 @@ export type UserSettingsProp = {
 export type VideoPropsSettings = {
     mp4: string;
     webm: string;
+    height?: string;
 };
   
 
@@ -100,4 +101,17 @@ export declare interface CharacterDraftProps{
     statusCharacterModal: boolean
     onCloseCharacterModal?: () => void
     onOpenCharacterModal?: () => void
+}
+
+
+export declare interface ProfileChanges{
+    name: string
+    role: string
+    avatar: string 
+    password?: string
+    confirm_password?: string
+}
+
+export declare interface VideoProerties {
+    videoheight: string;
 }
