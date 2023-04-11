@@ -23,6 +23,7 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import useSound from "use-sound";
 
 const Characters: React.FC = () => {
   const { handleSubmit, control, watch } = useForm<CharacterInfoProps>({
@@ -45,6 +46,14 @@ const Characters: React.FC = () => {
   const onSubmitCharacters: SubmitHandler<CharacterInfoProps> = (data) => {
     console.log(data);
   };
+
+  const [playPick] = useSound(
+    "https://endgame.otakuhobbitoysph.com/cdn/voice/keqing_p.wav"
+  );
+
+  const [playBan] = useSound(
+    "https://endgame.otakuhobbitoysph.com/cdn/voice/keqing_b.wav"
+  );
 
   return (
     <Box as="section" py={4}>
@@ -181,21 +190,54 @@ const Characters: React.FC = () => {
         </SimpleGrid>
 
         <SimpleGrid columns={2} spacing={8} mb={8}>
-          <Flex>
+          <Flex direction="column">
             <ButtonPlayCharacters
               drafttype="pick"
               leftIcon={<PlaySpeakerIcon />}
+              onClick={() => playPick()}
             >
               Play Pick Character Sound
             </ButtonPlayCharacters>
+            <FormControl mt="25px">
+              <FormLabelText>Pick Sound Source</FormLabelText>
+              <Controller
+                render={({ field: { onChange, value, name } }) => (
+                  <FormTextBox
+                    type="text"
+                    onChange={onChange}
+                    value={value}
+                    name={name}
+                  />
+                )}
+                name="pick_audio"
+                control={control}
+              />
+            </FormControl>
           </Flex>
-          <Flex>
+          <Flex direction="column">
             <ButtonPlayCharacters
               drafttype="Ban"
               leftIcon={<PlaySpeakerIcon />}
+              onClick={() => playBan()}
             >
               Play Ban Character Sound
             </ButtonPlayCharacters>
+
+            <FormControl mt="25px">
+              <FormLabelText>Ban Sound Source</FormLabelText>
+              <Controller
+                render={({ field: { onChange, value, name } }) => (
+                  <FormTextBox
+                    type="text"
+                    onChange={onChange}
+                    value={value}
+                    name={name}
+                  />
+                )}
+                name="ban_audio"
+                control={control}
+              />
+            </FormControl>
           </Flex>
         </SimpleGrid>
 

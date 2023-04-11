@@ -82,6 +82,7 @@ export const ButtonPlayCharacters = styled(Button)<CharacterDraftDesignProps>`
     padding: 28px 0;
 
     &:hover{
+        background-color: ${(props) => (props.drafttype === 'pick' ? '#61b162' : '#95292d')};
         ${(props) => (props.drafttype === 'pick' ? 'box-shadow: 0px 0px 18px 8px rgba(103, 228, 100, 1);' : 'box-shadow: 0px 0px 18px 8px rgba(203, 53, 53, 1);')}
     }
 `
