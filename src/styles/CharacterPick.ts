@@ -104,7 +104,7 @@ export const CharacterListWrapper = styled(Box)`
     overflow-y: auto;
 
     &::-webkit-scrollbar {
-        width: 6px;
+        width: 5px;
     }
     &::-webkit-scrollbar-track {
         width: 10px;

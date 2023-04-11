@@ -3,11 +3,15 @@ import CharacterDraft from "@/components/CharacterDraft";
 import DraftCountdown from "@/components/DraftCountdown";
 import DraftFooter from "@/components/DraftFooter";
 import DraftHeader from "@/components/DraftHeader";
+import { ModalBoss } from "@/libs/helpers/types";
 import { vision } from "@/libs/includes/color";
 import { WarpImg } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
 import { ModalCharacterPickBlur } from "@/src/styles/CharacterPick";
 import {
+  BossChooseText,
+  BossChooseWrapper,
+  BossModalButtons,
   DraftBossCard,
   DraftBossCardBGImg,
   DraftCharacterContainer,
@@ -17,21 +21,90 @@ import {
   DraftPickBanner,
   DraftPickBannerWrapper,
 } from "@/src/styles/Draft";
-import { Box, Container, Flex, Image, VStack } from "@chakra-ui/react";
+import { EndgameModalContent, EndgameModalWrapper } from "@/src/styles/Modal";
+import {
+  Box,
+  Center,
+  Container,
+  Flex,
+  Image,
+  Img,
+  Modal,
+  ModalBody,
+  ModalOverlay,
+  SimpleGrid,
+  VStack,
+} from "@chakra-ui/react";
 
 import { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 
+const ModalBoss = ({
+  isOpen,
+  onClose,
+  onAccept,
+  onDecline,
+  boss,
+  timer,
+}: ModalBoss) => {
+  return (
+    <Modal
+      onClose={onClose}
+      size="3xl"
+      isOpen={isOpen}
+      motionPreset="slideInBottom"
+      isCentered
+    >
+      <ModalOverlay />
+
+      <EndgameModalContent>
+        <EndgameModalWrapper>
+          <ModalBody p={10}>
+            <Center>
+              <BossChooseWrapper>
+                <Img
+                  src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
+                  width="100%"
+                />
+              </BossChooseWrapper>
+            </Center>
+            <BossChooseText fontSize="2.5rem" mb={8}>
+              {boss} is selected randomly. Reroll ?
+            </BossChooseText>
+
+            <SimpleGrid columns={2} spacing={8} mb={8}>
+              <BossModalButtons onClick={onAccept}>Accept</BossModalButtons>
+              <BossModalButtons onClick={onDecline}>Decline</BossModalButtons>
+            </SimpleGrid>
+
+            <BossChooseText fontSize="1.25rem">
+              Automatically declient after {timer} seconds
+            </BossChooseText>
+          </ModalBody>
+        </EndgameModalWrapper>
+      </EndgameModalContent>
+    </Modal>
+  );
+};
+
 const Drafting: NextPage = () => {
   const { state } = useUserData();
   const [applyCharacterModal, setApplyCharacterModal] =
     useState<boolean>(false);
+  const [applyBossModal, setApplyBossModal] = useState<boolean>(true);
 
   const onToggleCharacterPickModal = () => {
     setApplyCharacterModal(!applyCharacterModal);
   };
 
+  const onToggleBossRevealModal = () => {
+    setApplyBossModal(!applyBossModal);
+  };
+
+  const onAcceptRerollBoss = () => {};
+
+  const onDeclineRerollBoss = () => {};
   return (
     <>
       <Head>
@@ -44,6 +117,15 @@ const Drafting: NextPage = () => {
       <CharacterDraft
         statusCharacterModal={applyCharacterModal}
         onCloseCharacterModal={onToggleCharacterPickModal}
+      />
+
+      <ModalBoss
+        isOpen={applyBossModal}
+        onClose={onToggleBossRevealModal}
+        onAccept={onAcceptRerollBoss}
+        onDecline={onDeclineRerollBoss}
+        boss={"AeonBlight"}
+        timer={10}
       />
 
       <ModalCharacterPickBlur

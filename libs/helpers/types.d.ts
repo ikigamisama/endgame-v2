@@ -78,6 +78,14 @@ export declare interface ModalFeatures{
     onClose: () => void
     title: string
 }
+export declare interface ModalBoss{
+    isOpen: boolean
+    onClose: () => void
+    onAccept: () => void
+    onDecline: () => void
+    boss: string
+    timer: number
+}
 
 export declare interface CharacterDraftDesignProps{
     ischaractermodalactive?: 'true' | 'false' | string

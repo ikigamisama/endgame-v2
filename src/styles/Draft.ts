@@ -1,5 +1,5 @@
 import { DraftPositionProps } from '@/libs/helpers/types'
-import { Box, Image, Text } from '@chakra-ui/react'
+import { Box, Button, Image, Text } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 
 export const BossDraftContainer = styled(Box)`
@@ -302,4 +302,30 @@ export const DraftBossCardBGImg = styled(Image)`
     top:0;
     left: 0;
     z-index: 30;
+`
+
+export const BossChooseWrapper = styled(Box)`
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    background-color: #ecdeb5;
+    margin-bottom: 25px;
+    overflow: hidden;
+    border: 5px solid  #ecdeb5;
+`
+
+export const BossChooseText = styled(Text)`
+    font-family: 'GenshinFont',sans-serif;
+    line-height: 1.2;
+    text-align: center;
+`
+
+export const BossModalButtons = styled(Button)`
+    font-family: 'GenshinFont',sans-serif;
+    line-height: 1.2;
+    color: #495366;
+    background-color: #ecdeb5;
+    border-radius: 33px;
+    font-size: 1.5rem;
+    padding: 28px 50px;
 `
