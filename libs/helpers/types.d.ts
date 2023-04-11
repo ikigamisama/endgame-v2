@@ -82,6 +82,10 @@ export declare interface ModalFeatures{
 export declare interface CharacterDraftDesignProps{
     ischaractermodalactive?: 'true' | 'false' | string
     isselectedeleemnt? : 'true' | 'false' | string
+    rarity?: '4' | '5' | string,
+    colorpickedcharacter?: string
+    drafttype?: 'pick' | 'ban' | string
+    currentdraft? : 'true' | 'false' | string
 }
 
 export declare interface CharacterDraftProps{
