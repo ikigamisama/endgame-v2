@@ -1,12 +1,20 @@
 import { ProfileChanges } from "@/libs/helpers/types";
 import { avatarList } from "@/libs/includes/avatars";
-import { SettingsProfileAvatarWrapper } from "@/src/styles/Settings";
+import { api } from "@/libs/providers/api";
+import { generatePassword } from "@/libs/providers/password";
+import { useSettingsStore } from "@/libs/store/settings";
+import { ToastText } from "@/src/styles";
+import {
+  GeneratePasswordButton,
+  SettingsProfileAvatarWrapper,
+} from "@/src/styles/Settings";
 import {
   FormLabelText,
   FormSelect,
   FormSubmitButton,
   FormTextBox,
 } from "@/src/styles/login";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
   Box,
   Center,
@@ -14,27 +22,76 @@ import {
   FormControl,
   Image,
   SimpleGrid,
+  useToast,
 } from "@chakra-ui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { shallow } from "zustand/shallow";
 
 const Account: React.FC = () => {
-  const { handleSubmit, control, watch } = useForm<ProfileChanges>({
-    defaultValues: {
-      id: "",
-      name: "",
-      role: "",
-      avatar: "",
-      password: "",
-      confirm_password: "",
+  const toast = useToast();
+  const queryclient = useQueryClient();
+  const [isGeneratePassword, applyGeneratePassword] = useSettingsStore(
+    (state) => [state.isGeneratePassword, state.applyGeneratePassword],
+    shallow
+  );
+
+  const { handleSubmit, control, watch, setValue, reset } =
+    useForm<ProfileChanges>({
+      defaultValues: {
+        id: "",
+        username: "",
+        role: "",
+        avatar: "",
+        password: "",
+        confirm_password: "",
+      },
+    });
+
+  const sendAddAccount = useMutation({
+    mutationFn: async (newAccount: ProfileChanges) => {
+      const submitResponse = await api.post("/account/addAccount", newAccount);
+      return submitResponse.data;
+    },
+    onSuccess: (data) => {
+      toast({
+        position: "top-right",
+        render: () => (
+          <Box
+            bgColor="#1E223F"
+            p={4}
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            gap={4}
+          >
+            <CheckCircleIcon boxSize={5} />
+            <ToastText>{data.message}</ToastText>
+          </Box>
+        ),
+        duration: 3000,
+        isClosable: true,
+      });
+      if (data.success) {
+        applyGeneratePassword(false);
+        reset({
+          id: "",
+          username: "",
+          role: "",
+          avatar: "",
+          password: "",
+        });
+        queryclient.invalidateQueries(["userList"]);
+      }
     },
   });
 
   const onSubmitProfile: SubmitHandler<ProfileChanges> = (data) => {
-    console.log(data);
+    sendAddAccount.mutate(data);
   };
 
-  const watchAvatar = watch("avatar"),
-    watchRole = watch("role");
+  const watchAvatar: any = watch("avatar"),
+    watchRole: any = watch("role");
 
   return (
     <Box as="section" py={4}>
@@ -50,9 +107,10 @@ const Account: React.FC = () => {
                     onChange={onChange}
                     value={value}
                     name={name}
+                    required={true}
                   />
                 )}
-                name="name"
+                name="username"
                 control={control}
               />
             </FormControl>
@@ -65,6 +123,7 @@ const Account: React.FC = () => {
                     onChange={onChange}
                     value={value}
                     name={name}
+                    required={true}
                   >
                     <option value="GM">GM</option>
                     <option value="Drafter">Drafter</option>
@@ -74,40 +133,28 @@ const Account: React.FC = () => {
                 control={control}
               />
             </FormControl>
-            {watchRole === "GM" && (
-              <>
-                <FormControl mb="25px">
-                  <FormLabelText>Password</FormLabelText>
-                  <Controller
-                    render={({ field: { onChange, value, name } }) => (
-                      <FormTextBox
-                        type="password"
-                        onChange={onChange}
-                        value={value}
-                        name={name}
-                      />
-                    )}
-                    name="password"
-                    control={control}
-                  />
-                </FormControl>
-                <FormControl mb="25px">
-                  <FormLabelText>Confirm Password</FormLabelText>
-                  <Controller
-                    render={({ field: { onChange, value, name } }) => (
-                      <FormTextBox
-                        type="password"
-                        onChange={onChange}
-                        value={value}
-                        name={name}
-                      />
-                    )}
-                    name="confirm_password"
-                    control={control}
-                  />
-                </FormControl>
-              </>
-            )}
+            <FormControl mb="25px">
+              <FormLabelText>Avatar</FormLabelText>
+              <Controller
+                render={({ field: { onChange, value, name } }) => (
+                  <FormSelect
+                    placeContent="Select Avatar"
+                    onChange={onChange}
+                    value={value}
+                    name={name}
+                    required={true}
+                  >
+                    {avatarList.map((data, d) => (
+                      <option key={d} value={data.img}>
+                        {data.name}
+                      </option>
+                    ))}
+                  </FormSelect>
+                )}
+                name="avatar"
+                control={control}
+              />
+            </FormControl>
           </Flex>
           <Flex flex={1} direction="column">
             <Center>
@@ -123,30 +170,41 @@ const Account: React.FC = () => {
                 />
               </SettingsProfileAvatarWrapper>
             </Center>
+          </Flex>
+        </SimpleGrid>
+        {watchRole === "GM" && (
+          <>
+            <GeneratePasswordButton
+              onClick={() => {
+                const genPass = generatePassword();
+                setValue("password", genPass);
+                applyGeneratePassword(true);
+              }}
+            >
+              Generate Password
+            </GeneratePasswordButton>
             <FormControl mb="25px">
-              <FormLabelText>Avatar</FormLabelText>
+              <FormLabelText>Password</FormLabelText>
               <Controller
                 render={({ field: { onChange, value, name } }) => (
-                  <FormSelect
-                    placeContent="Select Avatar"
+                  <FormTextBox
+                    type={isGeneratePassword === true ? "text" : "password"}
                     onChange={onChange}
                     value={value}
                     name={name}
-                  >
-                    {avatarList.map((data, d) => (
-                      <option key={d} value={data.img}>
-                        {data.name}
-                      </option>
-                    ))}
-                  </FormSelect>
+                    required={true}
+                  />
                 )}
-                name="avatar"
+                name="password"
                 control={control}
               />
             </FormControl>
-          </Flex>
-        </SimpleGrid>
-        <FormSubmitButton type="submit">Create Account</FormSubmitButton>
+          </>
+        )}
+
+        <FormSubmitButton type="submit" disabled={sendAddAccount.isLoading}>
+          Create Account
+        </FormSubmitButton>
       </form>
     </Box>
   );

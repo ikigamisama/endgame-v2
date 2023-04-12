@@ -103,3 +103,18 @@ export const CharacerListSettingWrapper = styled(Box)`
         background-color: #ecdeb5;
     }
 `
+
+
+export const GeneratePasswordButton = styled(Button)`
+    font-family: 'GenshinFont',sans-serif;
+    font-size: 20px;
+    width: 100%;
+    padding: 28px 0;
+    background-color: #0D47A1;
+    margin-bottom: 25px;
+
+    &:hover{
+        background-color: #0D47A1;
+        box-shadow: 0px 0px 18px 8px #0D47A1;
+    }
+`

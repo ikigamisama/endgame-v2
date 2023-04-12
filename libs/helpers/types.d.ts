@@ -1,7 +1,7 @@
 export type UserDataProp = {
     email: string;
     role: string;
-  };
+};
   
 export type UserSettingsProp = {
     video_bg: VideoPropsSettings;
@@ -104,7 +104,7 @@ export declare interface CharacterDraftProps{
 
 export declare interface ProfileChanges{
     id?: string,
-    name: string
+    username: string
     role: string
     avatar: string 
     password?: string
@@ -112,10 +112,10 @@ export declare interface ProfileChanges{
 }
 
 export declare interface BossInfoProps{
-    id?: string,
-    boss_name: string,
-    picture: string,
-    picture_choose: string,
+    id?: string
+    boss_name: string
+    picture: string
+    picture_choose: string
     picture_flash: string
     is_visible: boolean
 }
@@ -138,4 +138,18 @@ export declare interface CharacterInfoProps{
 
 export declare interface VideoProerties {
     videoheight: string;
+}
+
+
+export type SettingState = {
+   isGeneratePassword: boolean;
+   userList: ProfileChanges[],
+   searchUser: string
+}
+
+export type SettingActions = {
+    applyGeneratePassword: (isGonnaGeneratePassword: boolean) => void 
+    setUserList: (users: ProfileChanges[]) => void
+    setSearchUser: (search: string) => void
+    searchUserList: (name: string) => vold
 }

@@ -86,7 +86,7 @@ const Arena: NextPage = () => {
 
   const group = getRootProps();
   const toastCopyLink = useToast();
-  const watchCheckboxBoss = watch("is_manual_select_boss");
+  const watchCheckboxBoss: any = watch("is_manual_select_boss");
 
   const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
     console.log(data);

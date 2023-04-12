@@ -1,6 +1,8 @@
 /// <reference types="next" />
 /// <reference types="next/types/global" />
 
+
+declare module 'bcryptjs'
 declare module '*.png' {
     const content: StaticImageData;
     export default content;

@@ -2,7 +2,7 @@ import { CharacterInfoProps } from "@/libs/helpers/types";
 import { PlaySpeakerIcon } from "@/libs/includes/icons";
 import { WarpImgGIF } from "@/libs/includes/image";
 import { ArenaCheckbox } from "@/src/styles/Arena";
-import { DraftBossCard, DraftBossCardBGImg } from "@/src/styles/Draft";
+import { DraftBossCardBGImg } from "@/src/styles/Draft";
 import {
   BossCard,
   ButtonPlayCharacters,
