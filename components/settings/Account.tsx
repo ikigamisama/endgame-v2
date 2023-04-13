@@ -3,7 +3,7 @@ import { avatarList } from "@/libs/includes/avatars";
 import { api } from "@/libs/providers/api";
 import { generatePassword } from "@/libs/providers/password";
 import { useSettingsStore } from "@/libs/store/settings";
-import { ToastText } from "@/src/styles";
+import { ToastBox, ToastText } from "@/src/styles";
 import {
   GeneratePasswordButton,
   SettingsProfileAvatarWrapper,
@@ -25,16 +25,23 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { shallow } from "zustand/shallow";
 
 const Account: React.FC = () => {
   const toast = useToast();
   const queryclient = useQueryClient();
-  const [isGeneratePassword, applyGeneratePassword] = useSettingsStore(
-    (state) => [state.isGeneratePassword, state.applyGeneratePassword],
-    shallow
-  );
+  const [isGeneratePassword, applyGeneratePassword, userInfo, setUserInfo] =
+    useSettingsStore(
+      (state) => [
+        state.isGeneratePassword,
+        state.applyGeneratePassword,
+        state.userInfo,
+        state.setUserInfo,
+      ],
+      shallow
+    );
 
   const { handleSubmit, control, watch, setValue, reset } =
     useForm<ProfileChanges>({
@@ -48,17 +55,29 @@ const Account: React.FC = () => {
       },
     });
 
+  useEffect(() => {
+    setValue("id", userInfo.id);
+    setValue("username", userInfo.username);
+    setValue("role", userInfo.role);
+    setValue("avatar", userInfo.avatar);
+  }, [userInfo]);
+
   const sendAddAccount = useMutation({
     mutationFn: async (newAccount: ProfileChanges) => {
-      const submitResponse = await api.post("/account/addAccount", newAccount);
+      let submitResponse;
+      if (userInfo.id !== "") {
+        submitResponse = await api.put("/account/edit", newAccount);
+      } else {
+        submitResponse = await api.post("/account/addAccount", newAccount);
+      }
+
       return submitResponse.data;
     },
     onSuccess: (data) => {
       toast({
         position: "top-right",
         render: () => (
-          <Box
-            bgColor="#1E223F"
+          <ToastBox
             p={4}
             display="flex"
             flexDirection="row"
@@ -66,8 +85,8 @@ const Account: React.FC = () => {
             gap={4}
           >
             <CheckCircleIcon boxSize={5} />
-            <ToastText>{data.message}</ToastText>
-          </Box>
+            <ToastText> {data.message}</ToastText>
+          </ToastBox>
         ),
         duration: 3000,
         isClosable: true,
@@ -82,6 +101,7 @@ const Account: React.FC = () => {
           password: "",
         });
         queryclient.invalidateQueries(["userList"]);
+        setUserInfo({ id: "", username: "", role: "", avatar: "" });
       }
     },
   });
@@ -203,8 +223,20 @@ const Account: React.FC = () => {
         )}
 
         <FormSubmitButton type="submit" disabled={sendAddAccount.isLoading}>
-          Create Account
+          {userInfo.id !== "" ? "Edit" : "Create"} Account
         </FormSubmitButton>
+
+        {userInfo.id !== "" && (
+          <FormSubmitButton
+            type="button"
+            mt={8}
+            onClick={() => {
+              setUserInfo({ id: "", username: "", role: "", avatar: "" });
+            }}
+          >
+            Reset Forms
+          </FormSubmitButton>
+        )}
       </form>
     </Box>
   );

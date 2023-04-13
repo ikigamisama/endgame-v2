@@ -67,3 +67,8 @@ export const ToastText = styled(Text)`
     color: white;
     line-height: 1;
 `
+
+export const ToastBox = styled(Box)`
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 6px, rgba(0, 0, 0, 0.5) 0px 3px 6px;
+    background-color: #1E223F;
+`

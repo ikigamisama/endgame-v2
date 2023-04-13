@@ -64,7 +64,7 @@ const Characters: React.FC = () => {
               <ArenaCheckbox
                 size="lg"
                 onChange={onChange}
-                checked={value}
+                isChecked={value}
                 name={name}
               >
                 Show This Character

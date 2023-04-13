@@ -4,10 +4,13 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http",
+        protocol: "https",
         hostname: "**",
       },
     ],
+  },
+  env: {
+    PRODUCTION_TYPE: process.env.PRODUCTION_TYPE,
   },
 };
 

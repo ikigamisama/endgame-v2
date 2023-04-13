@@ -54,7 +54,7 @@ model Characters {
 
 model Boss {
   id             String  @id @default(cuid())
-  name           String
+  name           String  @unique
   picture        String
   picture_choose String
   picture_flash  String

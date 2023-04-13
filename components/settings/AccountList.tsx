@@ -27,14 +27,21 @@ import {
 import { useQuery } from "@tanstack/react-query";
 
 const AccountList: React.FC = () => {
-  const [userList, searchUser, setUserList, setSearchUser, searchUserList] =
-    useSettingsStore((state) => [
-      state.userList,
-      state.searchUser,
-      state.setUserList,
-      state.setSearchUser,
-      state.searchUserList,
-    ]);
+  const [
+    userList,
+    searchUser,
+    setUserList,
+    setSearchUser,
+    searchUserList,
+    setUserInfo,
+  ] = useSettingsStore((state) => [
+    state.userList,
+    state.searchUser,
+    state.setUserList,
+    state.setSearchUser,
+    state.searchUserList,
+    state.setUserInfo,
+  ]);
   const userListQuery = useQuery({
     queryFn: async () => {
       const listResponse = await api.get("/account/list");
@@ -115,6 +122,9 @@ const AccountList: React.FC = () => {
                     <TableFeaetureButton
                       aria-label="edit-info"
                       icon={<EditIcon />}
+                      onClick={() => {
+                        setUserInfo(u);
+                      }}
                     />
                   </Td>
                 </Tr>

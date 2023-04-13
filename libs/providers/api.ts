@@ -1,6 +1,13 @@
 import axios from "axios";
 
-export const BASE_URL = "http://localhost:3000/api";
+let BASE_URL = '';
+if(process.env.PRODUCTION_TYPE == 'staging'){
+   BASE_URL = "http://localhost:3000/api";
+}
+else{
+  BASE_URL = "http://endgame-v2.vercel.app/api";
+}
+
 
 export const api = axios.create({
   baseURL: BASE_URL,

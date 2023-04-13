@@ -113,13 +113,12 @@ export declare interface ProfileChanges{
 
 export declare interface BossInfoProps{
     id?: string
-    boss_name: string
+    name: string
     picture: string
     picture_choose: string
     picture_flash: string
-    is_visible: boolean
+    is_visible:  any
 }
-
 
 export declare interface CharacterInfoProps{
     id?: string,
@@ -136,6 +135,7 @@ export declare interface CharacterInfoProps{
     is_visible: boolean
 }
 
+
 export declare interface VideoProerties {
     videoheight: string;
 }
@@ -143,13 +143,21 @@ export declare interface VideoProerties {
 
 export type SettingState = {
    isGeneratePassword: boolean;
-   userList: ProfileChanges[],
+   userList: ProfileChanges[]
+   bossList: BossInfoProps[]
+   characterList: CharacterInfoProps[]
    searchUser: string
+   userInfo:  ProfileChanges
+   bossInfo:  BossInfoProps
 }
 
 export type SettingActions = {
     applyGeneratePassword: (isGonnaGeneratePassword: boolean) => void 
     setUserList: (users: ProfileChanges[]) => void
+    setUserInfo: (boss: ProfileChanges) => void
     setSearchUser: (search: string) => void
     searchUserList: (name: string) => vold
+    setBossList: (bosses: BossInfoProps[]) => void
+    setBossInfo: (boss: BossInfoProps) => void
+    setCharacterList: (bosses: CharacterInfoProps[]) => void
 }
