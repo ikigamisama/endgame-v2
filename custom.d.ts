@@ -3,6 +3,7 @@
 
 
 declare module 'bcryptjs'
+declare module 'howler'
 declare module '*.png' {
     const content: StaticImageData;
     export default content;

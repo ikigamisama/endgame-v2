@@ -1,4 +1,16 @@
+import { CharacterInfoProps } from "@/libs/helpers/types";
 import { vision } from "@/libs/includes/color";
+import {
+  AnemoVisionIcon,
+  CryoVisionIcon,
+  DendroVisionIcon,
+  ElectroVisionIcon,
+  GeoVisionIcon,
+  HydroVisionIcon,
+  PyroVisionIcon,
+} from "@/libs/includes/icons";
+import { api } from "@/libs/providers/api";
+import { useSettingsStore } from "@/libs/store/settings";
 import {
   CharacterPickCard,
   CharacterPickCardImg,
@@ -9,40 +21,112 @@ import {
   CharacterTextFieldSearch,
 } from "@/src/styles/CharacterPick";
 import { CharacerListSettingWrapper } from "@/src/styles/Settings";
-import { Box, Grid, GridItem, HStack, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Grid,
+  GridItem,
+  HStack,
+  Image,
+  Spinner,
+} from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 
 const CharacterList: React.FC = () => {
+  const [
+    characterList,
+    setCharacterList,
+    setCharacterInfo,
+    searchCharacter,
+    setSearchCharacter,
+    searchCharacterList,
+  ] = useSettingsStore((state) => [
+    state.characterList,
+    state.setCharacterList,
+    state.setCharacterInfo,
+    state.searchCharacter,
+    state.setSearchCharacter,
+    state.searchCharacterList,
+  ]);
+
+  const characterListQuery = useQuery({
+    queryKey: ["characterList"],
+    queryFn: async () => {
+      const listResponse = await api.get("/characters/list");
+      return listResponse.data.list;
+    },
+    onSuccess: (data) => {
+      setCharacterList(data);
+    },
+  });
+
+  const onSetEditCharacter = (boss: CharacterInfoProps) => {
+    setCharacterInfo(boss);
+  };
+
   return (
     <Box w="100%">
       <HStack mb={4} gap={4}>
-        <CharacterTextFieldSearch type="text" placeholder="Search Characters" />
-        <CharacterSearchButton>Search</CharacterSearchButton>
+        <CharacterTextFieldSearch
+          type="text"
+          placeholder="Search Characters"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchCharacter(e.target.value);
+          }}
+        />
+        <CharacterSearchButton
+          onClick={() => {
+            if (searchCharacter == "") {
+              setCharacterList(characterListQuery.data);
+            } else {
+              searchCharacterList(searchCharacter);
+            }
+          }}
+        >
+          Search
+        </CharacterSearchButton>
       </HStack>
 
-      <CharacerListSettingWrapper>
-        <Grid templateColumns="repeat(8, 1fr)" gap={4} p={2}>
-          {Array(72)
-            .fill(0)
-            .map((_, index) => (
+      {characterListQuery.isLoading ? (
+        <Center height="300px">
+          <Spinner
+            thickness="15px"
+            speed="0.5s"
+            emptyColor="#ECDEB5"
+            color="#1E223F"
+            width="150px"
+            height="150px"
+          />
+        </Center>
+      ) : (
+        <CharacerListSettingWrapper>
+          <Grid templateColumns="repeat(8, 1fr)" gap={4} p={2}>
+            {characterList.map((char, index) => (
               <GridItem key={index}>
-                <CharacterPickCard>
-                  <CharacterPickCardImg rarity="4">
-                    <Image
-                      src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Albedo.png"
-                      alt="albedo-character"
-                    />
+                <CharacterPickCard onClick={() => onSetEditCharacter(char)}>
+                  <CharacterPickCardImg rarity={char.rarity}>
+                    <Image src={char.draft_picture} alt="albedo-character" />
                     <CharacterPickCardVision>
-                      {vision["geo"].logoSrc}
+                      {char.vision === "anemo" && <AnemoVisionIcon />}
+                      {char.vision === "cryo" && <CryoVisionIcon />}
+                      {char.vision === "dendro" && <DendroVisionIcon />}
+                      {char.vision === "electro" && <ElectroVisionIcon />}
+                      {char.vision === "geo" && <GeoVisionIcon />}
+                      {char.vision === "hydro" && <HydroVisionIcon />}
+                      {char.vision === "pyro" && <PyroVisionIcon />}
                     </CharacterPickCardVision>
                   </CharacterPickCardImg>
                   <CharacterPickCardInfo>
-                    <CharacterPickCardInfoText>Ayaka</CharacterPickCardInfoText>
+                    <CharacterPickCardInfoText>
+                      {char.display_name}
+                    </CharacterPickCardInfoText>
                   </CharacterPickCardInfo>
                 </CharacterPickCard>
               </GridItem>
             ))}
-        </Grid>
-      </CharacerListSettingWrapper>
+          </Grid>
+        </CharacerListSettingWrapper>
+      )}
     </Box>
   );
 };

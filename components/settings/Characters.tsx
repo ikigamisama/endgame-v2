@@ -1,6 +1,9 @@
 import { CharacterInfoProps } from "@/libs/helpers/types";
 import { PlaySpeakerIcon } from "@/libs/includes/icons";
 import { WarpImgGIF } from "@/libs/includes/image";
+import { api } from "@/libs/providers/api";
+import { useSettingsStore } from "@/libs/store/settings";
+import { ToastBox, ToastText } from "@/src/styles";
 import { ArenaCheckbox } from "@/src/styles/Arena";
 import { DraftBossCardBGImg } from "@/src/styles/Draft";
 import {
@@ -14,6 +17,7 @@ import {
   FormSubmitButton,
   FormTextBox,
 } from "@/src/styles/login";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
   Box,
   Center,
@@ -21,39 +25,138 @@ import {
   FormControl,
   Image,
   SimpleGrid,
+  useToast,
 } from "@chakra-ui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import useSound from "use-sound";
+import { Howl } from "howler";
+import { useEffect } from "react";
 
 const Characters: React.FC = () => {
-  const { handleSubmit, control, watch } = useForm<CharacterInfoProps>({
-    defaultValues: {
-      id: "",
-      character_name: "",
-      display_name: "",
-      rarity: "",
-      vision: "",
-      draft_picture: "",
-      pick_picture: "",
-      flash_picture: "",
-      ban_picture: "",
-      ban_audio: "",
-      pick_audio: "",
-      is_visible: true,
+  const toast = useToast();
+  const queryclient = useQueryClient();
+  const { handleSubmit, control, watch, setValue, reset } =
+    useForm<CharacterInfoProps>({
+      defaultValues: {
+        id: "",
+        name: "",
+        display_name: "",
+        rarity: "",
+        vision: "",
+        weapon: "",
+        draft_picture: "",
+        pick_picture: "",
+        flash_picture: "",
+        ban_picture: "",
+        ban_audio: "",
+        pick_audio: "",
+        is_visible: true,
+      },
+    });
+
+  const [characterInfo, setCharacterInfo] = useSettingsStore((state) => [
+    state.characterInfo,
+    state.setCharacterInfo,
+  ]);
+
+  const sendAddCharacter = useMutation({
+    mutationFn: async (newAccount: CharacterInfoProps) => {
+      let submitResponse;
+      if (characterInfo.id !== "") {
+        submitResponse = await api.put("/characters/edit", newAccount);
+      } else {
+        submitResponse = await api.post("/characters/add", newAccount);
+      }
+
+      return submitResponse.data;
+    },
+    onSuccess: (data) => {
+      toast({
+        position: "top-right",
+        render: () => (
+          <ToastBox
+            p={4}
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            gap={4}
+          >
+            <CheckCircleIcon boxSize={5} />
+            <ToastText> {data.message}</ToastText>
+          </ToastBox>
+        ),
+        duration: 3000,
+        isClosable: true,
+      });
+      if (data.success) {
+        reset({
+          id: "",
+          name: "",
+          display_name: "",
+          rarity: "",
+          vision: "",
+          weapon: "",
+          draft_picture: "",
+          pick_picture: "",
+          flash_picture: "",
+          ban_picture: "",
+          ban_audio: "",
+          pick_audio: "",
+          is_visible: true,
+        });
+        queryclient.invalidateQueries(["characterList"]);
+        setCharacterInfo({
+          id: "",
+          name: "",
+          display_name: "",
+          rarity: "",
+          vision: "",
+          weapon: "",
+          draft_picture: "",
+          pick_picture: "",
+          flash_picture: "",
+          ban_picture: "",
+          ban_audio: "",
+          pick_audio: "",
+          is_visible: true,
+        });
+      }
     },
   });
+  useEffect(() => {
+    setValue("id", characterInfo.id);
+    setValue("name", characterInfo.name);
+    setValue("display_name", characterInfo.display_name);
+    setValue("rarity", characterInfo.rarity);
+    setValue("vision", characterInfo.vision);
+    setValue("weapon", characterInfo.weapon);
+    setValue("draft_picture", characterInfo.draft_picture);
+    setValue("pick_picture", characterInfo.pick_picture);
+    setValue("flash_picture", characterInfo.flash_picture);
+    setValue("ban_picture", characterInfo.ban_picture);
+    setValue("ban_audio", characterInfo.ban_audio);
+    setValue("pick_audio", characterInfo.pick_audio);
+    setValue("is_visible", characterInfo.is_visible);
+  }, [characterInfo]);
 
   const onSubmitCharacters: SubmitHandler<CharacterInfoProps> = (data) => {
-    console.log(data);
+    sendAddCharacter.mutate(data);
   };
 
-  const [playPick] = useSound(
-    "https://endgame.otakuhobbitoysph.com/cdn/voice/keqing_p.wav"
-  );
+  const watchDraftPicture = watch("draft_picture"),
+    watchPickPicture = watch("pick_picture"),
+    watchFlashPicture = watch("flash_picture"),
+    watchBanPicture = watch("ban_picture"),
+    watchBanSound = watch("ban_audio"),
+    watchPickSound = watch("pick_audio");
 
-  const [playBan] = useSound(
-    "https://endgame.otakuhobbitoysph.com/cdn/voice/keqing_b.wav"
-  );
+  let playPick = new Howl({
+    src: [watchPickSound],
+  });
+
+  let playBan = new Howl({
+    src: [watchBanSound],
+  });
 
   return (
     <Box as="section" py={4}>
@@ -64,8 +167,9 @@ const Characters: React.FC = () => {
               <ArenaCheckbox
                 size="lg"
                 onChange={onChange}
-                isChecked={value}
+                value={value}
                 name={name}
+                defaultChecked={value}
               >
                 Show This Character
               </ArenaCheckbox>
@@ -78,11 +182,9 @@ const Characters: React.FC = () => {
           <Flex flex={1} direction="column">
             <TableTextFont>Character Draft Picture</TableTextFont>
             <Center py={8}>
-              <Image
-                src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Keqing.png"
-                alt="avatar"
-                width="50%"
-              />
+              {watchDraftPicture !== "" && (
+                <Image src={watchDraftPicture} alt="avatar" width="50%" />
+              )}
             </Center>
 
             <FormControl mb="25px">
@@ -94,6 +196,7 @@ const Characters: React.FC = () => {
                     onChange={onChange}
                     value={value}
                     name={name}
+                    required
                   />
                 )}
                 name="draft_picture"
@@ -104,20 +207,22 @@ const Characters: React.FC = () => {
 
           <Flex flex={1} direction="column">
             <TableTextFont>Flash Picture</TableTextFont>
-            <Center py={4}>
-              <BossCard>
-                <Box position="relative" zIndex="25" w="100%" h="100%">
-                  <DraftBossCardBGImg src={WarpImgGIF} />
+            <Center py={watchFlashPicture !== "" ? 4 : 8}>
+              {watchFlashPicture !== "" && (
+                <BossCard>
+                  <Box position="relative" zIndex="25" w="100%" h="100%">
+                    <DraftBossCardBGImg src={WarpImgGIF} />
 
-                  <Box position="relative" zIndex="50">
-                    <Image
-                      src="https://endgame.otakuhobbitoysph.com/cdn/characters/flash/Keqing.png"
-                      alt="placements-flash"
-                      width="100%"
-                    />
+                    <Box position="relative" zIndex="50">
+                      <Image
+                        src={watchFlashPicture}
+                        alt="placements-flash"
+                        width="100%"
+                      />
+                    </Box>
                   </Box>
-                </Box>
-              </BossCard>
+                </BossCard>
+              )}
             </Center>
 
             <FormControl mb="25px">
@@ -129,6 +234,7 @@ const Characters: React.FC = () => {
                     onChange={onChange}
                     value={value}
                     name={name}
+                    required
                   />
                 )}
                 name="flash_picture"
@@ -139,11 +245,9 @@ const Characters: React.FC = () => {
           <Flex flex={1} direction="column">
             <TableTextFont>Character Pick Picture</TableTextFont>
             <Center py={8}>
-              <Image
-                src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Keqing.png"
-                alt="avatar"
-                width="100%"
-              />
+              {watchPickPicture !== "" && (
+                <Image src={watchPickPicture} alt="avatar" width="100%" />
+              )}
             </Center>
 
             <FormControl mb="25px">
@@ -155,6 +259,7 @@ const Characters: React.FC = () => {
                     onChange={onChange}
                     value={value}
                     name={name}
+                    required
                   />
                 )}
                 name="pick_picture"
@@ -164,12 +269,10 @@ const Characters: React.FC = () => {
           </Flex>
           <Flex flex={1} direction="column">
             <TableTextFont>Character Ban Picture</TableTextFont>
-            <Center py={4}>
-              <Image
-                src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Keqing.png"
-                alt="avatar"
-                width="48%"
-              />
+            <Center py={watchBanPicture !== "" ? 4 : 8}>
+              {watchBanPicture !== "" && (
+                <Image src={watchBanPicture} alt="avatar" width="48%" />
+              )}
             </Center>
             <FormControl mb="25px">
               <FormLabelText>Image Source</FormLabelText>
@@ -180,6 +283,7 @@ const Characters: React.FC = () => {
                     onChange={onChange}
                     value={value}
                     name={name}
+                    required
                   />
                 )}
                 name="ban_picture"
@@ -191,13 +295,16 @@ const Characters: React.FC = () => {
 
         <SimpleGrid columns={2} spacing={8} mb={8}>
           <Flex direction="column">
-            <ButtonPlayCharacters
-              drafttype="pick"
-              leftIcon={<PlaySpeakerIcon />}
-              onClick={() => playPick()}
-            >
-              Play Pick Character Sound
-            </ButtonPlayCharacters>
+            {watchPickSound !== "" && (
+              <ButtonPlayCharacters
+                drafttype="pick"
+                leftIcon={<PlaySpeakerIcon />}
+                onClick={() => playPick.play()}
+              >
+                Play Pick Character Sound
+              </ButtonPlayCharacters>
+            )}
+
             <FormControl mt="25px">
               <FormLabelText>Pick Sound Source</FormLabelText>
               <Controller
@@ -207,6 +314,7 @@ const Characters: React.FC = () => {
                     onChange={onChange}
                     value={value}
                     name={name}
+                    required
                   />
                 )}
                 name="pick_audio"
@@ -215,13 +323,15 @@ const Characters: React.FC = () => {
             </FormControl>
           </Flex>
           <Flex direction="column">
-            <ButtonPlayCharacters
-              drafttype="Ban"
-              leftIcon={<PlaySpeakerIcon />}
-              onClick={() => playBan()}
-            >
-              Play Ban Character Sound
-            </ButtonPlayCharacters>
+            {watchBanSound !== "" && (
+              <ButtonPlayCharacters
+                drafttype="Ban"
+                leftIcon={<PlaySpeakerIcon />}
+                onClick={() => playBan.play()}
+              >
+                Play Ban Character Sound
+              </ButtonPlayCharacters>
+            )}
 
             <FormControl mt="25px">
               <FormLabelText>Ban Sound Source</FormLabelText>
@@ -232,6 +342,7 @@ const Characters: React.FC = () => {
                     onChange={onChange}
                     value={value}
                     name={name}
+                    required
                   />
                 )}
                 name="ban_audio"
@@ -251,9 +362,10 @@ const Characters: React.FC = () => {
                   onChange={onChange}
                   value={value}
                   name={name}
+                  required
                 />
               )}
-              name="character_name"
+              name="name"
               control={control}
             />
           </FormControl>
@@ -266,6 +378,7 @@ const Characters: React.FC = () => {
                   onChange={onChange}
                   value={value}
                   name={name}
+                  required
                 />
               )}
               name="display_name"
@@ -274,7 +387,7 @@ const Characters: React.FC = () => {
           </FormControl>
         </SimpleGrid>
 
-        <SimpleGrid columns={2} spacing={8} mb={8}>
+        <SimpleGrid columns={2} spacing={8} mb={2}>
           <FormControl mb="25px">
             <FormLabelText>Rarity</FormLabelText>
             <Controller
@@ -284,9 +397,10 @@ const Characters: React.FC = () => {
                   onChange={onChange}
                   value={value}
                   name={name}
+                  required
                 >
-                  <option value="GM">4 Star</option>
-                  <option value="Drafter">5 Star</option>
+                  <option value="4">4 Star</option>
+                  <option value="5">5 Star</option>
                 </FormSelect>
               )}
               name="rarity"
@@ -298,10 +412,11 @@ const Characters: React.FC = () => {
             <Controller
               render={({ field: { onChange, value, name } }) => (
                 <FormSelect
-                  placeholder="Select VIsion"
+                  placeholder="Select Vision"
                   onChange={onChange}
                   value={value}
                   name={name}
+                  required
                 >
                   <option value="anemo">Anemo</option>
                   <option value="cryo">Cryo</option>
@@ -318,7 +433,58 @@ const Characters: React.FC = () => {
           </FormControl>
         </SimpleGrid>
 
-        <FormSubmitButton type="submit">Create Character</FormSubmitButton>
+        <FormControl mb="25px">
+          <FormLabelText>Weapon</FormLabelText>
+          <Controller
+            render={({ field: { onChange, value, name } }) => (
+              <FormSelect
+                placeholder="Select Weapon"
+                onChange={onChange}
+                value={value}
+                name={name}
+                required
+              >
+                <option value="Catalyst">Catalyst</option>
+                <option value="Claymore">Claymore</option>
+                <option value="Sword">Sword</option>
+                <option value="Spear">Spear</option>
+                <option value="Archer">Archer</option>
+              </FormSelect>
+            )}
+            name="weapon"
+            control={control}
+          />
+        </FormControl>
+
+        <FormSubmitButton type="submit">
+          {characterInfo.id !== "" ? "Edit" : "Create"} Character
+        </FormSubmitButton>
+
+        {characterInfo.id !== "" && (
+          <FormSubmitButton
+            type="button"
+            mt={8}
+            onClick={() => {
+              setCharacterInfo({
+                id: "",
+                name: "",
+                display_name: "",
+                rarity: "",
+                vision: "",
+                weapon: "",
+                draft_picture: "",
+                pick_picture: "",
+                flash_picture: "",
+                ban_picture: "",
+                ban_audio: "",
+                pick_audio: "",
+                is_visible: true,
+              });
+            }}
+          >
+            Reset Forms
+          </FormSubmitButton>
+        )}
       </form>
     </Box>
   );

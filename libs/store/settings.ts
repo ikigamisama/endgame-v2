@@ -7,6 +7,7 @@ const initialState: SettingState = {
     bossList: [],
     characterList: [],
     searchUser: '',
+    searchCharacter: '',
     userInfo: {
         id: "",
         username: "",
@@ -19,7 +20,22 @@ const initialState: SettingState = {
         picture: '' ,
         picture_choose: '' ,
         picture_flash: '' ,
-        is_visible:  '' ,
+        is_visible: true ,
+    },
+    characterInfo: {
+        id:'',
+        name: '',
+        display_name: '',
+        rarity: '',
+        vision: '',
+        weapon: '',
+        draft_picture: '',
+        pick_picture: '',
+        flash_picture: '',
+        ban_picture: '',
+        ban_audio:   '',
+        pick_audio:  '',
+        is_visible: true,
     }
 
 }
@@ -38,6 +54,9 @@ export const useSettingsStore = create<SettingState & SettingActions>((set, get)
     setSearchUser: (search: string) => {
         set({ searchUser: search });
     },
+    setSearchCharacter: (search: string) => {
+        set({ searchCharacter: search });
+    },
     searchUserList: (name: string) => {
         let fillteredUsers = [];
         fillteredUsers = get().userList.filter(user => {
@@ -51,6 +70,19 @@ export const useSettingsStore = create<SettingState & SettingActions>((set, get)
 
         set({ userList: fillteredUsers });
     },
+    searchCharacterList: (name: string) => {
+        let fillteredCharacters = [];
+        fillteredCharacters = get().characterList.filter(data => {
+            if(name == ''){
+                return true;
+            }
+            else{
+                return data.name.toLowerCase().includes(name.toLowerCase());
+            }
+        })
+
+        set({ characterList: fillteredCharacters });
+    },
     setBossList: (bosses: BossInfoProps[]) => {
         set({ bossList: bosses });
     },
@@ -59,6 +91,9 @@ export const useSettingsStore = create<SettingState & SettingActions>((set, get)
     },
     setCharacterList: (characters: CharacterInfoProps[]) => {
         set({ characterList: characters });
-    }
+    },
+    setCharacterInfo: (character: CharacterInfoProps) => {
+        set({ characterInfo: character });
+    },
 }))
 

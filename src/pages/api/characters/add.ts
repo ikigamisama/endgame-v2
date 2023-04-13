@@ -1,0 +1,47 @@
+
+import type { NextApiRequest, NextApiResponse } from 'next'
+import prisma from '@/prisma/client'
+import { hashPassword } from '@/libs/providers/password'
+
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse
+  ) {
+
+    if(req.method === "POST"){
+        const isExistCharacter = await prisma.characters.count({
+            where: {name: req.body.name}
+        })
+
+        if(isExistCharacter === 0){
+            const result = await prisma.characters.create({
+                data: {
+                    name: req.body.name,
+                    display_name: req.body.display_name,
+                    rarity: req.body.rarity,
+                    vision: req.body.vision,
+                    weapon: req.body.weapon,
+                    draft_picture: req.body.draft_picture,
+                    pick_picture: req.body.pick_picture,
+                    flash_picture: req.body.flash_picture,
+                    ban_picture:  req.body.ban_picture,
+                    ban_audio:   req.body.ban_audio,
+                    pick_audio:  req.body.pick_audio,
+                    is_visible: req.body.is_visible,
+                }
+            })
+            res.status(200).json({ 
+                success: true,
+                message:`Successful Created a Character`,
+                result: result
+            })
+        }
+        else{
+            res.status(200).json({ 
+                success: false,
+                message:"Character Already Exist"
+            })
+        }
+    }   
+}
+  

@@ -117,22 +117,23 @@ export declare interface BossInfoProps{
     picture: string
     picture_choose: string
     picture_flash: string
-    is_visible:  any
+    is_visible: any
 }
 
 export declare interface CharacterInfoProps{
     id?: string,
-    character_name: string
+    name: string
     display_name: string
     rarity: string
-    vision: string
+    vision: any
+    weapon: string
     draft_picture: string
     pick_picture: string
     flash_picture: string
     ban_picture: string
     ban_audio:   string
     pick_audio:  string
-    is_visible: boolean
+    is_visible: any
 }
 
 
@@ -147,8 +148,10 @@ export type SettingState = {
    bossList: BossInfoProps[]
    characterList: CharacterInfoProps[]
    searchUser: string
+   searchCharacter: string
    userInfo:  ProfileChanges
    bossInfo:  BossInfoProps
+   characterInfo:  CharacterInfoProps
 }
 
 export type SettingActions = {
@@ -156,8 +159,11 @@ export type SettingActions = {
     setUserList: (users: ProfileChanges[]) => void
     setUserInfo: (boss: ProfileChanges) => void
     setSearchUser: (search: string) => void
+    setSearchCharacter: (search: string) => void
     searchUserList: (name: string) => vold
+    searchCharacterList: (name: string) => vold
     setBossList: (bosses: BossInfoProps[]) => void
     setBossInfo: (boss: BossInfoProps) => void
-    setCharacterList: (bosses: CharacterInfoProps[]) => void
+    setCharacterList: (characters: CharacterInfoProps[]) => void
+    setCharacterInfo: (character: CharacterInfoProps) => void
 }
