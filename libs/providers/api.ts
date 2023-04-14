@@ -5,7 +5,7 @@ if(process.env.PRODUCTION_TYPE == 'staging'){
    BASE_URL = "http://localhost:3000/api";
 }
 else{
-  BASE_URL = "http://endgame-v2.vercel.app/api";
+  BASE_URL = "https://endgame-v2.vercel.app/api";
 }
 
 
