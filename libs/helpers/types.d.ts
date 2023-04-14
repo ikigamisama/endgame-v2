@@ -26,6 +26,7 @@ export declare interface UserDataPropState {
 export declare interface GMLoginProps {
     gm_name: string | number 
     secret_key: string | number 
+    role: string | ""
     game_type: string | number 
 }
 

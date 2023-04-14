@@ -16,6 +16,6 @@ export function hashPassword(password: string) {
     return bcrypt.hashSync(password, 10);
 }
 
-export function comparePassword(password: string, hash: string) {
+export function comparePassword(password: string, hash: string | null | undefined) {
     return bcrypt.compareSync(password, hash);
 }

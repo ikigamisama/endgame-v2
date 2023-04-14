@@ -56,6 +56,7 @@ import { ArenaDraftProps } from "@/libs/helpers/types";
 import { useRouter } from "next/navigation";
 import BackgroundVid from "@/components/BackgroundVid";
 import { NextPage } from "next";
+import { signOut } from "next-auth/react";
 
 const Arena: NextPage = () => {
   const { state, dispatch } = useUserData();
@@ -191,6 +192,7 @@ const Arena: NextPage = () => {
                     transition: "0.25s all",
                     backgroundColor: "#443C60",
                   }}
+                  onClick={() => signOut()}
                 >
                   <HStack>
                     <LogoutIcon />

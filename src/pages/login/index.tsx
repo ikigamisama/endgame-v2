@@ -15,6 +15,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { GMLoginProps } from "@/libs/helpers/types";
 import BackgroundVid from "@/components/BackgroundVid";
 import { NextPage } from "next";
+import { signIn } from "next-auth/react";
 
 const Login: NextPage = () => {
   const { state } = useUserData();
@@ -22,12 +23,17 @@ const Login: NextPage = () => {
     defaultValues: {
       gm_name: "",
       secret_key: "",
+      role: "GM",
       game_type: "",
     },
   });
 
-  const submitGMLogin: SubmitHandler<GMLoginProps> = (data) => {
-    console.log(data);
+  const submitGMLogin: SubmitHandler<GMLoginProps> = async (data) => {
+    await signIn("credentials", {
+      username: data.gm_name,
+      password: data.secret_key,
+      role: data.role,
+    });
   };
 
   return (
