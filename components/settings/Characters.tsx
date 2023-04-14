@@ -151,11 +151,11 @@ const Characters: React.FC = () => {
     watchPickSound = watch("pick_audio");
 
   let playPick = new Howl({
-    src: [watchPickSound],
+    src: [watchPickSound !== "" ? watchPickSound : "sound.mp3"],
   });
 
   let playBan = new Howl({
-    src: [watchBanSound],
+    src: [watchBanSound !== "" ? watchBanSound : "sound.mp3"],
   });
 
   return (
