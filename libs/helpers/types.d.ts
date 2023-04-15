@@ -32,8 +32,6 @@ type PlayerProps = {
 export declare interface ArenaDraftProps{
     user_gm_id: string
     mode: "1v1" | "2v2" | "3v3" | "4v4" | string,
-    first_player: PlayerProps
-    second_player: PlayerProps
     is_manual_select_boss: boolean | undefined
     boss_id?: string
 }
@@ -60,8 +58,11 @@ export declare interface IconSizeSVGProps{
 export declare interface ModalFeatures{
     isOpen: boolean
     onClose: () => void
-    title: string
+    title: string,
+    onAcceptButton?: () => void
+    onCloseButton?: () => void
 }
+
 export declare interface ModalBoss{
     isOpen: boolean
     onClose: () => void
@@ -160,7 +161,7 @@ export type VideoPropsSettings = {
 };
 
 export type UserDataProp = {
-    id:string;
+    id:string | number;
     username: string;
     role: string;
     avatar?: string
@@ -180,4 +181,43 @@ export type UserFeatureSettingProps = {
     setBackgroundBG : (vidSrc: VideoPropsSettings) => void
     setUserData: (userData: UserDataProp) => void 
     setArenaID: (arena: string) => void
+}
+
+export type ArenaPlayers = {
+    id: string,
+    arena_id:string
+    user_id: string
+    isActive?: boolean
+    joinedDate: string,
+    user: ProfileChanges
+}
+
+export type ArenaPlayersPayloadFeature = {
+    player: string | undefined
+    type: string | 'insert' | 'remove'
+}
+
+export type ArenaPlayersState = {
+    arenaPlayers: ArenaPlayers[]
+    modal: boolean
+    playerInfo: PlayerProps
+    player1: PlayerProps
+    player2: PlayerProps
+    modal_title: string
+    player_function_type: ArenaPlayersPayloadFeature
+}
+
+export type ArenaPlayerFunction = {
+    setArenaPlayersList: (arenaPlayers: ArenaPlayers[]) => void
+    setModal: (modal: boolean) => void
+    setPlayer1: (player: PlayerProps) => void
+    setPlayer2: (player: PlayerProps) => void
+    setPlayerInfo: (player: PlayerProps) => void
+    setModalTitle: (title: string) => void
+    setPlayerFunctionType: (data: ArenaPlayersPayloadFeature) => void
+}
+
+export type ArenaPlayersChooseProps = {
+    id: string | number
+    isChoose: boolean
 }
