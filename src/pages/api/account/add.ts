@@ -35,11 +35,20 @@ export default async function handler(
                 data: payload
             })
 
-            res.status(200).json({ 
-                success: true,
-                message:`Successful Created a ${req.body.role} Account`,
-                result: result
-            })
+            if(result.id){
+                await prisma.settings.create({
+                    data: {
+                        user_settings_id: result?.id,
+                        bg_video_mp4: "Default",
+                        bg_video_webm: "Default"
+                    }
+                })
+                res.status(200).json({ 
+                    success: true,
+                    message:`Successful Created a ${req.body.role} Account`,
+                    result: result
+                })
+            }
         }
         else{
             res.status(200).json({ 

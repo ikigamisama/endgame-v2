@@ -1,0 +1,42 @@
+
+import type { NextApiRequest, NextApiResponse } from 'next'
+import prisma from '@/prisma/client'
+import { getServerSession } from 'next-auth'
+import { authentication } from '@/src/pages/api/auth/[...nextauth]'
+
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse
+  ) {
+
+    const session = await getServerSession(req,res,authentication) 
+
+    if(req.method === "GET"){
+        try{
+            const getSettings = await prisma.settings.findFirst({
+                where: {
+                    user_settings_id: session?.user?.id
+                },
+                select: {
+                    bg_video_mp4: true,
+                    bg_video_webm: true
+                }
+                
+            })  
+            res.status(200).json({ 
+                success: true,
+                settings: {
+                    mp4: getSettings?.bg_video_mp4,
+                    webm: getSettings?.bg_video_mp4
+                },
+            })
+        }
+        catch(err) {
+            res.status(200).json({ 
+                success: false,
+                message: err,
+            })
+        }
+    }   
+}
+  

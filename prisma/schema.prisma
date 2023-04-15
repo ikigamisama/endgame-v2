@@ -12,7 +12,7 @@ datasource db {
 }
 
 model User {
-  id             String           @id @default(cuid())
+  id             String           @id @default(uuid())
   username       String?          @unique
   password       String?
   role           String?
@@ -27,16 +27,17 @@ model User {
 }
 
 model Settings {
-  uid              String @id @default(cuid())
-  user_settings_id String
-  bgVideo          String
+  uid              String @id @default(uuid())
+  user_settings_id String @unique
+  bg_video_mp4     String
+  bg_video_webm    String
   userID           User   @relation(fields: [user_settings_id], references: [id], onDelete: Cascade)
 
   @@index([user_settings_id])
 }
 
 model Characters {
-  id             String           @id @default(cuid())
+  id             String           @id @default(uuid())
   name           String
   display_name   String?
   rarity         String
@@ -53,8 +54,8 @@ model Characters {
 }
 
 model Boss {
-  id             String  @id @default(cuid())
-  name           String  @unique
+  id             String  @id @default(uuid())
+  name           String
   picture        String
   picture_choose String
   picture_flash  String
@@ -63,15 +64,16 @@ model Boss {
 }
 
 model Arena {
-  uid        String  @id @default(cuid())
+  uid        String   @id @default(uuid())
   host_id    String
-  player1_id String
-  player2_id String
-  mode       String
   type       String
-  user       User    @relation(fields: [host_id], references: [id], onDelete: Cascade)
-  player1    User    @relation(fields: [player1_id], references: [id], onDelete: Cascade, name: "player1")
-  player2    User    @relation(fields: [player2_id], references: [id], onDelete: Cascade, name: "player2")
+  player1_id String?
+  player2_id String?
+  mode       String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [host_id], references: [id], onDelete: Cascade)
+  player1    User?    @relation(fields: [player1_id], references: [id], onDelete: Cascade, name: "player1")
+  player2    User?    @relation(fields: [player2_id], references: [id], onDelete: Cascade, name: "player2")
   Draft      Draft[]
 
   @@index([host_id])
@@ -80,7 +82,7 @@ model Arena {
 }
 
 model Draft {
-  uid                  String           @id @default(cuid())
+  uid                  String           @id @default(uuid())
   arenaID              String?
   bossID               String?
   timer                Int              @default(30)
@@ -100,7 +102,7 @@ model Draft {
 }
 
 model CharacterDraft {
-  uid         String     @id @default(cuid())
+  uid         String     @id @default(uuid())
   draftID     String
   characterID String
   status      String

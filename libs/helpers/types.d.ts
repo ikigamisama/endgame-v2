@@ -1,28 +1,8 @@
-export type UserDataProp = {
-    email: string;
-    role: string;
-};
-  
-export type UserSettingsProp = {
-    video_bg: VideoPropsSettings;
-};
-
-export type VideoPropsSettings = {
-    mp4: string;
-    webm: string;
-    height?: string;
-};
-
 export declare interface UserFeatureAction {
     type: USER_FEATURE;
     payload: any;
-}  
-  
-export declare interface UserDataPropState {
-    user: UserDataProp;
-    settings: UserSettingsProp;
-}
-  
+} 
+
 export declare interface GMLoginProps {
     gm_name: string | number 
     secret_key: string | number 
@@ -167,4 +147,33 @@ export type SettingActions = {
     setBossInfo: (boss: BossInfoProps) => void
     setCharacterList: (characters: CharacterInfoProps[]) => void
     setCharacterInfo: (character: CharacterInfoProps) => void
+}
+
+
+export type VideoPropsSettings = {
+    mp4: string;
+    webm: string;
+    height?: string;
+};
+
+export type UserDataProp = {
+    id:string;
+    username: string;
+    role: string;
+};
+  
+export type UserSettingsProp = {
+    video_bg: VideoPropsSettings;
+};
+
+export declare interface UserDataPropState {
+    user: UserDataProp;
+    settings: UserSettingsProp;
+    arena_id: string
+}
+
+export type UserFeatureSettingProps = {
+    setBackgroundBG : (vidSrc: VideoPropsSettings) => void
+    setUserData: (userData: UserDataProp) => void 
+    setArenaID: (arena: string) => void
 }

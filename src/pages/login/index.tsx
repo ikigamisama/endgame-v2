@@ -1,7 +1,7 @@
 import Head from "next/head";
-import { CenterBox } from "@/src/styles";
-import { useUserData } from "@/libs/providers/UserContext";
-import { Box, Center, FormControl, Image } from "@chakra-ui/react";
+import { CenterBox, ToastBox, ToastText } from "@/src/styles";
+import { useUserData, userStore } from "@/libs/providers/UserContext";
+import { Box, Center, FormControl, Image, useToast } from "@chakra-ui/react";
 import {
   FormLabelText,
   FormSelect,
@@ -16,9 +16,15 @@ import { GMLoginProps } from "@/libs/helpers/types";
 import BackgroundVid from "@/components/BackgroundVid";
 import { NextPage } from "next";
 import { signIn } from "next-auth/react";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "@/libs/providers/api";
+import { useRouter } from "next/router";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 
 const Login: NextPage = () => {
   const { state } = useUserData();
+  const router = useRouter();
+  const toast = useToast();
   const { handleSubmit, control } = useForm<GMLoginProps>({
     defaultValues: {
       gm_name: "",
@@ -28,12 +34,52 @@ const Login: NextPage = () => {
     },
   });
 
+  const [setArenaID] = userStore((state) => [state.setArenaID]);
+
+  const authCheck = useMutation({
+    mutationFn: async (data: GMLoginProps) => {
+      let submitResponse = await api.post("/arena/create", data);
+      return submitResponse.data;
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        setArenaID(data.arena.uid);
+        router.push(`/arena/${data.arena.uid}`);
+      }
+    },
+  });
+
   const submitGMLogin: SubmitHandler<GMLoginProps> = async (data) => {
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       username: data.gm_name,
       password: data.secret_key,
       role: data.role,
+      redirect: false,
     });
+
+    if (res?.ok) {
+      authCheck.mutate(data);
+    } else {
+      toast({
+        position: "top-right",
+        render: () => (
+          <ToastBox
+            px={8}
+            py={6}
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            gap={4}
+            borderLeft="10px solid #c93535"
+          >
+            <CheckCircleIcon boxSize={5} />
+            <ToastText>Invalid Credentials</ToastText>
+          </ToastBox>
+        ),
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -68,6 +114,7 @@ const Login: NextPage = () => {
                         onChange={onChange}
                         value={value}
                         name={name}
+                        required
                       />
                     )}
                     name="gm_name"
@@ -84,6 +131,7 @@ const Login: NextPage = () => {
                         onChange={onChange}
                         value={value}
                         name={name}
+                        required
                       />
                     )}
                     name="secret_key"
@@ -101,6 +149,7 @@ const Login: NextPage = () => {
                         onChange={onChange}
                         name={name}
                         value={value}
+                        required
                       >
                         <option value="Casuals">Casuals</option>
                         <option value="Officials">Officials</option>

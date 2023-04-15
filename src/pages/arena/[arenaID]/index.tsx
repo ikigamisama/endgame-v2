@@ -1,5 +1,5 @@
 import RadioListCard from "@/components/RadioListCard";
-import { USER_FEATURE, useUserData } from "@/libs/providers/UserContext";
+import { useUserData } from "@/libs/providers/UserContext";
 import { modeOption } from "@/libs/includes/forms";
 import { LogoutIcon, ProfileIcon } from "@/libs/includes/icons";
 import {
@@ -59,8 +59,9 @@ import { NextPage } from "next";
 import { signOut } from "next-auth/react";
 
 const Arena: NextPage = () => {
-  const { state, dispatch } = useUserData();
+  const { state, setBackgroundVid } = useUserData();
   const router = useRouter();
+
   const { handleSubmit, control, watch, setValue } = useForm<ArenaDraftProps>({
     defaultValues: {
       user_gm_id: "",
@@ -90,8 +91,6 @@ const Arena: NextPage = () => {
   const watchCheckboxBoss: any = watch("is_manual_select_boss");
 
   const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
-    console.log(data);
-
     router.push("/arena/123/draft/123");
   };
 
@@ -108,7 +107,6 @@ const Arena: NextPage = () => {
         mp4={state.settings.video_bg.mp4}
         webm={state.settings.video_bg.webm}
       />
-
       <Box as="nav" w="100%">
         <Flex
           px={10}
@@ -136,20 +134,15 @@ const Arena: NextPage = () => {
                     <FormLabelText>Background Video</FormLabelText>
                     <FormSelect
                       placeContent="random"
-                      value={state.settings.video_bg.mp4
+                      value={state?.settings?.video_bg?.mp4
                         .replace("/video/bg/", "")
                         .replace("_bg.mp4", "")}
-                      onChange={(e) =>
-                        dispatch({
-                          type: USER_FEATURE.UPDATE_SETTINGS,
-                          payload: {
-                            video_bg: {
-                              mp4: "/video/bg/" + e.target.value + "_bg.mp4",
-                              webm: "/video/bg/" + e.target.value + "_bg.webm",
-                            },
-                          },
-                        })
-                      }
+                      onChange={(e) => {
+                        setBackgroundVid({
+                          mp4: "/video/bg/" + e.target.value + "_bg.mp4",
+                          webm: "/video/bg/" + e.target.value + "_bg.webm",
+                        });
+                      }}
                     >
                       <option value="stars">Default</option>
                       <option value="anemo">Anemo</option>
@@ -192,7 +185,7 @@ const Arena: NextPage = () => {
                     transition: "0.25s all",
                     backgroundColor: "#443C60",
                   }}
-                  onClick={() => signOut()}
+                  onClick={() => signOut({ callbackUrl: "/" })}
                 >
                   <HStack>
                     <LogoutIcon />
@@ -204,7 +197,6 @@ const Arena: NextPage = () => {
           </Box>
         </Flex>
       </Box>
-
       <Box position="relative" h="calc(100vh - 90px)" w="100%">
         <CenterBox>
           <Container maxW="container.xl" minW="1200px">

@@ -63,7 +63,7 @@ export const LinkTextMenu = styled(Text)`
 
 export const ToastText = styled(Text)`
     font-family: 'GenshinFont', sans-serif;
-    font-size: 16px;
+    font-size: 22px;
     color: white;
     line-height: 1;
 `

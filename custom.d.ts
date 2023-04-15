@@ -1,9 +1,22 @@
 /// <reference types="next" />
 /// <reference types="next/types/global" />
+import NextAuth from "next-auth";
+
+declare module 'bcryptjs';
+declare module 'howler';
+declare module "next-auth" {
+  interface Session extends NextAuth.DefaultSession {
+    expires: ISODateString;
+    user?: {
+        id: any;
+        name?: string | null;
+        email?: string | null;
+        image?: string | null;
+    };
+  }
+}
 
 
-declare module 'bcryptjs'
-declare module 'howler'
 declare module '*.png' {
     const content: StaticImageData;
     export default content;

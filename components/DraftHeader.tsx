@@ -31,7 +31,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@chakra-ui/react";
-import { USER_FEATURE, useUserData } from "@/libs/providers/UserContext";
+import { useUserData, userStore } from "@/libs/providers/UserContext";
 import { ButtonPopUpNav, FontHeaderPopup } from "@/src/styles";
 import { FormLabelText, FormSelect } from "@/src/styles/login";
 import { SettingsIcon } from "@chakra-ui/icons";
@@ -88,8 +88,9 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   onOpenCharacterModal,
 }) => {
   const router = useRouter();
-  const { state, dispatch } = useUserData();
+  const { state } = useUserData();
 
+  const [setBackgroundBG] = userStore((state) => [state.setBackgroundBG]);
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
 
@@ -269,18 +270,12 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                         value={state.settings.video_bg.mp4
                           .replace("/video/bg/", "")
                           .replace("_bg.mp4", "")}
-                        onChange={(e) =>
-                          dispatch({
-                            type: USER_FEATURE.UPDATE_SETTINGS,
-                            payload: {
-                              video_bg: {
-                                mp4: "/video/bg/" + e.target.value + "_bg.mp4",
-                                webm:
-                                  "/video/bg/" + e.target.value + "_bg.webm",
-                              },
-                            },
-                          })
-                        }
+                        onChange={(e) => {
+                          setBackgroundBG({
+                            mp4: "/video/bg/" + e.target.value + "_bg.mp4",
+                            webm: "/video/bg/" + e.target.value + "_bg.webm",
+                          });
+                        }}
                       >
                         <option value="stars">Default</option>
                         <option value="anemo">Anemo</option>

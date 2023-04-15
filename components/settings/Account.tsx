@@ -68,7 +68,7 @@ const Account: React.FC = () => {
       if (userInfo.id !== "") {
         submitResponse = await api.put("/account/edit", newAccount);
       } else {
-        submitResponse = await api.post("/account/addAccount", newAccount);
+        submitResponse = await api.post("/account/add", newAccount);
       }
 
       return submitResponse.data;

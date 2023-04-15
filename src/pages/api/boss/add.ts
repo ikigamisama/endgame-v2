@@ -27,7 +27,7 @@ export default async function handler(
                 res.status(200).json({ 
                     success: true,
                     message:`Successful Created a Boss`,
-                    result: result
+                    arena: result
                 })
             }
             else{

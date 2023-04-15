@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from '@/prisma/client'
 import { comparePassword } from "@/libs/providers/password";
 
-const authentication: NextAuthOptions = {
+export const authentication: NextAuthOptions = {
     session: {
         strategy: "jwt"
     },
@@ -67,13 +67,16 @@ const authentication: NextAuthOptions = {
           // first time jwt callback is run, user object is available
           if (user) {
             token.id = user.id;
+            token.name = user.name;
             token.role = user.role
           }
           return token
         },
         session: ({ session, token }: any) => {
           if (token) {
-            session.id = token.id;
+            session.user = {}
+            session.user.id = token.id;
+            session.user.name = token.name;
             session.user.role = token.role
           }
     

@@ -4,7 +4,9 @@ export function generatePassword(){
     let pass = '',
         str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
 
-     for (let i = 1; i <= 8; i++) {
+    let generatePassLength = Math.random() * (12 - 8) + 8;
+
+     for (let i = 1; i <= generatePassLength; i++) {
         let char = Math.floor(Math.random() * str.length + 1);
         pass += str.charAt(char)
     }
