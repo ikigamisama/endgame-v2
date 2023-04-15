@@ -24,6 +24,7 @@ model User {
   player1        Arena[]          @relation(name: "player1")
   player2        Arena[]          @relation(name: "player2")
   Settings       Settings[]
+  ArenaPlayer    ArenaPlayer[]
 }
 
 model Settings {
@@ -64,21 +65,35 @@ model Boss {
 }
 
 model Arena {
-  uid        String   @id @default(uuid())
-  host_id    String
-  type       String
-  player1_id String?
-  player2_id String?
-  mode       String?
-  createdAt  DateTime @default(now())
-  user       User     @relation(fields: [host_id], references: [id], onDelete: Cascade)
-  player1    User?    @relation(fields: [player1_id], references: [id], onDelete: Cascade, name: "player1")
-  player2    User?    @relation(fields: [player2_id], references: [id], onDelete: Cascade, name: "player2")
-  Draft      Draft[]
+  uid         String        @id @default(uuid())
+  host_id     String
+  type        String
+  player1_id  String?
+  player2_id  String?
+  mode        String?
+  createdAt   DateTime      @default(now())
+  user        User          @relation(fields: [host_id], references: [id], onDelete: Cascade)
+  player1     User?         @relation(fields: [player1_id], references: [id], onDelete: Cascade, name: "player1")
+  player2     User?         @relation(fields: [player2_id], references: [id], onDelete: Cascade, name: "player2")
+  Draft       Draft[]
+  ArenaPlayer ArenaPlayer[]
 
   @@index([host_id])
   @@index([player1_id])
   @@index([player2_id])
+}
+
+model ArenaPlayer {
+  id         String    @id @default(uuid())
+  arena_id   String
+  user_id    String    @unique
+  isActive   Boolean   @default(true)
+  Arena      Arena?    @relation(fields: [arena_id], references: [uid], onDelete: Cascade)
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  joinedDate DateTime? @default(now())
+
+  @@index([arena_id])
+  @@index([user_id])
 }
 
 model Draft {
@@ -94,7 +109,7 @@ model Draft {
   user                 User?            @relation(fields: [winner_user_id], references: [id], onDelete: Cascade)
   isFinish             Boolean          @default(false)
   CharacterDraft       CharacterDraft[]
-  created_date         DateTime?        @db.Timestamp(6)
+  createdAt            DateTime?        @default(now())
 
   @@index([arenaID])
   @@index([bossID])
@@ -110,6 +125,7 @@ model CharacterDraft {
   character   Characters @relation(fields: [characterID], references: [id], onDelete: Cascade)
   draft       Draft      @relation(fields: [draftID], references: [uid], onDelete: Cascade)
   user        User       @relation(fields: [playerID], references: [id], onDelete: Cascade)
+  createdAt   DateTime?  @default(now())
 
   @@index([characterID])
   @@index([draftID])

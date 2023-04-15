@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { LoginImageLogo } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
-import { CenterBox } from "@/src/styles";
+import { CenterBox, ToastBox, ToastText } from "@/src/styles";
 import {
   AvatarCircle,
   AvatarName,
@@ -16,26 +16,74 @@ import {
   LoginCardWrapper,
 } from "@/src/styles/login";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Box, Center, FormControl, Image } from "@chakra-ui/react";
+import { Box, Center, FormControl, Image, useToast } from "@chakra-ui/react";
 import { avatarList } from "@/libs/includes/avatars";
 import { PlayerLoginProps } from "@/libs/helpers/types";
 import BackgroundVid from "@/components/BackgroundVid";
 import { NextPage } from "next";
+import { signIn } from "next-auth/react";
+import { CheckCircleIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
+import { api } from "@/libs/providers/api";
+import { useMutation } from "@tanstack/react-query";
 
 const ArenaPlayerLogin: NextPage = () => {
   const { state } = useUserData();
+  const router = useRouter();
+  const toast = useToast();
   const { handleSubmit, control, watch } = useForm<PlayerLoginProps>({
     defaultValues: {
       team_name: "",
       avatar: "",
+      role: "Drafter",
+    },
+  });
+  const authCheck = useMutation({
+    mutationFn: async (data: PlayerLoginProps) => {
+      let submitResponse = await api.post("/account/player/login", data);
+      return submitResponse.data;
+    },
+    onSuccess: async (data) => {
+      if (data.success) {
+        toast({
+          position: "top-right",
+          render: () => (
+            <ToastBox
+              px={8}
+              py={6}
+              display="flex"
+              flexDirection="row"
+              alignItems="center"
+              gap={4}
+              borderLeft="10px solid #61b162"
+            >
+              <CheckCircleIcon boxSize={5} />
+              <ToastText>{data.message}</ToastText>
+            </ToastBox>
+          ),
+          duration: 3000,
+          isClosable: true,
+        });
+
+        const res = await signIn("credentials", {
+          username: data.result.username,
+          avatar: data.result.avatar,
+          role: data.result.role,
+          redirect: false,
+        });
+
+        if (res?.ok) {
+          router.replace(`/arena/${router.query?.arenaID}`);
+        }
+      }
     },
   });
 
-  const watchTeamName = watch("team_name"),
-    watchAvatar = watch("avatar");
+  const watchTeamName: any = watch("team_name"),
+    watchAvatar: any = watch("avatar");
 
-  const submitPlayerLogin: SubmitHandler<PlayerLoginProps> = (data) => {
-    console.log(data);
+  const submitPlayerLogin: SubmitHandler<PlayerLoginProps> = async (data) => {
+    authCheck.mutate({ ...data, arenaID: router.query.arenaID });
   };
   return (
     <>
@@ -68,6 +116,7 @@ const ArenaPlayerLogin: NextPage = () => {
                         onChange={onChange}
                         value={value}
                         name={name}
+                        required
                       />
                     )}
                     name="team_name"
@@ -84,6 +133,7 @@ const ArenaPlayerLogin: NextPage = () => {
                         onChange={onChange}
                         value={value}
                         name={name}
+                        required
                       >
                         {avatarList.map((data, d) => (
                           <option key={d} value={data.img}>

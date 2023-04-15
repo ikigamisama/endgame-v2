@@ -11,7 +11,8 @@ declare module "next-auth" {
         id: any;
         name?: string | null;
         email?: string | null;
-        image?: string | null;
+        avatar?: string | null;
+        role?: string | null;
     };
   }
 }

@@ -43,6 +43,7 @@ const Login: NextPage = () => {
     },
     onSuccess: (data) => {
       if (data.success) {
+        console.log(data.arena.uid);
         setArenaID(data.arena.uid);
         router.push(`/arena/${data.arena.uid}`);
       }

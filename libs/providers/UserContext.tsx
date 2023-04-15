@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { createContext, useContext, useEffect } from "react";
-import { video_list } from "@/libs/includes/videos";
 import { useSession } from "next-auth/react";
 import {
   UserDataProp,
@@ -11,17 +10,19 @@ import {
 import { useRouter } from "next/router";
 import { api } from "./api";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { video_list } from "@/libs/includes/videos";
 
 const currentUserState: UserDataPropState = {
   user: {
     id: "",
     username: "",
     role: "",
+    avatar: "",
   },
   settings: {
     video_bg: {
-      mp4: "",
-      webm: "",
+      mp4: video_list["Default"].mp4,
+      webm: video_list["Default"].webm,
     },
   },
   arena_id: "",
@@ -54,15 +55,15 @@ export function useUserData() {
 export const UserProvider = ({ children }: any) => {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [user, settings, arena_id, setBackgroundBG, setArenaID] = userStore(
-    (state) => [
+  const [user, settings, arena_id, setUserData, setBackgroundBG, setArenaID] =
+    userStore((state) => [
       state.user,
       state.settings,
       state.arena_id,
+      state.setUserData,
       state.setBackgroundBG,
       state.setArenaID,
-    ]
-  );
+    ]);
 
   const arenaQuery = useQuery({
     queryKey: ["arenaData"],
@@ -71,7 +72,9 @@ export const UserProvider = ({ children }: any) => {
       return listResponse.data;
     },
     onSuccess: (data) => {
-      setArenaID(data.arena.uid);
+      if (session?.user?.role === "GM") {
+        setArenaID(data.arena.uid);
+      }
     },
   });
 
@@ -92,15 +95,17 @@ export const UserProvider = ({ children }: any) => {
       const listResponse = await api.get("/account/settings/get");
       return listResponse.data;
     },
-    onSuccess: (data) => {},
   });
 
   useEffect(() => {
     const loginRouteList = ["/", "/login", "/login/arena/[arenaID]"];
+
     if (inArray(router.pathname, loginRouteList)) {
       if (status === "authenticated") {
-        if (!arenaQuery.isLoading) {
-          router.push(`/arena/${arena_id}`);
+        if (session?.user?.role === "GM") {
+          if (!arenaQuery.isLoading) {
+            router.push(`/arena/${arena_id}`);
+          }
         }
       }
     } else {
@@ -111,10 +116,13 @@ export const UserProvider = ({ children }: any) => {
   }, [status, router.pathname, arenaQuery]);
 
   useEffect(() => {
-    if (!getSettings.isLoading) {
-      setBackgroundBG(getSettings.data.settings);
+    if (status === "authenticated") {
+      if (!getSettings.isLoading) {
+        setBackgroundBG(getSettings.data.settings);
+        setUserData(getSettings.data.user);
+      }
     }
-  }, [getSettings.data, getSettings.isLoading]);
+  }, [status, getSettings.data, getSettings.isLoading]);
 
   const inArray = (needle: string, haystack: any) => {
     let length = haystack.length;

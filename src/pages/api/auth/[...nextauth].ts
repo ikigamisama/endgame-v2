@@ -13,9 +13,10 @@ export const authentication: NextAuthOptions = {
             type:"credentials",
             credentials: {},
             async authorize(credentials) {
-                const { username, password, role } = credentials as {
+                const { username, password, avatar, role } = credentials as {
                   username: string;
                   password: string;
+                  avatar: string;
                   role: string
                 };
                 let isErr = false,
@@ -33,6 +34,7 @@ export const authentication: NextAuthOptions = {
                             id: userQueryData?.id,
                             name: userQueryData?.username,
                             role: userQueryData?.role,
+                            avatar: userQueryData?.avatar,
                         }
                     }
                     else{
@@ -45,6 +47,7 @@ export const authentication: NextAuthOptions = {
                             id: userQueryData?.id,
                             name: userQueryData?.username,
                             role: userQueryData?.role,
+                            avatar: userQueryData?.avatar,
                         }
                     }
                     else{
@@ -68,7 +71,8 @@ export const authentication: NextAuthOptions = {
           if (user) {
             token.id = user.id;
             token.name = user.name;
-            token.role = user.role
+            token.role = user.role;
+            token.avatar = user.avatar
           }
           return token
         },
@@ -78,6 +82,7 @@ export const authentication: NextAuthOptions = {
             session.user.id = token.id;
             session.user.name = token.name;
             session.user.role = token.role
+            session.user.avatar = token.avatar
           }
     
           return session;

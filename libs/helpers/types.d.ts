@@ -13,7 +13,9 @@ export declare interface GMLoginProps {
 
 export declare interface PlayerLoginProps{
     team_name: string | number 
-    avatar: string 
+    avatar: string
+    role: string
+    arenaID?: any
 }
 
 export declare interface AvatarProps{
@@ -23,7 +25,8 @@ export declare interface AvatarProps{
 
 type PlayerProps = {
     id: string | number
-    name: string
+    name: string,
+    avatar: string
 }
 
 export declare interface ArenaDraftProps{
@@ -160,6 +163,7 @@ export type UserDataProp = {
     id:string;
     username: string;
     role: string;
+    avatar?: string
 };
   
 export type UserSettingsProp = {

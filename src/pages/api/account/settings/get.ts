@@ -13,23 +13,30 @@ export default async function handler(
 
     if(req.method === "GET"){
         try{
-            const getSettings = await prisma.settings.findFirst({
-                where: {
-                    user_settings_id: session?.user?.id
-                },
-                select: {
-                    bg_video_mp4: true,
-                    bg_video_webm: true
-                }
-                
-            })  
-            res.status(200).json({ 
-                success: true,
-                settings: {
-                    mp4: getSettings?.bg_video_mp4,
-                    webm: getSettings?.bg_video_mp4
-                },
-            })
+            if(session){
+                const getSettings = await prisma.settings.findUnique({
+                    where: {
+                        user_settings_id: session?.user?.id
+                    },
+                    select: {
+                        bg_video_mp4: true,
+                        bg_video_webm: true
+                    },
+                })  
+                res.status(200).json({ 
+                    success: true,
+                    settings: {
+                        mp4: getSettings?.bg_video_mp4,
+                        webm: getSettings?.bg_video_mp4
+                    },
+                    user: {
+                        id: session?.user?.id,
+                        name: session?.user?.name,
+                        role: session?.user?.role,
+                        avatar: session?.user?.avatar
+                    }
+                })
+            }
         }
         catch(err) {
             res.status(200).json({ 

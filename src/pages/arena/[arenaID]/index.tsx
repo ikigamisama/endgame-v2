@@ -49,38 +49,53 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
-import { BossImage } from "@/libs/includes/image";
 import { CheckCircleIcon, CopyIcon, SettingsIcon } from "@chakra-ui/icons";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ArenaDraftProps } from "@/libs/helpers/types";
-import { useRouter } from "next/navigation";
-import BackgroundVid from "@/components/BackgroundVid";
+import {
+  ArenaDraftProps,
+  BossInfoProps,
+  UserDataProp,
+} from "@/libs/helpers/types";
+import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { signOut } from "next-auth/react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { api } from "@/libs/providers/api";
+import { useSettingsStore } from "@/libs/store/settings";
+import { useEffect, useState } from "react";
+import BackgroundVid from "@/components/BackgroundVid";
 
 const Arena: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
   const router = useRouter();
-
+  const [bossImg, setBossImg] = useState("");
   const { handleSubmit, control, watch, setValue } = useForm<ArenaDraftProps>({
     defaultValues: {
       user_gm_id: "",
-      mode: "4v4",
+      mode: "3v3",
       first_player: {
         id: "",
         name: "",
+        avatar: "",
       },
       second_player: {
         id: "",
         name: "",
+        avatar: "",
       },
-      is_manual_select_boss: false,
+      is_manual_select_boss: true,
       boss_id: "",
     },
   });
+
+  const [bossList, setBossList] = useSettingsStore((state) => [
+    state.bossList,
+    state.setBossList,
+  ]);
+
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "mode",
-    defaultValue: "4v4",
+    defaultValue: "3v3",
     onChange: (d) => {
       setValue("mode", d);
     },
@@ -88,11 +103,45 @@ const Arena: NextPage = () => {
 
   const group = getRootProps();
   const toastCopyLink = useToast();
-  const watchCheckboxBoss: any = watch("is_manual_select_boss");
+  const watchCheckboxBoss: any = watch("is_manual_select_boss"),
+    watchBossChoose = watch("boss_id");
+
+  const bossListQuery = useQuery({
+    queryKey: ["listBossArena"],
+    queryFn: async () => {
+      const listResponse = await api.get("/boss/list");
+      return listResponse.data.list;
+    },
+    onSuccess: (data: BossInfoProps[]) => {
+      setBossList(data);
+    },
+  });
+
+  const onLogout = useMutation({
+    mutationFn: async (data: UserDataProp) => {
+      let submitResponse = await api.post("/account/player/logout", data);
+      return submitResponse.data;
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        signOut({ callbackUrl: "/" });
+      }
+    },
+  });
 
   const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
     router.push("/arena/123/draft/123");
   };
+
+  useEffect(() => {
+    bossList.filter((b) => {
+      if (watchBossChoose === b.id) {
+        setBossImg(b.picture);
+      }
+    });
+  }, [watchBossChoose]);
+
+  console.log();
 
   return (
     <>
@@ -185,7 +234,13 @@ const Arena: NextPage = () => {
                     transition: "0.25s all",
                     backgroundColor: "#443C60",
                   }}
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={() => {
+                    if (state.user.role === "GM") {
+                      signOut({ callbackUrl: "/login" });
+                    } else {
+                      onLogout.mutate(state.user);
+                    }
+                  }}
                 >
                   <HStack>
                     <LogoutIcon />
@@ -234,14 +289,14 @@ const Arena: NextPage = () => {
                               <FormLabelText>First Pick Team</FormLabelText>
                               <Box position="relative" cursor="pointer">
                                 <AvatarCircle>
-                                  <Image
+                                  {/* <Image
                                     src="https://api.dicebear.com/6.x/adventurer/svg?seed=Baby"
                                     alt="avatar"
                                     width="100%"
-                                  />
+                                  /> */}
                                 </AvatarCircle>
                                 <AvatarNameWrapper>
-                                  <AvatarName>Player 1</AvatarName>
+                                  <AvatarName></AvatarName>
                                 </AvatarNameWrapper>
                               </Box>
                             </FormControl>
@@ -249,14 +304,14 @@ const Arena: NextPage = () => {
                               <FormLabelText>Second Pick Team</FormLabelText>
                               <Box position="relative" cursor="pointer">
                                 <AvatarCircle>
-                                  <Image
+                                  {/* <Image
                                     src="https://api.dicebear.com/6.x/adventurer/svg?seed=Baby"
                                     alt="avatar"
                                     width="100%"
-                                  />
+                                  /> */}
                                 </AvatarCircle>
                                 <AvatarNameWrapper>
-                                  <AvatarName>Player 2</AvatarName>
+                                  <AvatarName></AvatarName>
                                 </AvatarNameWrapper>
                               </Box>
                             </FormControl>
@@ -269,7 +324,9 @@ const Arena: NextPage = () => {
                               leftIcon={<CopyIcon />}
                               onClick={() => {
                                 navigator.clipboard.writeText(
-                                  window.location.href
+                                  window.location.host +
+                                    "/login/arena/" +
+                                    router.query?.arenaID
                                 );
                                 toastCopyLink({
                                   duration: 3000,
@@ -303,6 +360,7 @@ const Arena: NextPage = () => {
                                   onChange={onChange}
                                   checked={value}
                                   name={name}
+                                  defaultChecked={value}
                                 >
                                   Manually Select Boss
                                 </ArenaCheckbox>
@@ -313,7 +371,12 @@ const Arena: NextPage = () => {
                           </FormControl>
 
                           <HStack
-                            hidden={watchCheckboxBoss === false ? true : false}
+                            hidden={
+                              watchCheckboxBoss === false ||
+                              bossListQuery.isLoading === true
+                                ? true
+                                : false
+                            }
                             gap={4}
                             alignItems="center"
                             mb="35px"
@@ -325,12 +388,17 @@ const Arena: NextPage = () => {
                                   field: { onChange, value, name },
                                 }) => (
                                   <FormSelect
-                                    placeContent="random"
+                                    placeholder="Select Boss"
                                     onChange={onChange}
                                     value={value}
                                     name={name}
+                                    required
                                   >
-                                    <option value="random">Random</option>
+                                    {bossList.map((b, i) => (
+                                      <option value={b.id} key={i}>
+                                        {b.name}
+                                      </option>
+                                    ))}
                                   </FormSelect>
                                 )}
                                 name="boss_id"
@@ -339,7 +407,9 @@ const Arena: NextPage = () => {
                             </FormControl>
                             <Box>
                               <ArenaBossCircleWrapper>
-                                <Image src={BossImage} w="100%" />
+                                {bossImg !== "" ? (
+                                  <Image src={bossImg} w="100%" />
+                                ) : null}
                               </ArenaBossCircleWrapper>
                             </Box>
                           </HStack>
@@ -367,7 +437,7 @@ const Arena: NextPage = () => {
                     <ArenaPlayersListScroll heightarea="605px">
                       <ArenaPaddingWrap>
                         <Grid templateColumns="repeat(1, 1fr)" gap={6}>
-                          <GridItem>
+                          {/* <GridItem>
                             <Box position="relative" cursor="pointer">
                               <AvatarCircle>
                                 <Image
@@ -380,7 +450,7 @@ const Arena: NextPage = () => {
                                 <AvatarName>Apple</AvatarName>
                               </AvatarNameWrapper>
                             </Box>
-                          </GridItem>
+                          </GridItem> */}
                         </Grid>
                       </ArenaPaddingWrap>
                     </ArenaPlayersListScroll>

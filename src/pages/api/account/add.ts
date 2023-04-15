@@ -39,8 +39,8 @@ export default async function handler(
                 await prisma.settings.create({
                     data: {
                         user_settings_id: result?.id,
-                        bg_video_mp4: "Default",
-                        bg_video_webm: "Default"
+                        bg_video_mp4: "/video/bg/stars_bg.mp4",
+                        bg_video_webm: "/video/bg/stars_bg.webm"
                     }
                 })
                 res.status(200).json({ 
