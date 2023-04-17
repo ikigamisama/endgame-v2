@@ -23,11 +23,7 @@ export declare interface AvatarProps{
     src: string
 }
 
-type PlayerProps = {
-    id: string | number
-    name: string,
-    avatar: string
-}
+
 
 export declare interface ArenaDraftProps{
     user_gm_id: string
@@ -189,8 +185,8 @@ export type ArenaPlayers = {
     arena_id:string
     user_id: string
     isActive?: boolean
-    joinedDate: string,
-    user: ProfileChanges
+    joinedDate?: string,
+    user?: ProfileChanges
 }
 
 export type ArenaPlayersPayloadFeature = {
@@ -198,12 +194,19 @@ export type ArenaPlayersPayloadFeature = {
     type: string | 'insert' | 'remove'
 }
 
+export type ArenaSetPlayers = {
+    id: any //arena player id 
+    user_id?: string | undefined
+    name: string | undefined
+    avatar: string | undefined
+}
+
 export type ArenaPlayersState = {
     arenaPlayers: ArenaPlayers[]
     modal: boolean
-    playerInfo: PlayerProps
-    player1: PlayerProps
-    player2: PlayerProps
+    playerInfo: ArenaSetPlayers
+    player1: ArenaSetPlayers
+    player2: ArenaSetPlayers
     modal_title: string
     player_function_type: ArenaPlayersPayloadFeature
 }
@@ -211,9 +214,9 @@ export type ArenaPlayersState = {
 export type ArenaPlayerFunction = {
     setArenaPlayersList: (arenaPlayers: ArenaPlayers[]) => void
     setModal: (modal: boolean) => void
-    setPlayer1: (player: PlayerProps) => void
-    setPlayer2: (player: PlayerProps) => void
-    setPlayerInfo: (player: PlayerProps) => void
+    setPlayer1: (player: ArenaSetPlayers) => void
+    setPlayer2: (player: ArenaSetPlayers) => void
+    setPlayerInfo: (player: ArenaSetPlayers) => void
     setModalTitle: (title: string) => void
     setPlayerFunctionType: (data: ArenaPlayersPayloadFeature) => void
     setInstantNewArenaPlayer: (arenaPlayer: ArenaPlayers) => void

@@ -19,6 +19,9 @@ export default async function handler(
                 },
                 data:{
                     isChoose: req.body.isChoose
+                },
+                include: {
+                    user:  true
                 }
             })  
             res.status(200).json({ 

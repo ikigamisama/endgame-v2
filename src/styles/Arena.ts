@@ -12,6 +12,8 @@ export const AvatarCircle = styled(Box)`
     background-color: #ecdeb5;
     z-index: 15;
     box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3)
+
+    ${(props? : any) => (props.isplayerasuser === "true" ? 'background-color: rgb(103, 228, 100);  box-shadow: 0px 0px 16px 4px rgba(103, 228, 100, 1);' : '')};
 `
 
 export const AvatarNameWrapper = styled(Box)`
@@ -27,6 +29,8 @@ export const AvatarNameWrapper = styled(Box)`
     display: flex;
     align-items:center;
     box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3)
+
+
 `
 
 export const AvatarName = styled(Text)`

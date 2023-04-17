@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '@/prisma/client'
 import { getServerSession } from 'next-auth'
 import { authentication } from '@/src/pages/api/auth/[...nextauth]'
+import { pusherServer } from '@/libs/providers/pusherServer'
 
 export default async function handler(
     req: NextApiRequest,
@@ -14,31 +15,16 @@ export default async function handler(
 
         if(session){
             try{
-                let wherePayload = {}
-                if(req.body.role === "GM"){
-                    wherePayload = {
-                        arena_id: req.body.arenaID,
-                        isActive: true, 
-                        isChoose: false
-                    }
-                }
-                else{
-                    wherePayload = {
-                        arena_id: req.body.arenaID,
-                        isActive: true, 
-                    }
-                }
-    
-                const getArenaPlayers = await prisma.arenaPlayer.findMany({
-                    where: wherePayload,
-                    include:{
-                        user: true
-                    }
-                })  
+                pusherServer.trigger('drafting', 'arena-player-route', {
+                    arena_id: req.body.arenaID,
+                    player1: req.body.player1,
+                    player2: req.body.player2,
+                })
+
                 res.status(200).json({ 
                     success: true,
-                    list: getArenaPlayers,
                 })
+               
             }
             catch(err) {
                 res.status(200).json({ 

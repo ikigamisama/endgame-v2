@@ -40,7 +40,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  ModalOverlay,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -58,8 +57,8 @@ import {
   ArenaDraftProps,
   ArenaPlayers,
   ArenaPlayersChooseProps,
+  ArenaSetPlayers,
   BossInfoProps,
-  PlayerProps,
   UserDataProp,
 } from "@/libs/helpers/types";
 import { useRouter } from "next/router";
@@ -177,6 +176,17 @@ const Arena: NextPage = () => {
     onSuccess: (data) => {
       if (data.success) {
         queryclient.invalidateQueries(["userList"]);
+
+        if (data.result.isChoose === false) {
+          setInstantNewArenaPlayer({
+            id: data.result.id,
+            arena_id: data.result.arena_id,
+            user_id: data.result.user.id,
+            isActive: data.resultisActive,
+            joinedDate: data.result.joinedDate,
+            user: data.result.user,
+          });
+        }
       }
     },
   });
@@ -193,8 +203,24 @@ const Arena: NextPage = () => {
     },
   });
 
+  const startDraft = useMutation({
+    mutationFn: async (data: any) => {
+      let submitResponse = await api.post("/arena/draft/start", data);
+      return submitResponse.data;
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        router.push(`/arena/${arena_id}/draft/123`);
+      }
+    },
+  });
+
   const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
-    router.push(`/arena/${arena_id}/draft/123`);
+    startDraft.mutate({
+      arenaID: arena_id,
+      player1: player1.user_id,
+      player2: player2.user_id,
+    });
   };
 
   useEffect(() => {
@@ -206,7 +232,8 @@ const Arena: NextPage = () => {
   }, [watchBossChoose]);
 
   useEffect(() => {
-    const arenaChannel = pusherClient.subscribe("arena-room");
+    const arenaChannel = pusherClient.subscribe("arena-room"),
+      draftChannel = pusherClient.subscribe("drafting");
 
     arenaChannel.bind("new-arena-players", (data: any) => {
       if (data.arenaID === router.query.arenaID) {
@@ -226,15 +253,27 @@ const Arena: NextPage = () => {
         setInstantRemoveArenaPlayer(data.arenaPlayerID);
       }
     });
+    draftChannel.bind("arena-player-route", (data: any) => {
+      if (data.arena_id === router.query.arenaID) {
+        if (data.player1 === state.user.id) {
+          router.push(`/arena/${arena_id}/draft/123`);
+        }
+        if (data.player2 === state.user.id) {
+          router.push(`/arena/${arena_id}/draft/123`);
+        }
+      }
+    });
 
     return () => {
       arenaChannel.unbind();
+      draftChannel.unbind();
       pusherClient.unsubscribe(arenaChannel.name);
+      pusherClient.unsubscribe(draftChannel.name);
     };
   }, []);
 
   const openModalConfirmSetPlayer = (
-    playerData: PlayerProps,
+    playerData: ArenaSetPlayers,
     isApply: string,
     playerSpot?: string
   ) => {
@@ -261,6 +300,9 @@ const Arena: NextPage = () => {
   const onAcceptSetPlayer = () => {
     let onChooseFunction =
       player_function_type.type === "insert" ? true : false;
+    if (player_function_type.type === "insert") {
+      setInstantRemoveArenaPlayer(playerInfo.id);
+    }
     onChoosePlayer.mutate({ id: playerInfo.id, isChoose: onChooseFunction });
     setModal(false);
 
@@ -274,12 +316,14 @@ const Arena: NextPage = () => {
       if (player_function_type.player === "player1") {
         setPlayer1({
           id: "",
+          user_id: "",
           name: "",
           avatar: "",
         });
       } else {
         setPlayer2({
           id: "",
+          user_id: "",
           name: "",
           avatar: "",
         });
@@ -288,6 +332,7 @@ const Arena: NextPage = () => {
 
     setPlayerInfo({
       id: "",
+      user_id: "",
       name: "",
       avatar: "",
     });
@@ -656,27 +701,28 @@ const Arena: NextPage = () => {
                                     <Box
                                       position="relative"
                                       cursor="pointer"
-                                      onClick={() =>
+                                      onClick={() => {
                                         openModalConfirmSetPlayer(
                                           {
                                             id: arenaP.id,
-                                            name: arenaP.user.username,
-                                            avatar: arenaP.user.avatar,
+                                            user_id: arenaP.user?.id,
+                                            name: arenaP.user?.username,
+                                            avatar: arenaP.user?.avatar,
                                           },
                                           "insert"
-                                        )
-                                      }
+                                        );
+                                      }}
                                     >
                                       <AvatarCircle>
                                         <Image
-                                          src={arenaP.user.avatar}
+                                          src={arenaP?.user?.avatar}
                                           alt="avatar"
                                           width="100%"
                                         />
                                       </AvatarCircle>
                                       <AvatarNameWrapper>
                                         <AvatarName>
-                                          {arenaP.user.username}
+                                          {arenaP?.user?.username}
                                         </AvatarName>
                                       </AvatarNameWrapper>
                                     </Box>
@@ -719,16 +765,22 @@ const Arena: NextPage = () => {
                             {arenaPlayers.map((arenaP, a) => (
                               <GridItem key={a}>
                                 <Box position="relative" cursor="pointer">
-                                  <AvatarCircle>
+                                  <AvatarCircle
+                                    isplayerasuser={
+                                      state.user.id === arenaP?.user_id
+                                        ? "true"
+                                        : "false"
+                                    }
+                                  >
                                     <Image
-                                      src={arenaP.user.avatar}
+                                      src={arenaP?.user?.avatar}
                                       alt="avatar"
                                       width="100%"
                                     />
                                   </AvatarCircle>
                                   <AvatarNameWrapper>
                                     <AvatarName>
-                                      {arenaP.user.username}
+                                      {arenaP?.user?.username}
                                     </AvatarName>
                                   </AvatarNameWrapper>
                                 </Box>
