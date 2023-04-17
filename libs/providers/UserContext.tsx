@@ -38,7 +38,7 @@ export const userStore = create<UserDataPropState & UserFeatureSettingProps>(
     setUserData: (userData: UserDataProp) => {
       set({ user: userData });
     },
-    setArenaID: (arena: string) => {
+    setArenaID: (arena: string | string[] | undefined) => {
       set({ arena_id: arena });
     },
   })

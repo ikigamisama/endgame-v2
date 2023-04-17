@@ -38,7 +38,7 @@ export default async function handler(
                     success: true,
                     settings: {
                         mp4: getSettings?.bg_video_mp4,
-                        webm: getSettings?.bg_video_mp4
+                        webm: getSettings?.bg_video_webm
                     },
                     user: {
                         id: session?.user?.id,

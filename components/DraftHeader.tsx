@@ -94,6 +94,8 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
 
+  const [arena_id] = userStore((state) => [state.arena_id]);
+
   const onCloseModalRestartDraft = () => {
     setModalRestartDraft(!modalRestartDraft);
   };
@@ -125,7 +127,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
           gap={4}
         >
           <Flex flex={1} gap={4} justifyContent="flex-start">
-            <ButtonPopUpNav onClick={() => router.push("/arena/123")}>
+            <ButtonPopUpNav onClick={() => router.push(`/arena/${arena_id}`)}>
               <BackIcon />
             </ButtonPopUpNav>
             <ButtonPopUpNav onClick={onOpenCharacterModal}>

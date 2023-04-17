@@ -51,5 +51,13 @@ export const useArenaStore = create<ArenaPlayersState & ArenaPlayerFunction>((se
     },
     setPlayerFunctionType: (data: ArenaPlayersPayloadFeature) => {
         set({player_function_type: data})
+    },
+    setInstantNewArenaPlayer: (arenaPlayer: ArenaPlayers) => {
+        let arensListPlayers: ArenaPlayers[] = [...get().arenaPlayers, arenaPlayer]
+        set({arenaPlayers: arensListPlayers})
+    },
+    setInstantRemoveArenaPlayer: (arenaID: string) => {
+        let arenaNewPlayers = get().arenaPlayers.filter((i) => i.id !== arenaID);
+        set({arenaPlayers: arenaNewPlayers})
     }
 }))

@@ -32,7 +32,7 @@ type PlayerProps = {
 export declare interface ArenaDraftProps{
     user_gm_id: string
     mode: "1v1" | "2v2" | "3v3" | "4v4" | string,
-    is_manual_select_boss: boolean | undefined
+    is_manual_select_boss: any 
     boss_id?: string
 }
 
@@ -161,10 +161,11 @@ export type VideoPropsSettings = {
 };
 
 export type UserDataProp = {
-    id:string | number;
-    username: string;
-    role: string;
+    id:string | number
+    username: string
+    role: string
     avatar?: string
+    arenaID?: string | string[] | undefined
 };
   
 export type UserSettingsProp = {
@@ -174,13 +175,13 @@ export type UserSettingsProp = {
 export declare interface UserDataPropState {
     user: UserDataProp;
     settings: UserSettingsProp;
-    arena_id: string
+    arena_id: string | string[] | undefined
 }
 
 export type UserFeatureSettingProps = {
     setBackgroundBG : (vidSrc: VideoPropsSettings) => void
     setUserData: (userData: UserDataProp) => void 
-    setArenaID: (arena: string) => void
+    setArenaID: (arena: string | string[] | undefined) => void
 }
 
 export type ArenaPlayers = {
@@ -215,9 +216,20 @@ export type ArenaPlayerFunction = {
     setPlayerInfo: (player: PlayerProps) => void
     setModalTitle: (title: string) => void
     setPlayerFunctionType: (data: ArenaPlayersPayloadFeature) => void
+    setInstantNewArenaPlayer: (arenaPlayer: ArenaPlayers) => void
+    setInstantRemoveArenaPlayer: (arenaID: string) => void
 }
 
 export type ArenaPlayersChooseProps = {
     id: string | number
     isChoose: boolean
+}
+
+
+export type PusherType = {
+    appId: string | undefined
+    key: string | undefined
+    secret: string | undefined
+    cluster: string | undefined
+    useTLS: boolean
 }

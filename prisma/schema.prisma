@@ -83,7 +83,7 @@ model Arena {
 model ArenaPlayer {
   id         String    @id @default(uuid())
   arena_id   String
-  user_id    String    @unique
+  user_id    String
   joinedDate DateTime? @default(now())
   isActive   Boolean   @default(true)
   isChoose   Boolean   @default(false)

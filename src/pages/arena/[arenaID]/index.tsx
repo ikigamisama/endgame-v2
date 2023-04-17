@@ -1,5 +1,5 @@
 import RadioListCard from "@/components/RadioListCard";
-import { useUserData } from "@/libs/providers/UserContext";
+import { useUserData, userStore } from "@/libs/providers/UserContext";
 import { modeOption } from "@/libs/includes/forms";
 import { LogoutIcon, ProfileIcon } from "@/libs/includes/icons";
 import {
@@ -72,6 +72,7 @@ import { useEffect, useState } from "react";
 import BackgroundVid from "@/components/BackgroundVid";
 import { useArenaStore } from "@/libs/store/arena";
 import PromptModal from "@/components/PromptModal";
+import { pusherClient } from "@/libs/providers/pusherClient";
 
 const Arena: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
@@ -86,6 +87,8 @@ const Arena: NextPage = () => {
       boss_id: "",
     },
   });
+
+  const [arena_id] = userStore((state) => [state.arena_id]);
 
   const [bossList, setBossList] = useSettingsStore((state) => [
     state.bossList,
@@ -107,6 +110,8 @@ const Arena: NextPage = () => {
     setPlayerInfo,
     player_function_type,
     setPlayerFunctionType,
+    setInstantNewArenaPlayer,
+    setInstantRemoveArenaPlayer,
   ] = useArenaStore((state) => [
     state.arenaPlayers,
     state.setArenaPlayersList,
@@ -122,6 +127,8 @@ const Arena: NextPage = () => {
     state.setPlayerInfo,
     state.player_function_type,
     state.setPlayerFunctionType,
+    state.setInstantNewArenaPlayer,
+    state.setInstantRemoveArenaPlayer,
   ]);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
@@ -187,7 +194,7 @@ const Arena: NextPage = () => {
   });
 
   const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
-    router.push("/arena/123/draft/123");
+    router.push(`/arena/${arena_id}/draft/123`);
   };
 
   useEffect(() => {
@@ -197,6 +204,34 @@ const Arena: NextPage = () => {
       }
     });
   }, [watchBossChoose]);
+
+  useEffect(() => {
+    const arenaChannel = pusherClient.subscribe("arena-room");
+
+    arenaChannel.bind("new-arena-players", (data: any) => {
+      if (data.arenaID === router.query.arenaID) {
+        setInstantNewArenaPlayer({
+          id: data.arenaPlayers.id,
+          arena_id: data.arenaPlayers.arena_id,
+          user_id: data.arenaPlayers.user_id,
+          isActive: data.arenaPlayers.isActive,
+          joinedDate: data.arenaPlayers.joinedDate,
+          user: data.user,
+        });
+      }
+    });
+
+    arenaChannel.bind("remove-arena-players", (data: any) => {
+      if (data.arenaID === router.query.arenaID) {
+        setInstantRemoveArenaPlayer(data.arenaPlayerID);
+      }
+    });
+
+    return () => {
+      arenaChannel.unbind();
+      pusherClient.unsubscribe(arenaChannel.name);
+    };
+  }, []);
 
   const openModalConfirmSetPlayer = (
     playerData: PlayerProps,
@@ -365,7 +400,10 @@ const Arena: NextPage = () => {
                     if (state.user.role === "GM") {
                       signOut({ callbackUrl: "/login" });
                     } else {
-                      onLogout.mutate(state.user);
+                      onLogout.mutate({
+                        ...state.user,
+                        arenaID: router.query?.arenaID,
+                      });
                     }
                   }}
                 >
@@ -522,7 +560,7 @@ const Arena: NextPage = () => {
                                   <ArenaCheckbox
                                     size="lg"
                                     onChange={onChange}
-                                    checked={value}
+                                    value={value}
                                     name={name}
                                     defaultChecked={value}
                                   >
@@ -556,7 +594,6 @@ const Arena: NextPage = () => {
                                       onChange={onChange}
                                       value={value}
                                       name={name}
-                                      required
                                     >
                                       {bossList.map((b, i) => (
                                         <option value={b.id} key={i}>

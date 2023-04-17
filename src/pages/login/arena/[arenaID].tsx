@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { LoginImageLogo } from "@/libs/includes/image";
-import { useUserData } from "@/libs/providers/UserContext";
+import { useUserData, userStore } from "@/libs/providers/UserContext";
 import { CenterBox, ToastBox, ToastText } from "@/src/styles";
 import {
   AvatarCircle,
@@ -38,6 +38,11 @@ const ArenaPlayerLogin: NextPage = () => {
       role: "Drafter",
     },
   });
+  const [arena_id, setArenaID, setUserData] = userStore((state) => [
+    state.arena_id,
+    state.setArenaID,
+    state.setUserData,
+  ]);
   const authCheck = useMutation({
     mutationFn: async (data: PlayerLoginProps) => {
       let submitResponse = await api.post("/account/player/login", data);
@@ -73,7 +78,7 @@ const ArenaPlayerLogin: NextPage = () => {
         });
 
         if (res?.ok) {
-          router.replace(`/arena/${router.query?.arenaID}`);
+          setArenaID(router.query?.arenaID);
         }
       }
     },
