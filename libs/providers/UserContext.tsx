@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createContext, useContext, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import {
   UserDataProp,
   UserDataPropState,
@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { api } from "./api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { video_list } from "@/libs/includes/videos";
+import { GetServerSideProps } from "next";
 
 const currentUserState: UserDataPropState = {
   user: {
@@ -98,31 +99,23 @@ export const UserProvider = ({ children }: any) => {
   });
 
   useEffect(() => {
-    const loginRouteList = ["/", "/login", "/login/arena/[arenaID]"];
+    getSession().then((session) => {
+      const loginRouteList = ["/", "/login", "/login/arena/[arenaID]"];
+      const isEmptySessionListLink = ["/arena/[arenaID]", "/arena/settings"];
 
-    if (inArray(router.pathname, loginRouteList)) {
-      if (status === "authenticated") {
-        if (session?.user?.role === "GM") {
+      if (session !== null) {
+        if (inArray(router.pathname, loginRouteList)) {
           if (!arenaQuery.isLoading) {
-            router.push(`/arena/${arena_id}`);
+            router.replace(`/arena/${arena_id}`);
           }
         }
+      } else {
+        if (inArray(router.pathname, isEmptySessionListLink)) {
+          router.replace("/");
+        }
       }
-    } else {
-      if (status === "unauthenticated") {
-        router.push("/");
-      }
-    }
-  }, [status, router.pathname, arenaQuery]);
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      if (!getSettings.isLoading) {
-        setBackgroundBG(getSettings.data.settings);
-        setUserData(getSettings.data.user);
-      }
-    }
-  }, [status, getSettings.data, getSettings.isLoading]);
+    });
+  }, [router.pathname, arenaQuery]);
 
   const inArray = (needle: string, haystack: any) => {
     let length = haystack.length;
@@ -131,6 +124,16 @@ export const UserProvider = ({ children }: any) => {
     }
     return false;
   };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      if (!getSettings.isLoading) {
+        setBackgroundBG(getSettings.data.settings);
+        setUserData(getSettings.data.user);
+        setArenaID(getSettings.data.arena.id);
+      }
+    }
+  }, [status, getSettings.data, getSettings.isLoading]);
 
   const setBackgroundVid = (data: VideoPropsSettings) => {
     setBackgroundBG(data);
@@ -151,4 +154,21 @@ export const UserProvider = ({ children }: any) => {
       {children}
     </UserDataContext.Provider>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };

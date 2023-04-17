@@ -382,7 +382,7 @@ const Arena: NextPage = () => {
       <Box position="relative" h="calc(100vh - 90px)" w="100%">
         <CenterBox>
           <Container maxW="container.xl" minW="1200px">
-            {state.user.role === "GM" ? (
+            {state?.user?.role === "GM" ? (
               <HStack w="100%" gap={8}>
                 <Flex w="65%">
                   <ArenaCard>

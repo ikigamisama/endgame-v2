@@ -23,6 +23,12 @@ export default async function handler(
             res.status(200).json({ 
                 success: true,
                 arena: createArena,
+                user: {
+                    id: session?.user?.id,
+                    name: session?.user?.name,
+                    role: session?.user?.role,
+                    avatar: session?.user?.avatar
+                }
             })
         }
         catch(err) {

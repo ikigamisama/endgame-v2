@@ -23,6 +23,17 @@ export default async function handler(
                         bg_video_webm: true
                     },
                 })  
+
+                const getArena = await prisma.arena.findFirst({
+                    where: {
+                        host_id: session?.user?.id
+                    },
+                    orderBy: [
+                        {
+                            createdAt: 'desc'
+                        }
+                    ]
+                })  
                 res.status(200).json({ 
                     success: true,
                     settings: {
@@ -34,6 +45,9 @@ export default async function handler(
                         name: session?.user?.name,
                         role: session?.user?.role,
                         avatar: session?.user?.avatar
+                    },
+                    arena:{
+                        id: getArena?.uid
                     }
                 })
             }

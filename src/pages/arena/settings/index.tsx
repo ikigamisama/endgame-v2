@@ -6,7 +6,7 @@ import BossList from "@/components/settings/BossList";
 import CharacterList from "@/components/settings/CharacterList";
 import Characters from "@/components/settings/Characters";
 import { BackIcon } from "@/libs/includes/icons";
-import { useUserData } from "@/libs/providers/UserContext";
+import { useUserData, userStore } from "@/libs/providers/UserContext";
 import { ButtonPopUpNav, CenterBox } from "@/src/styles";
 import {
   AreaCardWrapper,
@@ -19,7 +19,6 @@ import {
   Box,
   Container,
   Flex,
-  Tab,
   TabIndicator,
   TabList,
   TabPanel,
@@ -35,6 +34,7 @@ export default function Settings() {
   const router = useRouter();
 
   const [tabIndex, setTabIndex] = useState<number>(0);
+  const [arena_id] = userStore((state) => [state.arena_id]);
 
   return (
     <>
@@ -61,7 +61,7 @@ export default function Settings() {
           gap={4}
         >
           <Box>
-            <ButtonPopUpNav onClick={() => router.push("/arena/123")}>
+            <ButtonPopUpNav onClick={() => router.push(`/arena/${arena_id}`)}>
               <BackIcon />
             </ButtonPopUpNav>
           </Box>

@@ -34,7 +34,10 @@ const Login: NextPage = () => {
     },
   });
 
-  const [setArenaID] = userStore((state) => [state.setArenaID]);
+  const [setArenaID, setUserData] = userStore((state) => [
+    state.setArenaID,
+    state.setUserData,
+  ]);
 
   const authCheck = useMutation({
     mutationFn: async (data: GMLoginProps) => {
@@ -43,8 +46,9 @@ const Login: NextPage = () => {
     },
     onSuccess: (data) => {
       if (data.success) {
-        console.log(data.arena.uid);
         setArenaID(data.arena.uid);
+        setUserData(data.user);
+
         router.push(`/arena/${data.arena.uid}`);
       }
     },
