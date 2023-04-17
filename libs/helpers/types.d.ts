@@ -233,3 +233,11 @@ export type PusherType = {
     cluster: string | undefined
     useTLS: boolean
 }
+
+export type DraftStateProps = {
+    init: string
+}
+
+export type DraftFunctions = {
+    setInit: (init: string) => void
+}
