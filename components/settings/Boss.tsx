@@ -87,7 +87,7 @@ const Boss: React.FC = () => {
           picture: "",
           picture_choose: "",
           picture_flash: "",
-          is_visible: "",
+          is_visible: true,
         });
       }
     },

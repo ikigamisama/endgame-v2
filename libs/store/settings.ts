@@ -64,7 +64,7 @@ export const useSettingsStore = create<SettingState & SettingActions>((set, get)
                 return true;
             }
             else{
-                return user.username.toLowerCase().includes(name.toLowerCase());
+                return user.username?.toLowerCase().includes(name.toLowerCase());
             }
         })
 

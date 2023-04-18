@@ -318,7 +318,6 @@ const Arena: NextPage = () => {
   const onCloseModal = () => {
     setModal(!modal);
   };
-  console.log(state.settings.video_bg);
   return (
     <>
       <Head>

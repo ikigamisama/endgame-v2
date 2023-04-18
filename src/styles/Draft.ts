@@ -232,13 +232,13 @@ export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
         ${(props) => (props.aligndraft === 'left' ? 'left: 0;' : 'right: 0;')}
         ${(props) => (props.aligndraft === 'right' ? 'transform:scaleX(-1)' : '')};
         z-index: 22;
-        width: 70%;
+        width: 65%;
     }
 
     & > .character-vision-icon{
         position: absolute;
         bottom: 0;
-        ${(props) => (props.aligndraft === 'left' ? 'right: 0;' : 'left: 0;')}
+        ${(props) => (props.aligndraft === 'left' ? 'right: 15px;' : 'left: 15px;')}
         width: 100px;
         height: 100px;
         z-index: 15;
@@ -252,7 +252,7 @@ export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
 
 
     & > div > p{
-        ${(props) => (props.aligndraft === 'left' ? 'padding-right: 150px;text-align: right;' : 'padding-left: 150px;text-align: left;')}
+        ${(props) => (props.aligndraft === 'left' ? 'padding-right: 165px;text-align: right;' : 'padding-left: 165px;text-align: left;')}
 
     }
 `

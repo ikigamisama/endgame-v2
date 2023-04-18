@@ -9,7 +9,13 @@ export default async function handler(
 
     if(req.method === "GET"){
         try{
-            const bossList = await prisma.boss.findMany()
+            const bossList = await prisma.boss.findMany({
+                orderBy: [
+                    {
+                      name: 'asc',
+                    }
+                ]
+            })
             res.status(200).json({ 
                 success: true,
                 list: bossList

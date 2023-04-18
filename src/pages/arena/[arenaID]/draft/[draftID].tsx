@@ -133,16 +133,19 @@ const Drafting: NextPage = () => {
       <ModalCharacterPickBlur
         ischaractermodalactive={applyCharacterModal.toString()}
       >
-        <BackgroundVid
-          mp4={state.settings.video_bg.mp4}
-          webm={state.settings.video_bg.webm}
-        />
+        {state.user.id !== "" && (
+          <BackgroundVid
+            mp4={state.settings.video_bg.mp4}
+            webm={state.settings.video_bg.webm}
+          />
+        )}
+
         <DraftHeader
           statusCharacterModal={applyCharacterModal}
           onOpenCharacterModal={onToggleCharacterPickModal}
         />
 
-        <Container maxW="1400px" pt={4} height="calc(100vh - 115px)">
+        <Container maxW="1275px" pt={4} height="calc(100vh - 115px)">
           <VStack w="100%" h="100%" justifyContent="space-between">
             <DraftCountdown />
             <Flex flex={1} w="100%" height="100%" alignItems="center">
