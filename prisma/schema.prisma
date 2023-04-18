@@ -86,7 +86,6 @@ model ArenaPlayer {
   user_id    String
   joinedDate DateTime? @default(now())
   isActive   Boolean   @default(true)
-  isChoose   Boolean   @default(false)
   Arena      Arena?    @relation(fields: [arena_id], references: [uid], onDelete: Cascade)
   user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
 

@@ -106,7 +106,9 @@ export const UserProvider = ({ children }: any) => {
       if (session !== null) {
         if (inArray(router.pathname, loginRouteList)) {
           if (!arenaQuery.isLoading) {
-            router.replace(`/arena/${arena_id}`);
+            if (session?.user?.role === "GM") {
+              router.replace(`/arena/${arena_id}`);
+            }
           }
         }
       } else {

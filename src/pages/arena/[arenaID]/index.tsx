@@ -56,8 +56,6 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {
   ArenaDraftProps,
   ArenaPlayers,
-  ArenaPlayersChooseProps,
-  ArenaSetPlayers,
   BossInfoProps,
   UserDataProp,
 } from "@/libs/helpers/types";
@@ -76,7 +74,6 @@ import { pusherClient } from "@/libs/providers/pusherClient";
 const Arena: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
   const router = useRouter();
-  const queryclient = useQueryClient();
   const [bossImg, setBossImg] = useState("");
   const { handleSubmit, control, watch, setValue } = useForm<ArenaDraftProps>({
     defaultValues: {
@@ -168,29 +165,6 @@ const Arena: NextPage = () => {
     },
   });
 
-  const onChoosePlayer = useMutation({
-    mutationFn: async (data: ArenaPlayersChooseProps) => {
-      let submitResponse = await api.put("/arena/players/change", data);
-      return submitResponse.data;
-    },
-    onSuccess: (data) => {
-      if (data.success) {
-        queryclient.invalidateQueries(["userList"]);
-
-        if (data.result.isChoose === false) {
-          setInstantNewArenaPlayer({
-            id: data.result.id,
-            arena_id: data.result.arena_id,
-            user_id: data.result.user.id,
-            isActive: data.resultisActive,
-            joinedDate: data.result.joinedDate,
-            user: data.result.user,
-          });
-        }
-      }
-    },
-  });
-
   const onLogout = useMutation({
     mutationFn: async (data: UserDataProp) => {
       let submitResponse = await api.post("/account/player/logout", data);
@@ -210,7 +184,7 @@ const Arena: NextPage = () => {
     },
     onSuccess: (data) => {
       if (data.success) {
-        router.push(`/arena/${arena_id}/draft/123`);
+        //router.push(`/arena/${arena_id}/draft/123`);
       }
     },
   });
@@ -258,6 +232,7 @@ const Arena: NextPage = () => {
         if (data.player1 === state.user.id) {
           router.push(`/arena/${arena_id}/draft/123`);
         }
+
         if (data.player2 === state.user.id) {
           router.push(`/arena/${arena_id}/draft/123`);
         }
@@ -270,10 +245,10 @@ const Arena: NextPage = () => {
       pusherClient.unsubscribe(arenaChannel.name);
       pusherClient.unsubscribe(draftChannel.name);
     };
-  }, []);
+  }, [router]);
 
   const openModalConfirmSetPlayer = (
-    playerData: ArenaSetPlayers,
+    playerData: ArenaPlayers,
     isApply: string,
     playerSpot?: string
   ) => {
@@ -297,14 +272,29 @@ const Arena: NextPage = () => {
     });
     setModal(true);
   };
+
   const onAcceptSetPlayer = () => {
-    let onChooseFunction =
-      player_function_type.type === "insert" ? true : false;
     if (player_function_type.type === "insert") {
       setInstantRemoveArenaPlayer(playerInfo.id);
+    } else {
+      setInstantNewArenaPlayer(playerInfo);
     }
-    onChoosePlayer.mutate({ id: playerInfo.id, isChoose: onChooseFunction });
+
     setModal(false);
+
+    const emptyData = {
+      id: "",
+      arena_id: "",
+      user_id: "",
+      isActive: true,
+      joinedDate: "",
+      user: {
+        id: "",
+        username: "",
+        role: "",
+        avatar: "",
+      },
+    };
 
     if (player_function_type.type === "insert") {
       if (player1.id === "") {
@@ -314,28 +304,13 @@ const Arena: NextPage = () => {
       }
     } else {
       if (player_function_type.player === "player1") {
-        setPlayer1({
-          id: "",
-          user_id: "",
-          name: "",
-          avatar: "",
-        });
+        setPlayer1(emptyData);
       } else {
-        setPlayer2({
-          id: "",
-          user_id: "",
-          name: "",
-          avatar: "",
-        });
+        setPlayer2(emptyData);
       }
     }
 
-    setPlayerInfo({
-      id: "",
-      user_id: "",
-      name: "",
-      avatar: "",
-    });
+    setPlayerInfo(emptyData);
   };
   const onCloseModal = () => {
     setModal(!modal);
@@ -505,8 +480,16 @@ const Arena: NextPage = () => {
                                     openModalConfirmSetPlayer(
                                       {
                                         id: player1.id,
-                                        name: player1.name,
-                                        avatar: player1.avatar,
+                                        arena_id: player1.arena_id,
+                                        user_id: player1.user_id,
+                                        isActive: player1.isActive,
+                                        joinedDate: player1.joinedDate,
+                                        user: {
+                                          id: player1.user?.id,
+                                          username: player1.user?.username,
+                                          role: player1.user?.role,
+                                          avatar: player1.user?.avatar,
+                                        },
                                       },
                                       "remove",
                                       "player1"
@@ -516,7 +499,7 @@ const Arena: NextPage = () => {
                                   <AvatarCircle>
                                     {player1.id !== "" && (
                                       <Image
-                                        src={player1.avatar}
+                                        src={player1.user?.avatar}
                                         alt="avatar"
                                         width="100%"
                                       />
@@ -524,7 +507,8 @@ const Arena: NextPage = () => {
                                   </AvatarCircle>
                                   <AvatarNameWrapper>
                                     <AvatarName>
-                                      {player1.id !== "" && player1.name}
+                                      {player1.id !== "" &&
+                                        player1.user?.username}
                                     </AvatarName>
                                   </AvatarNameWrapper>
                                 </Box>
@@ -538,8 +522,16 @@ const Arena: NextPage = () => {
                                     openModalConfirmSetPlayer(
                                       {
                                         id: player2.id,
-                                        name: player2.name,
-                                        avatar: player2.avatar,
+                                        arena_id: player2.arena_id,
+                                        user_id: player2.user_id,
+                                        isActive: player2.isActive,
+                                        joinedDate: player2.joinedDate,
+                                        user: {
+                                          id: player2.user?.id,
+                                          username: player2.user?.username,
+                                          role: player2.user?.role,
+                                          avatar: player2.user?.avatar,
+                                        },
                                       },
                                       "remove",
                                       "player2"
@@ -549,7 +541,7 @@ const Arena: NextPage = () => {
                                   <AvatarCircle>
                                     {player2.id !== "" && (
                                       <Image
-                                        src={player2.avatar}
+                                        src={player2.user?.avatar}
                                         alt="avatar"
                                         width="100%"
                                       />
@@ -557,7 +549,8 @@ const Arena: NextPage = () => {
                                   </AvatarCircle>
                                   <AvatarNameWrapper>
                                     <AvatarName>
-                                      {player2.id !== "" && player2.name}
+                                      {player2.id !== "" &&
+                                        player2.user?.username}
                                     </AvatarName>
                                   </AvatarNameWrapper>
                                 </Box>
@@ -705,9 +698,11 @@ const Arena: NextPage = () => {
                                         openModalConfirmSetPlayer(
                                           {
                                             id: arenaP.id,
-                                            user_id: arenaP.user?.id,
-                                            name: arenaP.user?.username,
-                                            avatar: arenaP.user?.avatar,
+                                            arena_id: arenaP.arena_id,
+                                            user_id: arenaP.user_id,
+                                            isActive: arenaP.isActive,
+                                            joinedDate: arenaP.joinedDate,
+                                            user: arenaP.user,
                                           },
                                           "insert"
                                         );

@@ -1,23 +1,47 @@
 import { create } from 'zustand'
-import { ArenaPlayerFunction, ArenaPlayers, ArenaPlayersPayloadFeature, ArenaPlayersState, ArenaSetPlayers } from '../helpers/types'
+import { ArenaPlayerFunction, ArenaPlayers, ArenaPlayersPayloadFeature, ArenaPlayersState } from '../helpers/types'
 
 
 const initialState: ArenaPlayersState = {
     arenaPlayers: [],
     playerInfo: {
         id: '',
-        name: '',
-        avatar: ""
+        arena_id:'',
+        user_id: '',
+        isActive: true,
+        joinedDate: '',
+        user: {
+            id: '',
+            username: '',
+            role: '',
+            avatar: ''
+        }
     },
     player1: {
-        id:"",
-        name: "",
-        avatar: ""
+        id: '',
+        arena_id:'',
+        user_id: '',
+        isActive: true,
+        joinedDate: '',
+        user: {
+            id: '',
+            username: '',
+            role: '',
+            avatar: ''
+        }
     },
     player2: {
-        id:"",
-        name: "",
-        avatar: ""
+        id: '',
+        arena_id:'',
+        user_id: '',
+        isActive: true,
+        joinedDate: '',
+        user: {
+            id: '',
+            username: '',
+            role: '',
+            avatar: ''
+        }
     },
     modal: false,
     modal_title: "",
@@ -37,13 +61,13 @@ export const useArenaStore = create<ArenaPlayersState & ArenaPlayerFunction>((se
     setModal: (modal: boolean) => {
         set({modal: modal})
     },
-    setPlayer1: (player: ArenaSetPlayers) =>{
+    setPlayer1: (player: ArenaPlayers) =>{
         set({player1: player})
     },
-    setPlayer2: (player: ArenaSetPlayers) =>{
+    setPlayer2: (player: ArenaPlayers) =>{
         set({player2: player})
     },
-    setPlayerInfo: (player: ArenaSetPlayers) =>{
+    setPlayerInfo: (player: ArenaPlayers) =>{
         set({playerInfo: player})
     },
     setModalTitle: (title: string) => {

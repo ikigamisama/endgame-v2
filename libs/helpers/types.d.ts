@@ -85,9 +85,9 @@ export declare interface CharacterDraftProps{
 
 export declare interface ProfileChanges{
     id?: string,
-    username: string
-    role: string
-    avatar: string 
+    username: string | undefined
+    role: string | undefined
+    avatar: string | undefined 
     password?: string
     confirm_password?: string
 }
@@ -204,9 +204,9 @@ export type ArenaSetPlayers = {
 export type ArenaPlayersState = {
     arenaPlayers: ArenaPlayers[]
     modal: boolean
-    playerInfo: ArenaSetPlayers
-    player1: ArenaSetPlayers
-    player2: ArenaSetPlayers
+    playerInfo: ArenaPlayers
+    player1: ArenaPlayers
+    player2: ArenaPlayers
     modal_title: string
     player_function_type: ArenaPlayersPayloadFeature
 }
@@ -214,20 +214,14 @@ export type ArenaPlayersState = {
 export type ArenaPlayerFunction = {
     setArenaPlayersList: (arenaPlayers: ArenaPlayers[]) => void
     setModal: (modal: boolean) => void
-    setPlayer1: (player: ArenaSetPlayers) => void
-    setPlayer2: (player: ArenaSetPlayers) => void
-    setPlayerInfo: (player: ArenaSetPlayers) => void
+    setPlayer1: (player: ArenaPlayers) => void
+    setPlayer2: (player: ArenaPlayers) => void
+    setPlayerInfo: (player: ArenaPlayers) => void
     setModalTitle: (title: string) => void
     setPlayerFunctionType: (data: ArenaPlayersPayloadFeature) => void
     setInstantNewArenaPlayer: (arenaPlayer: ArenaPlayers) => void
     setInstantRemoveArenaPlayer: (arenaID: string) => void
 }
-
-export type ArenaPlayersChooseProps = {
-    id: string | number
-    isChoose: boolean
-}
-
 
 export type PusherType = {
     appId: string | undefined

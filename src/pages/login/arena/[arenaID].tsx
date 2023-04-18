@@ -79,6 +79,7 @@ const ArenaPlayerLogin: NextPage = () => {
 
         if (res?.ok) {
           setArenaID(router.query?.arenaID);
+          router.replace(`/arena/${router.query?.arenaID}`);
         }
       }
     },

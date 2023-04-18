@@ -14,19 +14,9 @@ export default async function handler(
 
         if(session){
             try{
-                let wherePayload = {}
-                if(req.body.role === "GM"){
-                    wherePayload = {
-                        arena_id: req.body.arenaID,
-                        isActive: true, 
-                        isChoose: false
-                    }
-                }
-                else{
-                    wherePayload = {
-                        arena_id: req.body.arenaID,
-                        isActive: true, 
-                    }
+                let wherePayload = {
+                    arena_id: req.body.arenaID,
+                    isActive: true
                 }
     
                 const getArenaPlayers = await prisma.arenaPlayer.findMany({
@@ -37,6 +27,7 @@ export default async function handler(
                 })  
                 res.status(200).json({ 
                     success: true,
+                    payload: wherePayload,
                     list: getArenaPlayers,
                 })
             }

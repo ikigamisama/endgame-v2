@@ -43,7 +43,7 @@ export const BossNameWrapper = styled(Box)`
 `
 
 export const BanCharactersListContainer = styled(Box)<DraftPositionProps>`
-    width: 475px;
+    width: 450px;
     height: 85px;
     background-color: #ecdeb5;
     margin-inline-start: 0rem !important;
@@ -55,7 +55,7 @@ export const BanCharactersListContainer = styled(Box)<DraftPositionProps>`
 ` 
 
 export const BanCharactersListWrapper = styled(Box)`
-    width: 450px;
+    width: 425px;
     height: 100%;
     background-color: inherit;
     position: relative;
@@ -76,13 +76,6 @@ export const BanCharacterWrapper = styled(Box)<DraftPositionProps>`
     display: flex;
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')};
 
-
-    & > img{
-        transform: scale(0.95);
-        height: 100%;
-        position: absolute;
-        bottom: -5px;
-    }
 `
 
 export const DraftRerollBanner = styled(Box)`
