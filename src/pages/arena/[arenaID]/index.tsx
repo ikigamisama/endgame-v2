@@ -130,7 +130,7 @@ const Arena: NextPage = () => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "mode",
     defaultValue: "3v3",
-    onChange: (d) => {
+    onChange: (d: string) => {
       setValue("mode", d);
     },
   });
@@ -161,7 +161,11 @@ const Arena: NextPage = () => {
       return listResponse.data.list;
     },
     onSuccess: (data: ArenaPlayers[]) => {
-      setArenaPlayersList(data);
+      let removePlayerIfSelected = data.filter(
+        (i) => i.id !== player1.id && i.id !== player2.id
+      );
+
+      setArenaPlayersList(removePlayerIfSelected);
     },
   });
 
@@ -184,7 +188,7 @@ const Arena: NextPage = () => {
     },
     onSuccess: (data) => {
       if (data.success) {
-        //router.push(`/arena/${arena_id}/draft/123`);
+        router.push(`/arena/${arena_id}/draft/123`);
       }
     },
   });
@@ -230,11 +234,11 @@ const Arena: NextPage = () => {
     draftChannel.bind("arena-player-route", (data: any) => {
       if (data.arena_id === router.query.arenaID) {
         if (data.player1 === state.user.id) {
-          router.push(`/arena/${arena_id}/draft/123`);
+          router.push(`/arena/${data.arena_id}/draft/123`);
         }
 
         if (data.player2 === state.user.id) {
-          router.push(`/arena/${arena_id}/draft/123`);
+          router.push(`/arena/${data.arena_id}/draft/123`);
         }
       }
     });
@@ -279,7 +283,6 @@ const Arena: NextPage = () => {
     } else {
       setInstantNewArenaPlayer(playerInfo);
     }
-
     setModal(false);
 
     const emptyData = {
@@ -315,7 +318,7 @@ const Arena: NextPage = () => {
   const onCloseModal = () => {
     setModal(!modal);
   };
-
+  console.log(state.settings.video_bg);
   return (
     <>
       <Head>
@@ -325,10 +328,12 @@ const Arena: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <BackgroundVid
-        mp4={state.settings.video_bg.mp4}
-        webm={state.settings.video_bg.webm}
-      />
+      {state.user.id !== "" && (
+        <BackgroundVid
+          mp4={state.settings.video_bg.mp4}
+          webm={state.settings.video_bg.webm}
+        />
+      )}
 
       <PromptModal
         isOpen={modal}
@@ -437,332 +442,334 @@ const Arena: NextPage = () => {
           </Box>
         </Flex>
       </Box>
-      <Box position="relative" h="calc(100vh - 90px)" w="100%">
-        <CenterBox>
-          <Container maxW="container.xl" minW="1200px">
-            {state?.user?.role === "GM" ? (
-              <HStack w="100%" gap={8}>
-                <Flex w="65%">
-                  <ArenaCard>
-                    <AreaCardWrapper widthgap="95%">
-                      <ArenaPaddingWrap>
-                        <ArenaTitleText>Game Setup</ArenaTitleText>
-                      </ArenaPaddingWrap>
+      {state.user.id === "" ? null : (
+        <Box position="relative" h="calc(100vh - 90px)" w="100%">
+          <CenterBox>
+            <Container maxW="container.xl" minW="1200px">
+              {state?.user?.role === "GM" ? (
+                <HStack w="100%" gap={8}>
+                  <Flex w="65%">
+                    <ArenaCard>
+                      <AreaCardWrapper widthgap="95%">
+                        <ArenaPaddingWrap>
+                          <ArenaTitleText>Game Setup</ArenaTitleText>
+                        </ArenaPaddingWrap>
 
-                      <form
-                        method="post"
-                        onSubmit={handleSubmit(submitArenaToDraft)}
-                      >
-                        <ArenaPlayersListScroll heightarea="535px">
-                          <ArenaPaddingWrap>
-                            <FormControl mb="35px">
-                              <FormLabelText>Mode</FormLabelText>
+                        <form
+                          method="post"
+                          onSubmit={handleSubmit(submitArenaToDraft)}
+                        >
+                          <ArenaPlayersListScroll heightarea="535px">
+                            <ArenaPaddingWrap>
+                              <FormControl mb="35px">
+                                <FormLabelText>Mode</FormLabelText>
 
-                              <HStack {...group} w="100">
-                                {modeOption.map((value) => {
-                                  const radio = getRadioProps({ value });
-                                  return (
-                                    <RadioListCard key={value} {...radio}>
-                                      {value}
-                                    </RadioListCard>
-                                  );
-                                })}
-                              </HStack>
-                            </FormControl>
-
-                            <SimpleGrid columns={2} spacing={8} mb="35px">
-                              <FormControl>
-                                <FormLabelText>First Pick Team</FormLabelText>
-                                <Box
-                                  position="relative"
-                                  cursor="pointer"
-                                  onClick={() => {
-                                    openModalConfirmSetPlayer(
-                                      {
-                                        id: player1.id,
-                                        arena_id: player1.arena_id,
-                                        user_id: player1.user_id,
-                                        isActive: player1.isActive,
-                                        joinedDate: player1.joinedDate,
-                                        user: {
-                                          id: player1.user?.id,
-                                          username: player1.user?.username,
-                                          role: player1.user?.role,
-                                          avatar: player1.user?.avatar,
-                                        },
-                                      },
-                                      "remove",
-                                      "player1"
+                                <HStack {...group} w="100">
+                                  {modeOption.map((value) => {
+                                    const radio = getRadioProps({ value });
+                                    return (
+                                      <RadioListCard key={value} {...radio}>
+                                        {value}
+                                      </RadioListCard>
                                     );
-                                  }}
-                                >
-                                  <AvatarCircle>
-                                    {player1.id !== "" && (
-                                      <Image
-                                        src={player1.user?.avatar}
-                                        alt="avatar"
-                                        width="100%"
-                                      />
-                                    )}
-                                  </AvatarCircle>
-                                  <AvatarNameWrapper>
-                                    <AvatarName>
-                                      {player1.id !== "" &&
-                                        player1.user?.username}
-                                    </AvatarName>
-                                  </AvatarNameWrapper>
-                                </Box>
+                                  })}
+                                </HStack>
                               </FormControl>
-                              <FormControl>
-                                <FormLabelText>Second Pick Team</FormLabelText>
-                                <Box
-                                  position="relative"
-                                  cursor="pointer"
-                                  onClick={() => {
-                                    openModalConfirmSetPlayer(
-                                      {
-                                        id: player2.id,
-                                        arena_id: player2.arena_id,
-                                        user_id: player2.user_id,
-                                        isActive: player2.isActive,
-                                        joinedDate: player2.joinedDate,
-                                        user: {
-                                          id: player2.user?.id,
-                                          username: player2.user?.username,
-                                          role: player2.user?.role,
-                                          avatar: player2.user?.avatar,
+
+                              <SimpleGrid columns={2} spacing={8} mb="35px">
+                                <FormControl>
+                                  <FormLabelText>First Pick Team</FormLabelText>
+                                  <Box
+                                    position="relative"
+                                    cursor="pointer"
+                                    onClick={() => {
+                                      openModalConfirmSetPlayer(
+                                        {
+                                          id: player1.id,
+                                          arena_id: player1.arena_id,
+                                          user_id: player1.user_id,
+                                          isActive: player1.isActive,
+                                          joinedDate: player1.joinedDate,
+                                          user: {
+                                            id: player1.user?.id,
+                                            username: player1.user?.username,
+                                            role: player1.user?.role,
+                                            avatar: player1.user?.avatar,
+                                          },
                                         },
-                                      },
-                                      "remove",
-                                      "player2"
-                                    );
-                                  }}
-                                >
-                                  <AvatarCircle>
-                                    {player2.id !== "" && (
-                                      <Image
-                                        src={player2.user?.avatar}
-                                        alt="avatar"
-                                        width="100%"
-                                      />
-                                    )}
-                                  </AvatarCircle>
-                                  <AvatarNameWrapper>
-                                    <AvatarName>
-                                      {player2.id !== "" &&
-                                        player2.user?.username}
-                                    </AvatarName>
-                                  </AvatarNameWrapper>
-                                </Box>
-                              </FormControl>
-                            </SimpleGrid>
-
-                            <FormControl mb="35px">
-                              <FormLabelText>Link</FormLabelText>
-                              <FormSubmitButton
-                                type="button"
-                                leftIcon={<CopyIcon />}
-                                onClick={() => {
-                                  navigator.clipboard.writeText(
-                                    window.location.host +
-                                      "/login/arena/" +
-                                      router.query?.arenaID
-                                  );
-                                  toastCopyLink({
-                                    duration: 3000,
-                                    render: () => (
-                                      <Box
-                                        bgColor="#1E223F"
-                                        p={4}
-                                        display="flex"
-                                        flexDirection="row"
-                                        alignItems="center"
-                                        gap={4}
-                                      >
-                                        <CheckCircleIcon boxSize={5} />
-                                        <ToastText>Link Copied</ToastText>
-                                      </Box>
-                                    ),
-                                  });
-                                }}
-                              >
-                                Copy Link
-                              </FormSubmitButton>
-                            </FormControl>
-
-                            <FormControl mb="35px">
-                              <Controller
-                                render={({
-                                  field: { onChange, value, name },
-                                }) => (
-                                  <ArenaCheckbox
-                                    size="lg"
-                                    onChange={onChange}
-                                    value={value}
-                                    name={name}
-                                    defaultChecked={value}
+                                        "remove",
+                                        "player1"
+                                      );
+                                    }}
                                   >
-                                    Manually Select Boss
-                                  </ArenaCheckbox>
-                                )}
-                                name="is_manual_select_boss"
-                                control={control}
-                              />
-                            </FormControl>
+                                    <AvatarCircle>
+                                      {player1.id !== "" && (
+                                        <Image
+                                          src={player1.user?.avatar}
+                                          alt="avatar"
+                                          width="100%"
+                                        />
+                                      )}
+                                    </AvatarCircle>
+                                    <AvatarNameWrapper>
+                                      <AvatarName>
+                                        {player1.id !== "" &&
+                                          player1.user?.username}
+                                      </AvatarName>
+                                    </AvatarNameWrapper>
+                                  </Box>
+                                </FormControl>
+                                <FormControl>
+                                  <FormLabelText>
+                                    Second Pick Team
+                                  </FormLabelText>
+                                  <Box
+                                    position="relative"
+                                    cursor="pointer"
+                                    onClick={() => {
+                                      openModalConfirmSetPlayer(
+                                        {
+                                          id: player2.id,
+                                          arena_id: player2.arena_id,
+                                          user_id: player2.user_id,
+                                          isActive: player2.isActive,
+                                          joinedDate: player2.joinedDate,
+                                          user: {
+                                            id: player2.user?.id,
+                                            username: player2.user?.username,
+                                            role: player2.user?.role,
+                                            avatar: player2.user?.avatar,
+                                          },
+                                        },
+                                        "remove",
+                                        "player2"
+                                      );
+                                    }}
+                                  >
+                                    <AvatarCircle>
+                                      {player2.id !== "" && (
+                                        <Image
+                                          src={player2.user?.avatar}
+                                          alt="avatar"
+                                          width="100%"
+                                        />
+                                      )}
+                                    </AvatarCircle>
+                                    <AvatarNameWrapper>
+                                      <AvatarName>
+                                        {player2.id !== "" &&
+                                          player2.user?.username}
+                                      </AvatarName>
+                                    </AvatarNameWrapper>
+                                  </Box>
+                                </FormControl>
+                              </SimpleGrid>
 
-                            <HStack
-                              hidden={
-                                watchCheckboxBoss === false ||
-                                bossListQuery.isLoading === true
-                                  ? true
-                                  : false
-                              }
-                              gap={4}
-                              alignItems="center"
-                              mb="35px"
-                            >
-                              <FormControl>
-                                <FormLabelText>Boss Enemy</FormLabelText>
+                              <FormControl mb="35px">
+                                <FormLabelText>Link</FormLabelText>
+                                <FormSubmitButton
+                                  type="button"
+                                  leftIcon={<CopyIcon />}
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(
+                                      window.location.host +
+                                        "/login/arena/" +
+                                        router.query?.arenaID
+                                    );
+                                    toastCopyLink({
+                                      duration: 3000,
+                                      render: () => (
+                                        <Box
+                                          bgColor="#1E223F"
+                                          p={4}
+                                          display="flex"
+                                          flexDirection="row"
+                                          alignItems="center"
+                                          gap={4}
+                                        >
+                                          <CheckCircleIcon boxSize={5} />
+                                          <ToastText>Link Copied</ToastText>
+                                        </Box>
+                                      ),
+                                    });
+                                  }}
+                                >
+                                  Copy Link
+                                </FormSubmitButton>
+                              </FormControl>
+
+                              <FormControl mb="35px">
                                 <Controller
                                   render={({
                                     field: { onChange, value, name },
                                   }) => (
-                                    <FormSelect
-                                      placeholder="Select Boss"
+                                    <ArenaCheckbox
+                                      size="lg"
                                       onChange={onChange}
                                       value={value}
                                       name={name}
+                                      defaultChecked={value}
                                     >
-                                      {bossList.map((b, i) => (
-                                        <option value={b.id} key={i}>
-                                          {b.name}
-                                        </option>
-                                      ))}
-                                    </FormSelect>
+                                      Manually Select Boss
+                                    </ArenaCheckbox>
                                   )}
-                                  name="boss_id"
+                                  name="is_manual_select_boss"
                                   control={control}
                                 />
                               </FormControl>
-                              <Box>
-                                <ArenaBossCircleWrapper>
-                                  {bossImg !== "" ? (
-                                    <Image src={bossImg} w="100%" />
-                                  ) : null}
-                                </ArenaBossCircleWrapper>
-                              </Box>
-                            </HStack>
+
+                              <HStack
+                                hidden={
+                                  watchCheckboxBoss === false ||
+                                  bossListQuery.isLoading === true
+                                    ? true
+                                    : false
+                                }
+                                gap={4}
+                                alignItems="center"
+                                mb="35px"
+                              >
+                                <FormControl>
+                                  <FormLabelText>Boss Enemy</FormLabelText>
+                                  <Controller
+                                    render={({
+                                      field: { onChange, value, name },
+                                    }) => (
+                                      <FormSelect
+                                        placeholder="Select Boss"
+                                        onChange={onChange}
+                                        value={value}
+                                        name={name}
+                                      >
+                                        {bossList.map((b, i) => (
+                                          <option value={b.id} key={i}>
+                                            {b.name}
+                                          </option>
+                                        ))}
+                                      </FormSelect>
+                                    )}
+                                    name="boss_id"
+                                    control={control}
+                                  />
+                                </FormControl>
+                                <Box>
+                                  <ArenaBossCircleWrapper>
+                                    {bossImg !== "" ? (
+                                      <Image src={bossImg} w="100%" />
+                                    ) : null}
+                                  </ArenaBossCircleWrapper>
+                                </Box>
+                              </HStack>
+                            </ArenaPaddingWrap>
+                          </ArenaPlayersListScroll>
+
+                          <ArenaPaddingWrap>
+                            <FormSubmitButton type="submit">
+                              Start Game
+                            </FormSubmitButton>
+                          </ArenaPaddingWrap>
+                        </form>
+
+                        <Box pb="25px" />
+                      </AreaCardWrapper>
+                    </ArenaCard>
+                  </Flex>
+                  <Flex w="35%">
+                    <ArenaCard>
+                      <AreaCardWrapper widthgap="92%">
+                        <ArenaPaddingWrap>
+                          <ArenaTitleText>Players</ArenaTitleText>
+                        </ArenaPaddingWrap>
+
+                        <ArenaPlayersListScroll heightarea="605px">
+                          <ArenaPaddingWrap>
+                            <Grid templateColumns="repeat(1, 1fr)" gap={6}>
+                              {arenaPlayersQueryGM.isLoading === true ? (
+                                <Center height="150px">
+                                  <Spinner
+                                    thickness="15px"
+                                    speed="0.5s"
+                                    emptyColor="#ECDEB5"
+                                    color="#1E223F"
+                                    width="150px"
+                                    height="150px"
+                                  />
+                                </Center>
+                              ) : (
+                                <>
+                                  {arenaPlayers.map((arenaP, a) => (
+                                    <GridItem key={a}>
+                                      <Box
+                                        position="relative"
+                                        cursor="pointer"
+                                        onClick={() => {
+                                          openModalConfirmSetPlayer(
+                                            {
+                                              id: arenaP.id,
+                                              arena_id: arenaP.arena_id,
+                                              user_id: arenaP.user_id,
+                                              isActive: arenaP.isActive,
+                                              joinedDate: arenaP.joinedDate,
+                                              user: arenaP.user,
+                                            },
+                                            "insert"
+                                          );
+                                        }}
+                                      >
+                                        <AvatarCircle>
+                                          <Image
+                                            src={arenaP?.user?.avatar}
+                                            alt="avatar"
+                                            width="100%"
+                                          />
+                                        </AvatarCircle>
+                                        <AvatarNameWrapper>
+                                          <AvatarName>
+                                            {arenaP?.user?.username}
+                                          </AvatarName>
+                                        </AvatarNameWrapper>
+                                      </Box>
+                                    </GridItem>
+                                  ))}
+                                </>
+                              )}
+                            </Grid>
                           </ArenaPaddingWrap>
                         </ArenaPlayersListScroll>
-
-                        <ArenaPaddingWrap>
-                          <FormSubmitButton type="submit">
-                            Start Game
-                          </FormSubmitButton>
-                        </ArenaPaddingWrap>
-                      </form>
+                      </AreaCardWrapper>
 
                       <Box pb="25px" />
-                    </AreaCardWrapper>
-                  </ArenaCard>
-                </Flex>
-                <Flex w="35%">
-                  <ArenaCard>
-                    <AreaCardWrapper widthgap="92%">
-                      <ArenaPaddingWrap>
-                        <ArenaTitleText>Players</ArenaTitleText>
-                      </ArenaPaddingWrap>
-
-                      <ArenaPlayersListScroll heightarea="605px">
-                        <ArenaPaddingWrap>
-                          <Grid templateColumns="repeat(1, 1fr)" gap={6}>
-                            {arenaPlayersQueryGM.isLoading === true ? (
-                              <Center height="150px">
-                                <Spinner
-                                  thickness="15px"
-                                  speed="0.5s"
-                                  emptyColor="#ECDEB5"
-                                  color="#1E223F"
-                                  width="150px"
-                                  height="150px"
-                                />
-                              </Center>
-                            ) : (
-                              <>
-                                {arenaPlayers.map((arenaP, a) => (
-                                  <GridItem key={a}>
-                                    <Box
-                                      position="relative"
-                                      cursor="pointer"
-                                      onClick={() => {
-                                        openModalConfirmSetPlayer(
-                                          {
-                                            id: arenaP.id,
-                                            arena_id: arenaP.arena_id,
-                                            user_id: arenaP.user_id,
-                                            isActive: arenaP.isActive,
-                                            joinedDate: arenaP.joinedDate,
-                                            user: arenaP.user,
-                                          },
-                                          "insert"
-                                        );
-                                      }}
-                                    >
-                                      <AvatarCircle>
-                                        <Image
-                                          src={arenaP?.user?.avatar}
-                                          alt="avatar"
-                                          width="100%"
-                                        />
-                                      </AvatarCircle>
-                                      <AvatarNameWrapper>
-                                        <AvatarName>
-                                          {arenaP?.user?.username}
-                                        </AvatarName>
-                                      </AvatarNameWrapper>
-                                    </Box>
-                                  </GridItem>
-                                ))}
-                              </>
-                            )}
-                          </Grid>
-                        </ArenaPaddingWrap>
-                      </ArenaPlayersListScroll>
-                    </AreaCardWrapper>
-
-                    <Box pb="25px" />
-                  </ArenaCard>
-                </Flex>
-              </HStack>
-            ) : (
-              <ArenaCard>
-                <AreaCardWrapper widthgap="96%">
-                  <ArenaPaddingWrap>
-                    <ArenaTitleText>Players</ArenaTitleText>
-                  </ArenaPaddingWrap>
-
-                  <ArenaPlayersListScroll heightarea="605px">
+                    </ArenaCard>
+                  </Flex>
+                </HStack>
+              ) : (
+                <ArenaCard>
+                  <AreaCardWrapper widthgap="96%">
                     <ArenaPaddingWrap>
-                      <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+                      <ArenaTitleText>Players</ArenaTitleText>
+                    </ArenaPaddingWrap>
+
+                    <ArenaPlayersListScroll heightarea="605px">
+                      <ArenaPaddingWrap>
                         {arenaPlayersQueryGM.isLoading === true ? (
-                          <Center height="150px">
+                          <Center w="100%" h="500px">
                             <Spinner
                               thickness="15px"
                               speed="0.5s"
                               emptyColor="#ECDEB5"
                               color="#1E223F"
-                              width="150px"
-                              height="150px"
+                              width="250px"
+                              height="250px"
                             />
                           </Center>
                         ) : (
-                          <>
+                          <Grid templateColumns="repeat(2, 1fr)" gap={6}>
                             {arenaPlayers.map((arenaP, a) => (
                               <GridItem key={a}>
                                 <Box position="relative" cursor="pointer">
                                   <AvatarCircle
                                     isplayerasuser={
-                                      state.user.id === arenaP?.user_id
+                                      arenaP?.user_id === state?.user?.id
                                         ? "true"
                                         : "false"
                                     }
@@ -781,19 +788,19 @@ const Arena: NextPage = () => {
                                 </Box>
                               </GridItem>
                             ))}
-                          </>
+                          </Grid>
                         )}
-                      </Grid>
-                    </ArenaPaddingWrap>
-                  </ArenaPlayersListScroll>
-                </AreaCardWrapper>
+                      </ArenaPaddingWrap>
+                    </ArenaPlayersListScroll>
+                  </AreaCardWrapper>
 
-                <Box pb="25px" />
-              </ArenaCard>
-            )}
-          </Container>
-        </CenterBox>
-      </Box>
+                  <Box pb="25px" />
+                </ArenaCard>
+              )}
+            </Container>
+          </CenterBox>
+        </Box>
+      )}
     </>
   );
 };

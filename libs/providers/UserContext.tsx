@@ -117,7 +117,7 @@ export const UserProvider = ({ children }: any) => {
         }
       }
     });
-  }, [router.pathname, arenaQuery]);
+  }, [arena_id, router.pathname, arenaQuery]);
 
   const inArray = (needle: string, haystack: any) => {
     let length = haystack.length;
@@ -132,10 +132,17 @@ export const UserProvider = ({ children }: any) => {
       if (!getSettings.isLoading) {
         setBackgroundBG(getSettings.data.settings);
         setUserData(getSettings.data.user);
-        setArenaID(getSettings.data.arena.id);
+
+        if (session?.user?.role === "GM") {
+          setArenaID(getSettings.data.arena.id);
+        } else {
+          if (router.query.arenaID !== undefined) {
+            setArenaID(router.query.arenaID);
+          }
+        }
       }
     }
-  }, [status, getSettings.data, getSettings.isLoading]);
+  }, [status, router.query, getSettings.data, getSettings.isLoading]);
 
   const setBackgroundVid = (data: VideoPropsSettings) => {
     setBackgroundBG(data);
