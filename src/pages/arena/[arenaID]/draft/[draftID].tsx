@@ -116,10 +116,12 @@ const Drafting: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <CharacterDraft
-        statusCharacterModal={applyCharacterModal}
-        onCloseCharacterModal={onToggleCharacterPickModal}
-      />
+      {state.user.role == "Drafter" && (
+        <CharacterDraft
+          statusCharacterModal={applyCharacterModal}
+          onCloseCharacterModal={onToggleCharacterPickModal}
+        />
+      )}
 
       <ModalBoss
         isOpen={applyBossModal}
@@ -143,6 +145,7 @@ const Drafting: NextPage = () => {
         <DraftHeader
           statusCharacterModal={applyCharacterModal}
           onOpenCharacterModal={onToggleCharacterPickModal}
+          state={state}
         />
 
         <Container maxW="1275px" pt={4} height="calc(100vh - 115px)">
@@ -327,13 +330,13 @@ const Drafting: NextPage = () => {
                       src={isStartDraft === true ? WarpImgGIF : WarpImgPNG}
                     />
 
-                    <Box position="relative" zIndex="50">
+                    {/* <Box position="relative" zIndex="50">
                       <Image
                         src="https://endgame.otakuhobbitoysph.com/cdn/characters/flash/Keqing.png"
                         alt="placements-flash"
                         width="100%"
                       />
-                    </Box>
+                    </Box> */}
                   </Box>
                 </DraftBossCard>
               </VStack>

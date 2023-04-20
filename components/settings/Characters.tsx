@@ -53,6 +53,7 @@ const Characters: React.FC = () => {
         flash_picture: "",
         ban_picture: "",
         is_visible: true,
+        nation: "",
       },
     });
 
@@ -113,6 +114,7 @@ const Characters: React.FC = () => {
           ban_audio: "",
           pick_audio: "",
           is_visible: true,
+          nation: "",
         });
         queryclient.invalidateQueries(["characterList"]);
         setCharacterInfo({
@@ -129,6 +131,7 @@ const Characters: React.FC = () => {
           ban_audio: "",
           pick_audio: "",
           is_visible: true,
+          nation: "",
         });
       }
     },
@@ -147,6 +150,7 @@ const Characters: React.FC = () => {
     setValue("ban_audio", characterInfo.ban_audio);
     setValue("pick_audio", characterInfo.pick_audio);
     setValue("is_visible", characterInfo.is_visible);
+    setValue("nation", characterInfo.nation);
   }, [characterInfo]);
 
   const onSubmitCharacters: SubmitHandler<CharacterInfoProps> = (data) => {
@@ -496,6 +500,30 @@ const Characters: React.FC = () => {
           </FormControl>
         </SimpleGrid>
 
+        <FormControl mb="25px">
+          <FormLabelText>Nation</FormLabelText>
+          <Controller
+            render={({ field: { onChange, value, name } }) => (
+              <FormSelect
+                placeholder="Select Nation"
+                onChange={onChange}
+                value={value}
+                name={name}
+                required
+              >
+                <option value="Mondstadt">Mondstadt</option>
+                <option value="Liyue">Liyue</option>
+                <option value="Inazuma">Inazuma</option>
+                <option value="Sumeru">Sumeru</option>
+                <option value="Fontaine">Fontaine</option>
+                <option value="Natlan">Natlan</option>
+                <option value="Snezhnaya">Snezhnaya</option>
+              </FormSelect>
+            )}
+            name="nation"
+            control={control}
+          />
+        </FormControl>
         <FormControl mb="25px">
           <FormLabelText>Weapon</FormLabelText>
           <Controller

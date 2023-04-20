@@ -1,5 +1,5 @@
-import { CharacterDraftProps } from "@/libs/helpers/types";
-import { vision } from "@/libs/includes/color";
+import { CharacterDraftProps, CharacterInfoProps } from "@/libs/helpers/types";
+import { convertVisionToColor, vision } from "@/libs/includes/color";
 import {
   AllElementVisionIcon,
   AnemoVisionIcon,
@@ -12,6 +12,8 @@ import {
   PyroVisionIcon,
 } from "@/libs/includes/icons";
 import { CharacterPickImg, StartIcon } from "@/libs/includes/image";
+import { api } from "@/libs/providers/api";
+import { useDraftStore } from "@/libs/store/draft";
 
 import {
   BossAvatarCircle,
@@ -54,13 +56,52 @@ import {
   Image,
   SimpleGrid,
 } from "@chakra-ui/react";
-
-const characterLength = Array(72).fill(0);
+import { useQuery } from "@tanstack/react-query";
 
 const CharacterDraft: React.FC<CharacterDraftProps> = ({
   statusCharacterModal,
   onCloseCharacterModal,
 }) => {
+  const [
+    boss,
+    characters,
+    setCharactersList,
+    characterFilterElement,
+    setCharacterFilterVision,
+    searchCharacter,
+    setSearchCharacter,
+    searchCharacterList,
+    currentCharacterChoose,
+    setCurrentCharacterChoice,
+  ] = useDraftStore((state) => [
+    state.boss,
+    state.characters,
+    state.setCharactersList,
+    state.characterFilterElement,
+    state.setCharacterFilterVision,
+    state.searchCharacter,
+    state.setSearchCharacter,
+    state.searchCharacterList,
+    state.currentCharacterChoose,
+    state.setCurrentCharacterChoice,
+  ]);
+
+  const characterListQuery = useQuery({
+    queryFn: async () => {
+      const listResponse = await api.post("/characters/list", {
+        page: "Character List",
+      });
+      return listResponse.data.list;
+    },
+    onSuccess: (data) => {
+      setCharactersList(data);
+    },
+  });
+
+  const colorConvertVision = (vision: string) => {
+    return convertVisionToColor(vision);
+  };
+
   return statusCharacterModal === true ? (
     <ModalCharacterPickWrapper>
       <ModalCharacterPickheader as="nav">
@@ -78,28 +119,100 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
             alignItems="center"
             justifyContent="center"
           >
-            <CharacterVisionButton isselectedeleemnt="true">
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "all" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("all");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "all");
+              }}
+            >
               <AllElementVisionIcon />
             </CharacterVisionButton>
-            <CharacterVisionButton isselectedeleemnt="false">
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "anemo" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("anemo");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "anemo");
+              }}
+            >
               <AnemoVisionIcon color="#b9b4af" />
             </CharacterVisionButton>
-            <CharacterVisionButton isselectedeleemnt="false">
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "cryo" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("cryo");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "cryo");
+              }}
+            >
               <CryoVisionIcon color="#b9b4af" />
             </CharacterVisionButton>
-            <CharacterVisionButton isselectedeleemnt="false">
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "dendro" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("dendro");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "dendro");
+              }}
+            >
               <DendroVisionIcon color="#b9b4af" />
             </CharacterVisionButton>
-            <CharacterVisionButton isselectedeleemnt="false">
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "electro" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("electro");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "electro");
+              }}
+            >
               <ElectroVisionIcon color="#b9b4af" />
             </CharacterVisionButton>
-            <CharacterVisionButton isselectedeleemnt="false">
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "geo" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("geo");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "geo");
+              }}
+            >
               <GeoVisionIcon color="#b9b4af" />
             </CharacterVisionButton>
-            <CharacterVisionButton isselectedeleemnt="false">
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "hydro" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("hydro");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "hydro");
+              }}
+            >
               <HydroVisionIcon color="#b9b4af" />
             </CharacterVisionButton>
-            <CharacterVisionButton isselectedeleemnt="false">
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "pyro" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("pyro");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "pyro");
+              }}
+            >
               <PyroVisionIcon color="#b9b4af" />
             </CharacterVisionButton>
           </Flex>
@@ -126,26 +239,52 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               <CharacterTextFieldSearch
                 type="text"
                 placeholder="Search Characters"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setSearchCharacter(e.target.value);
+                }}
               />
-              <CharacterSearchButton>Search</CharacterSearchButton>
+              <CharacterSearchButton
+                onClick={() => {
+                  if (searchCharacter == "") {
+                    setCharactersList(characterListQuery.data);
+                  } else {
+                    searchCharacterList(searchCharacter, "all");
+                  }
+                }}
+              >
+                Search
+              </CharacterSearchButton>
             </HStack>
             <CharacterListWrapper>
-              <Grid templateColumns="repeat(8, 1fr)" gap={4} p={2}>
-                {characterLength.map((_, index) => (
+              <Grid templateColumns="repeat(7, 1fr)" gap={4} p={2}>
+                {characters.map((charData, index) => (
                   <GridItem key={index}>
-                    <CharacterPickCard>
-                      <CharacterPickCardImg rarity="4">
+                    <CharacterPickCard
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentCharacterChoice(charData);
+                      }}
+                    >
+                      <CharacterPickCardImg rarity={charData.rarity}>
                         <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Albedo.png"
-                          alt="albedo-character"
+                          src={charData.draft_picture}
+                          alt={`${charData.name}-character-image`}
                         />
                         <CharacterPickCardVision>
-                          {vision["geo"].logoSrc}
+                          {charData.vision === "anemo" && <AnemoVisionIcon />}
+                          {charData.vision === "cryo" && <CryoVisionIcon />}
+                          {charData.vision === "dendro" && <DendroVisionIcon />}
+                          {charData.vision === "electro" && (
+                            <ElectroVisionIcon />
+                          )}
+                          {charData.vision === "geo" && <GeoVisionIcon />}
+                          {charData.vision === "hydro" && <HydroVisionIcon />}
+                          {charData.vision === "pyro" && <PyroVisionIcon />}
                         </CharacterPickCardVision>
                       </CharacterPickCardImg>
                       <CharacterPickCardInfo>
                         <CharacterPickCardInfoText>
-                          Ayaka
+                          {charData.display_name}
                         </CharacterPickCardInfoText>
                       </CharacterPickCardInfo>
                     </CharacterPickCard>
@@ -156,19 +295,54 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
           </CharacterPickWrapper>
           <CharacterInfoWrapper>
             <CharacterPickInfoCard h="375px">
-              <CharacterPickInfoCardCharacter
-                colorpickedcharacter={vision["hydro"].color}
-              >
-                <Box className="character-picked-vision-icon">
-                  {vision["hydro"].logoSrc}
+              <CharacterPickInfoCardCharacter colorpickedcharacter="">
+                <Box
+                  bgColor={colorConvertVision(
+                    currentCharacterChoose.vision !== ""
+                      ? currentCharacterChoose.vision
+                      : ""
+                  )}
+                  w="100%"
+                  height="100%"
+                >
+                  <Box className="character-picked-vision-icon">
+                    {currentCharacterChoose.vision === "anemo" && (
+                      <AnemoVisionIcon />
+                    )}
+                    {currentCharacterChoose.vision === "cryo" && (
+                      <CryoVisionIcon />
+                    )}
+                    {currentCharacterChoose.vision === "dendro" && (
+                      <DendroVisionIcon />
+                    )}
+                    {currentCharacterChoose.vision === "electro" && (
+                      <ElectroVisionIcon />
+                    )}
+                    {currentCharacterChoose.vision === "geo" && (
+                      <GeoVisionIcon />
+                    )}
+                    {currentCharacterChoose.vision === "hydro" && (
+                      <HydroVisionIcon />
+                    )}
+                    {currentCharacterChoose.vision === "pyro" && (
+                      <PyroVisionIcon />
+                    )}
+                  </Box>
+                  {currentCharacterChoose.pick_picture !== "" && (
+                    <Image
+                      className="character-picked-image-pick"
+                      src={currentCharacterChoose.pick_picture}
+                    />
+                  )}
+
+                  {currentCharacterChoose.name !== "" && (
+                    <CharacterPickInfoNameWrapper>
+                      <CharacterPickInfoNameText>
+                        {currentCharacterChoose.name}
+                      </CharacterPickInfoNameText>
+                    </CharacterPickInfoNameWrapper>
+                  )}
                 </Box>
-                <Image
-                  className="character-picked-image-pick"
-                  src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Yelan.png"
-                />
-                <CharacterPickInfoNameWrapper>
-                  <CharacterPickInfoNameText>Yelan</CharacterPickInfoNameText>
-                </CharacterPickInfoNameWrapper>
               </CharacterPickInfoCardCharacter>
               <CharacterPickInfoCardDetails>
                 <Grid templateColumns="repeat(2, 1fr)" gap={4} mb={4}>
@@ -178,7 +352,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                         Rarity:
                       </CharacterPickInfoCardDetailsText>
                       <HStack alignItems="center">
-                        {Array(5)
+                        {Array(currentCharacterChoose.rarity === "4" ? 4 : 5)
                           .fill(0)
                           .map((_, index) => (
                             <Image
@@ -193,36 +367,36 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                   </GridItem>
                   <GridItem>
                     <CharacterPickInfoCardDetailsText>
-                      Weapon Type: Bow
+                      Weapon Type: {currentCharacterChoose.weapon}
                     </CharacterPickInfoCardDetailsText>
                   </GridItem>
                   <GridItem>
                     <CharacterPickInfoCardDetailsText>
-                      Element: Hydro
+                      Element:{" "}
+                      {currentCharacterChoose.vision.charAt(0).toUpperCase() +
+                        currentCharacterChoose.vision.slice(1)}
                     </CharacterPickInfoCardDetailsText>
                   </GridItem>
                   <GridItem>
                     <CharacterPickInfoCardDetailsText>
-                      Nation: Liyue
+                      Nation: {currentCharacterChoose.nation}
                     </CharacterPickInfoCardDetailsText>
                   </GridItem>
                 </Grid>
 
                 <CharacterDraftButton drafttype="pick">
-                  Pick Yelan
+                  Pick {currentCharacterChoose.name}
                 </CharacterDraftButton>
               </CharacterPickInfoCardDetails>
             </CharacterPickInfoCard>
             <Box position="relative" my={4}>
               <BossAvatarCircle>
-                <Image
-                  src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
-                  alt="avatar"
-                  width="100%"
-                />
+                {boss.picture !== "" && (
+                  <Image src={boss.picture} alt="avatar" width="100%" />
+                )}
               </BossAvatarCircle>
               <BossAvatarNameWrapper>
-                <BossAvatarName>AeonBlight</BossAvatarName>
+                <BossAvatarName>{boss.name}</BossAvatarName>
               </BossAvatarNameWrapper>
             </Box>
             <CharacterPickInfoCard h="165px">
@@ -237,34 +411,26 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                         currentdraft="false"
                         drafttype="ban"
                       >
-                        <CharacterDraftPlayerImg rarity="4">
+                        {/* <CharacterDraftPlayerImg rarity="4">
                           <Image src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Bennett.png" />
-                        </CharacterDraftPlayerImg>
+                        </CharacterDraftPlayerImg> */}
                       </CharacterDraftPlayerWrapper>
                     </GridItem>
                     <GridItem>
                       <CharacterDraftPlayerWrapper
                         currentdraft="false"
                         drafttype="ban"
-                      >
-                        <CharacterDraftPlayerImg rarity="5">
-                          <Image src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Kamisato_Ayato.png" />
-                        </CharacterDraftPlayerImg>
-                      </CharacterDraftPlayerWrapper>
+                      ></CharacterDraftPlayerWrapper>
                     </GridItem>
                     <GridItem>
                       <CharacterDraftPlayerWrapper
                         currentdraft="false"
                         drafttype="ban"
-                      >
-                        <CharacterDraftPlayerImg rarity="5">
-                          <Image src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Yoimiya.png" />
-                        </CharacterDraftPlayerImg>
-                      </CharacterDraftPlayerWrapper>
+                      ></CharacterDraftPlayerWrapper>
                     </GridItem>
                     <GridItem>
                       <CharacterDraftPlayerWrapper
-                        currentdraft="true"
+                        currentdraft="false"
                         drafttype="ban"
                       ></CharacterDraftPlayerWrapper>
                     </GridItem>
@@ -339,7 +505,13 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                     </GridItem>
                     <GridItem>
                       <CharacterDraftPlayerWrapper
-                        currentdraft="true"
+                        currentdraft="false"
+                        drafttype="pick"
+                      ></CharacterDraftPlayerWrapper>
+                    </GridItem>
+                    <GridItem>
+                      <CharacterDraftPlayerWrapper
+                        currentdraft="false"
                         drafttype="pick"
                       ></CharacterDraftPlayerWrapper>
                     </GridItem>
@@ -348,19 +520,9 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                         currentdraft="false"
                         drafttype="pick"
                       >
-                        <CharacterDraftPlayerImg rarity="5">
-                          <Image src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Tartaglia.png" />
-                        </CharacterDraftPlayerImg>
-                      </CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="pick"
-                      >
-                        <CharacterDraftPlayerImg rarity="5">
+                        {/* <CharacterDraftPlayerImg rarity="5">
                           <Image src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Kaedehara_Kazuha.png" />
-                        </CharacterDraftPlayerImg>
+                        </CharacterDraftPlayerImg> */}
                       </CharacterDraftPlayerWrapper>
                     </GridItem>
                   </Grid>

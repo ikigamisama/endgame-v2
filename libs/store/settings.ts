@@ -36,6 +36,7 @@ const initialState: SettingState = {
         ban_audio:   '',
         pick_audio:  '',
         is_visible: true,
+        nation: ''
     },
 
 }

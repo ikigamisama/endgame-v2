@@ -86,9 +86,9 @@ const ModalFeatureDraft = ({ isOpen, onClose, title }: ModalFeatures) => {
 
 const DraftHeader: React.FC<CharacterDraftProps> = ({
   onOpenCharacterModal,
+  state,
 }) => {
   const router = useRouter();
-  const { state } = useUserData();
 
   const [setBackgroundBG] = userStore((state) => [state.setBackgroundBG]);
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
@@ -127,12 +127,16 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
           gap={4}
         >
           <Flex flex={1} gap={4} justifyContent="flex-start">
-            <ButtonPopUpNav onClick={() => router.push(`/arena/${arena_id}`)}>
-              <BackIcon />
-            </ButtonPopUpNav>
-            <ButtonPopUpNav onClick={onOpenCharacterModal}>
-              <CharacterIcon />
-            </ButtonPopUpNav>
+            {state?.user.role === "GM" && (
+              <ButtonPopUpNav onClick={() => router.push(`/arena/${arena_id}`)}>
+                <BackIcon />
+              </ButtonPopUpNav>
+            )}
+            {state?.user.role === "Drafter" && (
+              <ButtonPopUpNav onClick={onOpenCharacterModal}>
+                <CharacterIcon />
+              </ButtonPopUpNav>
+            )}
           </Flex>
           <Flex flex={1} justifyContent="center">
             <BanCharactersListContainer
@@ -277,7 +281,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                       <FormLabelText>Background Video</FormLabelText>
                       <FormSelect
                         placeContent="random"
-                        value={state.settings.video_bg.mp4
+                        value={state?.settings.video_bg.mp4
                           .replace("/video/bg/", "")
                           .replace("_bg.mp4", "")}
                         onChange={(e) => {
@@ -301,20 +305,25 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                 </PopoverContent>
               </Popover>
             </Box>
-            <ButtonPopUpNav
-              onClick={() => {
-                setModalRestartDraft(true);
-              }}
-            >
-              <RestartIcon />
-            </ButtonPopUpNav>
-            <ButtonPopUpNav
-              onClick={() => {
-                setModalSwitchDraft(true);
-              }}
-            >
-              <SwapIcon />
-            </ButtonPopUpNav>
+
+            {state?.user.role === "GM" && (
+              <>
+                <ButtonPopUpNav
+                  onClick={() => {
+                    setModalRestartDraft(true);
+                  }}
+                >
+                  <RestartIcon />
+                </ButtonPopUpNav>
+                <ButtonPopUpNav
+                  onClick={() => {
+                    setModalSwitchDraft(true);
+                  }}
+                >
+                  <SwapIcon />
+                </ButtonPopUpNav>
+              </>
+            )}
           </Flex>
         </HStack>
       </Box>

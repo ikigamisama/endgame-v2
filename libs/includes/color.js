@@ -38,3 +38,38 @@ export const vision = {
     logoSrc: <PyroVisionIcon />,
   },
 };
+
+export const convertVisionToColor = (vision) => {
+  let colorVision = "";
+  switch (vision) {
+    case "anemo": {
+      colorVision = "#067b54";
+      break;
+    }
+    case "cryo": {
+      colorVision = "#EEFCFF";
+      break;
+    }
+    case "dendro": {
+      colorVision = "#387017";
+      break;
+    }
+    case "electro": {
+      colorVision = "#3d1e8c";
+      break;
+    }
+    case "geo": {
+      colorVision = "#CA8C00";
+      break;
+    }
+    case "hydro": {
+      colorVision = "#063e77";
+      break;
+    }
+    case "pyro": {
+      colorVision = "#8d1917";
+      break;
+    }
+  }
+  return colorVision;
+};

@@ -81,6 +81,7 @@ export declare interface CharacterDraftProps{
     statusCharacterModal: boolean
     onCloseCharacterModal?: () => void
     onOpenCharacterModal?: () => void
+    state?: UserDataPropState
 }
 
 export declare interface ProfileChanges{
@@ -112,9 +113,10 @@ export declare interface CharacterInfoProps{
     pick_picture: string
     flash_picture: string
     ban_picture: string
-    ban_audio:   string
+    ban_audio: string
     pick_audio:  string
     is_visible: any
+    nation?: string
 }
 
 
@@ -232,10 +234,45 @@ export type PusherType = {
     useTLS: boolean
 }
 
+export type DraftPlayerChooseInfo = {
+
+}
+export type DraftPlayerCharacterInfo = {
+    pick: CharacterInfoProps[],
+    ban: CharacterInfoProps[]
+}
+
+export type DraftSketchProps = {
+   player1: DraftPlayerCharacterInfo,
+   player2: DraftPlayerCharacterInfo
+}
+
 export type DraftStateProps = {
     init: string
+    characters: CharacterInfoProps[]
+    mode: string
+    characterFilterElement: string
+    searchCharacter: string
+    applyCharacterModal: boolean
+    applyBossModal: boolean
+    isStartDraft : boolean
+    currentDraftPhase: string
+    currentPlayerDraft: string
+    currentAudioPlay: string
+    timer: number
+    boss: BossInfoProps
+    currentCharacterChoose: CharacterInfoProps
+    draft: any
 }
 
 export type DraftFunctions = {
     setInit: (init: string) => void
+    setCharactersList: (characterList: CharacterInfoProps[]) => void
+    setApplyCharacterModal: (modal: boolean) => void
+    setApplyBossModal: (modal: boolean) => void
+    setIsStartDraft: (start: boolean) => void
+    setSearchCharacter: (char: string) => void
+    searchCharacterList: (name: string, vision: string) => void
+    setCharacterFilterVision: (vision: string) => void
+    setCurrentCharacterChoice: (characterInfo:  CharacterInfoProps) => void
 }

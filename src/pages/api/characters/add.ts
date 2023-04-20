@@ -35,6 +35,7 @@ export default async function handler(
                     ban_audio:   req.body.ban_audio,
                     pick_audio:  req.body.pick_audio,
                     is_visible: req.body.is_visible,
+                    nation: req.body.nation,
                 }
             })
             res.status(200).json({ 

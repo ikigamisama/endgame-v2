@@ -202,7 +202,7 @@ export const CharacterPickInfoCardCharacter = styled(Box)<CharacterDraftDesignPr
     background-color: ${(props) => (props.colorpickedcharacter === '' ? '#1e223f;' : props.colorpickedcharacter)};
     z-index: 575;
 
-    & > .character-picked-image-pick{
+    & .character-picked-image-pick{
         transform:scaleX(-1);
         width: 50%;
         height: 100%;
@@ -212,7 +212,7 @@ export const CharacterPickInfoCardCharacter = styled(Box)<CharacterDraftDesignPr
         z-index: 585;
     }
 
-    & > .character-picked-vision-icon{
+    & .character-picked-vision-icon{
         position: absolute;
         left: 0;
         bottom: 0;

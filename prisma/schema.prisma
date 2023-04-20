@@ -48,6 +48,7 @@ model Characters {
   ban_audio      String           @db.LongText
   pick_audio     String           @db.LongText
   display_name   String?
+  nation         String?
   CharacterDraft CharacterDraft[]
 }
 
