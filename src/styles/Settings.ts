@@ -118,3 +118,17 @@ export const GeneratePasswordButton = styled(Button)`
         box-shadow: 0px 0px 18px 8px #0D47A1;
     }
 `
+
+
+export const AudioUploadButton = styled(Button)`
+    font-family: 'GenshinFont',sans-serif;
+    font-size: 20px;
+    width: 100%;
+    padding: 28px 0;
+    color: #1E223F;
+    background-color: #ECDEB5;
+
+    &:hover{
+        background-color: #ECDEB5;
+    }
+`

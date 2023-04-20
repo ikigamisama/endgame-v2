@@ -132,7 +132,7 @@ export type SettingState = {
    searchCharacter: string
    userInfo:  ProfileChanges
    bossInfo:  BossInfoProps
-   characterInfo:  CharacterInfoProps
+   characterInfo:  CharacterInfoProps,
 }
 
 export type SettingActions = {
@@ -148,7 +148,6 @@ export type SettingActions = {
     setCharacterList: (characters: CharacterInfoProps[]) => void
     setCharacterInfo: (character: CharacterInfoProps) => void
 }
-
 
 export type VideoPropsSettings = {
     mp4: string;
@@ -172,12 +171,14 @@ export declare interface UserDataPropState {
     user: UserDataProp;
     settings: UserSettingsProp;
     arena_id: string | string[] | undefined
+    isLoadingSubmit?: boolean
 }
 
 export type UserFeatureSettingProps = {
     setBackgroundBG : (vidSrc: VideoPropsSettings) => void
     setUserData: (userData: UserDataProp) => void 
     setArenaID: (arena: string | string[] | undefined) => void
+    setLoadingSubmit: (loading: boolean) => void
 }
 
 export type ArenaPlayers = {

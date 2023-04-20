@@ -135,8 +135,12 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
             </ButtonPopUpNav>
           </Flex>
           <Flex flex={1} justifyContent="center">
-            <BanCharactersListContainer aligndraft="left" statusdraft="none">
-              <BanCharactersListWrapper>
+            <BanCharactersListContainer
+              width="450px"
+              aligndraft="left"
+              statusdraft="none"
+            >
+              <BanCharactersListWrapper width="425px">
                 <BanCharacterWrapper
                   aligndraft="left"
                   widthcharacter="25%"
@@ -197,8 +201,12 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                 <BossNameWrapper>Thunder Manifestation</BossNameWrapper>
               </BossDraftWrapper>
             </BossDraftContainer>
-            <BanCharactersListContainer aligndraft="right" statusdraft="ban">
-              <BanCharactersListWrapper>
+            <BanCharactersListContainer
+              width="450px"
+              aligndraft="right"
+              statusdraft="ban"
+            >
+              <BanCharactersListWrapper width="425px">
                 <BanCharacterWrapper
                   aligndraft="right"
                   widthcharacter="25%"

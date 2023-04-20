@@ -7,12 +7,34 @@ export default async function handler(
     res: NextApiResponse
   ) {
 
-    if(req.method === "GET"){
+    if(req.method === "POST"){
         try{
-            const characterList = await prisma.characters.findMany()
+            let charactersQuery = null;
+            if(req.body.page === "Settings"){
+                charactersQuery = await prisma.characters.findMany({
+                    orderBy: [
+                        {
+                          name: 'asc',
+                        }
+                    ]
+                })
+            }
+            else{
+                charactersQuery = await prisma.characters.findMany({
+                    where:{
+                        is_visible: true
+                    },
+                    orderBy: [
+                        {
+                          name: 'asc',
+                        }
+                    ]
+                })
+            }
+            
             res.status(200).json({ 
                 success: true,
-                list: characterList
+                list: charactersQuery
             })
         }
         catch(error){

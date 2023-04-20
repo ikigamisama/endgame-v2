@@ -43,7 +43,6 @@ export const BossNameWrapper = styled(Box)`
 `
 
 export const BanCharactersListContainer = styled(Box)<DraftPositionProps>`
-    width: 450px;
     height: 85px;
     background-color: #ecdeb5;
     margin-inline-start: 0rem !important;
@@ -55,7 +54,6 @@ export const BanCharactersListContainer = styled(Box)<DraftPositionProps>`
 ` 
 
 export const BanCharactersListWrapper = styled(Box)`
-    width: 425px;
     height: 100%;
     background-color: inherit;
     position: relative;

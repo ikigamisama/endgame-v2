@@ -36,7 +36,7 @@ const initialState: SettingState = {
         ban_audio:   '',
         pick_audio:  '',
         is_visible: true,
-    }
+    },
 
 }
 
@@ -94,6 +94,6 @@ export const useSettingsStore = create<SettingState & SettingActions>((set, get)
     },
     setCharacterInfo: (character: CharacterInfoProps) => {
         set({ characterInfo: character });
-    },
+    }
 }))
 

@@ -45,8 +45,8 @@ model Characters {
   flash_picture  String
   is_visible     Boolean          @default(true)
   ban_picture    String
-  ban_audio      String
-  pick_audio     String
+  ban_audio      String           @db.LongText
+  pick_audio     String           @db.LongText
   display_name   String?
   CharacterDraft CharacterDraft[]
 }

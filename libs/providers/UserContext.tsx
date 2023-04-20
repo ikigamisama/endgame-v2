@@ -27,6 +27,7 @@ const currentUserState: UserDataPropState = {
     },
   },
   arena_id: "",
+  isLoadingSubmit: false,
 };
 
 export const userStore = create<UserDataPropState & UserFeatureSettingProps>(
@@ -40,6 +41,9 @@ export const userStore = create<UserDataPropState & UserFeatureSettingProps>(
     },
     setArenaID: (arena: string | string[] | undefined) => {
       set({ arena_id: arena });
+    },
+    setLoadingSubmit: (loading: boolean) => {
+      set({ isLoadingSubmit: loading });
     },
   })
 );

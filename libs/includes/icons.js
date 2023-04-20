@@ -423,3 +423,22 @@ export const PlaySpeakerIcon = () => (
     <path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z"></path>
   </svg>
 );
+
+export const UploadIcon = () => (
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    strokeWidth="0"
+    viewBox="0 0 24 24"
+    height="32px"
+    width="32px"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill="none"
+      stroke="#000"
+      strokeWidth="2"
+      d="M6,14.1818182 L6,17.4545455 L18,17.4545455 L18,14.1818182 M12,6 L12,14 M8.18181818,9.81818182 L12,6 L15.8181818,9.81818182"
+    ></path>
+  </svg>
+);

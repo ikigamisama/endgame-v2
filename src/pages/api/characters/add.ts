@@ -1,7 +1,14 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '@/prisma/client'
-import { hashPassword } from '@/libs/providers/password'
+
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '5mb',
+        },
+    },
+}
 
 export default async function handler(
     req: NextApiRequest,

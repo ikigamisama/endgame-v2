@@ -1,5 +1,5 @@
 import { CharacterInfoProps } from "@/libs/helpers/types";
-import { PlaySpeakerIcon } from "@/libs/includes/icons";
+import { PlaySpeakerIcon, UploadIcon } from "@/libs/includes/icons";
 import { WarpImgGIF } from "@/libs/includes/image";
 import { api } from "@/libs/providers/api";
 import { useSettingsStore } from "@/libs/store/settings";
@@ -7,6 +7,7 @@ import { ToastBox, ToastText } from "@/src/styles";
 import { ArenaCheckbox } from "@/src/styles/Arena";
 import { DraftBossCardBGImg } from "@/src/styles/Draft";
 import {
+  AudioUploadButton,
   BossCard,
   ButtonPlayCharacters,
   TableTextFont,
@@ -20,17 +21,20 @@ import {
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   Center,
   Flex,
   FormControl,
   Image,
   SimpleGrid,
+  Spinner,
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Howl } from "howler";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { userStore } from "@/libs/providers/UserContext";
 
 const Characters: React.FC = () => {
   const toast = useToast();
@@ -48,8 +52,6 @@ const Characters: React.FC = () => {
         pick_picture: "",
         flash_picture: "",
         ban_picture: "",
-        ban_audio: "",
-        pick_audio: "",
         is_visible: true,
       },
     });
@@ -57,6 +59,11 @@ const Characters: React.FC = () => {
   const [characterInfo, setCharacterInfo] = useSettingsStore((state) => [
     state.characterInfo,
     state.setCharacterInfo,
+  ]);
+
+  const [isLoadingSubmit, setLoadingSubmit] = userStore((state) => [
+    state.isLoadingSubmit,
+    state.setLoadingSubmit,
   ]);
 
   const sendAddCharacter = useMutation({
@@ -71,15 +78,18 @@ const Characters: React.FC = () => {
       return submitResponse.data;
     },
     onSuccess: (data) => {
+      setLoadingSubmit(false);
       toast({
         position: "top-right",
         render: () => (
           <ToastBox
-            p={4}
+            px={8}
+            py={6}
             display="flex"
             flexDirection="row"
             alignItems="center"
             gap={4}
+            borderLeft="10px solid #61b162"
           >
             <CheckCircleIcon boxSize={5} />
             <ToastText> {data.message}</ToastText>
@@ -140,6 +150,7 @@ const Characters: React.FC = () => {
   }, [characterInfo]);
 
   const onSubmitCharacters: SubmitHandler<CharacterInfoProps> = (data) => {
+    setLoadingSubmit(true);
     sendAddCharacter.mutate(data);
   };
 
@@ -150,13 +161,43 @@ const Characters: React.FC = () => {
     watchBanSound = watch("ban_audio"),
     watchPickSound = watch("pick_audio");
 
-  let playPick = new Howl({
-    src: [watchPickSound !== "" ? watchPickSound : "sound.mp3"],
-  });
+  const pickCharacterAudioFile = useRef<HTMLInputElement>(null),
+    banCharacterAudioFile = useRef<HTMLInputElement>(null);
 
-  let playBan = new Howl({
-    src: [watchBanSound !== "" ? watchBanSound : "sound.mp3"],
-  });
+  let playPick =
+    watchPickSound !== ""
+      ? new Howl({
+          src: [watchPickSound],
+        })
+      : null;
+
+  let playBan =
+    watchBanSound !== ""
+      ? new Howl({
+          src: [watchBanSound],
+        })
+      : null;
+
+  const audioCharacterFileConvertToRaw = (type: string, file: File) => {
+    const fileReader = new FileReader();
+    fileReader.addEventListener("load", (e: any) => {
+      const arrayBuffer = e.target.result;
+      const base64Str = Buffer.from(arrayBuffer).toString("base64");
+      const contentType = "audio/ogg";
+
+      if (type === "pick") {
+        setValue("pick_audio", `data:${contentType};base64,${base64Str}`);
+      } else {
+        setValue("ban_audio", `data:${contentType};base64,${base64Str}`);
+      }
+
+      const sound = new Howl({
+        src: [`data:${contentType};base64,${base64Str}`],
+      });
+      sound.play();
+    });
+    fileReader.readAsArrayBuffer(file);
+  };
 
   return (
     <Box as="section" py={4}>
@@ -299,27 +340,38 @@ const Characters: React.FC = () => {
               <ButtonPlayCharacters
                 drafttype="pick"
                 leftIcon={<PlaySpeakerIcon />}
-                onClick={() => playPick.play()}
+                onClick={() => {
+                  if (playPick === null) {
+                    return;
+                  }
+                  playPick.play();
+                }}
               >
                 Play Pick Character Sound
               </ButtonPlayCharacters>
             )}
 
             <FormControl mt="25px">
-              <FormLabelText>Pick Sound Source</FormLabelText>
-              <Controller
-                render={({ field: { onChange, value, name } }) => (
-                  <FormTextBox
-                    type="text"
-                    onChange={onChange}
-                    value={value}
-                    name={name}
-                    required
-                  />
-                )}
-                name="pick_audio"
-                control={control}
+              <FormLabelText htmlFor="pick_character_sound">
+                Pick Sound Source
+              </FormLabelText>
+              <input
+                type="file"
+                id="pick_character_sound"
+                ref={pickCharacterAudioFile}
+                style={{ display: "none" }}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!e.target.files) return;
+
+                  audioCharacterFileConvertToRaw("pick", e.target.files[0]);
+                }}
               />
+              <AudioUploadButton
+                onClick={() => pickCharacterAudioFile?.current?.click()}
+                leftIcon={<UploadIcon />}
+              >
+                Upload Pick Sound
+              </AudioUploadButton>
             </FormControl>
           </Flex>
           <Flex direction="column">
@@ -327,27 +379,38 @@ const Characters: React.FC = () => {
               <ButtonPlayCharacters
                 drafttype="Ban"
                 leftIcon={<PlaySpeakerIcon />}
-                onClick={() => playBan.play()}
+                onClick={() => {
+                  if (playBan === null) {
+                    return;
+                  }
+                  playBan.play();
+                }}
               >
                 Play Ban Character Sound
               </ButtonPlayCharacters>
             )}
 
             <FormControl mt="25px">
-              <FormLabelText>Ban Sound Source</FormLabelText>
-              <Controller
-                render={({ field: { onChange, value, name } }) => (
-                  <FormTextBox
-                    type="text"
-                    onChange={onChange}
-                    value={value}
-                    name={name}
-                    required
-                  />
-                )}
-                name="ban_audio"
-                control={control}
+              <FormLabelText htmlFor="pick_character_sound">
+                Ban Sound Source
+              </FormLabelText>
+              <input
+                type="file"
+                id="pick_character_sound"
+                ref={banCharacterAudioFile}
+                style={{ display: "none" }}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!e.target.files) return;
+
+                  audioCharacterFileConvertToRaw("ban", e.target.files[0]);
+                }}
               />
+              <AudioUploadButton
+                onClick={() => banCharacterAudioFile?.current?.click()}
+                leftIcon={<UploadIcon />}
+              >
+                Upload Ban Sound
+              </AudioUploadButton>
             </FormControl>
           </Flex>
         </SimpleGrid>
@@ -447,8 +510,8 @@ const Characters: React.FC = () => {
                 <option value="Catalyst">Catalyst</option>
                 <option value="Claymore">Claymore</option>
                 <option value="Sword">Sword</option>
-                <option value="Spear">Spear</option>
-                <option value="Archer">Archer</option>
+                <option value="Polearm">Polearm</option>
+                <option value="Bow">Bow</option>
               </FormSelect>
             )}
             name="weapon"
@@ -456,8 +519,19 @@ const Characters: React.FC = () => {
           />
         </FormControl>
 
-        <FormSubmitButton type="submit">
-          {characterInfo.id !== "" ? "Edit" : "Create"} Character
+        <FormSubmitButton disabled={isLoadingSubmit} type="submit">
+          {isLoadingSubmit === true ? (
+            <Spinner
+              thickness="5px"
+              speed="0.5s"
+              emptyColor="#ECDEB5"
+              color="#1E223F"
+            />
+          ) : characterInfo.id !== "" ? (
+            "Edit Character"
+          ) : (
+            "Create Character"
+          )}
         </FormSubmitButton>
 
         {characterInfo.id !== "" && (

@@ -16,7 +16,14 @@ import {
   LoginCardWrapper,
 } from "@/src/styles/login";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Box, Center, FormControl, Image, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  FormControl,
+  Image,
+  Spinner,
+  useToast,
+} from "@chakra-ui/react";
 import { avatarList } from "@/libs/includes/avatars";
 import { PlayerLoginProps } from "@/libs/helpers/types";
 import BackgroundVid from "@/components/BackgroundVid";
@@ -26,6 +33,7 @@ import { CheckCircleIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { api } from "@/libs/providers/api";
 import { useMutation } from "@tanstack/react-query";
+import { video_list } from "@/libs/includes/videos";
 
 const ArenaPlayerLogin: NextPage = () => {
   const { state } = useUserData();
@@ -38,10 +46,10 @@ const ArenaPlayerLogin: NextPage = () => {
       role: "Drafter",
     },
   });
-  const [arena_id, setArenaID, setUserData] = userStore((state) => [
-    state.arena_id,
+  const [setArenaID, isLoadingSubmit, setLoadingSubmit] = userStore((state) => [
     state.setArenaID,
-    state.setUserData,
+    state.isLoadingSubmit,
+    state.setLoadingSubmit,
   ]);
   const authCheck = useMutation({
     mutationFn: async (data: PlayerLoginProps) => {
@@ -77,6 +85,8 @@ const ArenaPlayerLogin: NextPage = () => {
           redirect: false,
         });
 
+        setLoadingSubmit(false);
+
         if (res?.ok) {
           setArenaID(router.query?.arenaID);
           router.replace(`/arena/${router.query?.arenaID}`);
@@ -89,6 +99,7 @@ const ArenaPlayerLogin: NextPage = () => {
     watchAvatar: any = watch("avatar");
 
   const submitPlayerLogin: SubmitHandler<PlayerLoginProps> = async (data) => {
+    setLoadingSubmit(true);
     authCheck.mutate({ ...data, arenaID: router.query.arenaID });
   };
   return (
@@ -101,8 +112,8 @@ const ArenaPlayerLogin: NextPage = () => {
       </Head>
 
       <BackgroundVid
-        mp4={state.settings.video_bg.mp4}
-        webm={state.settings.video_bg.webm}
+        mp4={video_list["Default"].mp4}
+        webm={video_list["Default"].webm}
       />
 
       <Box position="relative" h="100vh">
@@ -173,7 +184,18 @@ const ArenaPlayerLogin: NextPage = () => {
                   </Box>
                 </FormControl>
 
-                <FormSubmitButton type="submit">Join Room</FormSubmitButton>
+                <FormSubmitButton type="submit">
+                  {isLoadingSubmit === true ? (
+                    <Spinner
+                      thickness="5px"
+                      speed="0.5s"
+                      emptyColor="#ECDEB5"
+                      color="#1E223F"
+                    />
+                  ) : (
+                    " Join Room"
+                  )}
+                </FormSubmitButton>
               </form>
             </LoginCardWrapper>
           </LoginCard>

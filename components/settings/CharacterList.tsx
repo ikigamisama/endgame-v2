@@ -1,5 +1,4 @@
 import { CharacterInfoProps } from "@/libs/helpers/types";
-import { vision } from "@/libs/includes/color";
 import {
   AnemoVisionIcon,
   CryoVisionIcon,
@@ -52,7 +51,9 @@ const CharacterList: React.FC = () => {
   const characterListQuery = useQuery({
     queryKey: ["characterList"],
     queryFn: async () => {
-      const listResponse = await api.get("/characters/list");
+      const listResponse = await api.post("/characters/list", {
+        page: "Settings",
+      });
       return listResponse.data.list;
     },
     onSuccess: (data) => {
