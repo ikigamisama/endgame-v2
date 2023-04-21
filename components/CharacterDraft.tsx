@@ -423,12 +423,14 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
             </CharacterPickInfoCard>
             <Box position="relative" my={4}>
               <BossAvatarCircle>
-                {boss.picture !== "" && (
+                {boss !== null && (
                   <Image src={boss.picture} alt="avatar" width="100%" />
                 )}
               </BossAvatarCircle>
               <BossAvatarNameWrapper>
-                <BossAvatarName>{boss.name}</BossAvatarName>
+                <BossAvatarName>
+                  {boss !== null ? boss.name : ""}
+                </BossAvatarName>
               </BossAvatarNameWrapper>
             </Box>
             <CharacterPickInfoCard h="165px">
