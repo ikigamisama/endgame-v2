@@ -38,7 +38,8 @@ import {
 
 import { NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const ModalBoss = ({
   isOpen,
@@ -90,6 +91,7 @@ const ModalBoss = ({
 
 const Drafting: NextPage = () => {
   const { state } = useUserData();
+  const router = useRouter();
 
   const [applyCharacterModal, setApplyCharacterModal] =
     useState<boolean>(false);
@@ -107,6 +109,9 @@ const Drafting: NextPage = () => {
   const onAcceptRerollBoss = () => {};
 
   const onDeclineRerollBoss = () => {};
+
+  useEffect(() => {}, [router]);
+
   return (
     <>
       <Head>
@@ -146,6 +151,7 @@ const Drafting: NextPage = () => {
           statusCharacterModal={applyCharacterModal}
           onOpenCharacterModal={onToggleCharacterPickModal}
           state={state}
+          router={router}
         />
 
         <Container maxW="1275px" pt={4} height="calc(100vh - 115px)">
@@ -160,7 +166,7 @@ const Drafting: NextPage = () => {
                 position="relative"
                 zIndex="15"
               >
-                <DraftPickBanner aligndraft="left" currentpickdraft="true">
+                <DraftPickBanner aligndraft="left" currentpickdraft="false">
                   <DraftPickBannerWrapper>
                     <DraftCharacterPickBanner
                       aligndraft="left"
@@ -182,21 +188,9 @@ const Drafting: NextPage = () => {
                     </DraftCharacterPickBanner>
                     <DraftCharacterPickBanner
                       aligndraft="right"
-                      colorcharacter={vision["dendro"].color}
+                      colorcharacter=""
                     >
-                      <DraftCharacterContainer aligndraft="right">
-                        <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Keqing.png"
-                          h="100%"
-                          className="character-img-pick"
-                        />
-                        <Box className="character-vision-icon">
-                          {vision["dendro"].logoSrc}
-                        </Box>
-                        <DraftCharacterNameWrapper className="character-name-wrapper">
-                          <DraftCharacterName>Keqing</DraftCharacterName>
-                        </DraftCharacterNameWrapper>
-                      </DraftCharacterContainer>
+                      <DraftCharacterContainer aligndraft="right"></DraftCharacterContainer>
                     </DraftCharacterPickBanner>
                   </DraftPickBannerWrapper>
                 </DraftPickBanner>
@@ -205,39 +199,15 @@ const Drafting: NextPage = () => {
                   <DraftPickBannerWrapper>
                     <DraftCharacterPickBanner
                       aligndraft="left"
-                      colorcharacter={vision["electro"].color}
+                      colorcharacter=""
                     >
-                      <DraftCharacterContainer aligndraft="left">
-                        <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Kujou_Sara.png"
-                          h="100%"
-                          className="character-img-pick"
-                        />
-                        <Box className="character-vision-icon">
-                          {vision["electro"].logoSrc}
-                        </Box>
-                        <DraftCharacterNameWrapper className="character-name-wrapper">
-                          <DraftCharacterName>Kujou Sara</DraftCharacterName>
-                        </DraftCharacterNameWrapper>
-                      </DraftCharacterContainer>
+                      <DraftCharacterContainer aligndraft="left"></DraftCharacterContainer>
                     </DraftCharacterPickBanner>
                     <DraftCharacterPickBanner
                       aligndraft="right"
-                      colorcharacter={vision["geo"].color}
+                      colorcharacter=""
                     >
-                      <DraftCharacterContainer aligndraft="right">
-                        <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Kuki_Shinobu.png"
-                          h="100%"
-                          className="character-img-pick"
-                        />
-                        <Box className="character-vision-icon">
-                          {vision["geo"].logoSrc}
-                        </Box>
-                        <DraftCharacterNameWrapper className="character-name-wrapper">
-                          <DraftCharacterName>Kuki Shinobu</DraftCharacterName>
-                        </DraftCharacterNameWrapper>
-                      </DraftCharacterContainer>
+                      <DraftCharacterContainer aligndraft="right"></DraftCharacterContainer>
                     </DraftCharacterPickBanner>
                   </DraftPickBannerWrapper>
                 </DraftPickBanner>
@@ -246,39 +216,15 @@ const Drafting: NextPage = () => {
                   <DraftPickBannerWrapper>
                     <DraftCharacterPickBanner
                       aligndraft="left"
-                      colorcharacter={vision["cryo"].color}
+                      colorcharacter=""
                     >
-                      <DraftCharacterContainer aligndraft="left">
-                        <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Layla.png"
-                          h="100%"
-                          className="character-img-pick"
-                        />
-                        <Box className="character-vision-icon">
-                          {vision["cryo"].logoSrc}
-                        </Box>
-                        <DraftCharacterNameWrapper className="character-name-wrapper">
-                          <DraftCharacterName>Layla</DraftCharacterName>
-                        </DraftCharacterNameWrapper>
-                      </DraftCharacterContainer>
+                      <DraftCharacterContainer aligndraft="left"></DraftCharacterContainer>
                     </DraftCharacterPickBanner>
                     <DraftCharacterPickBanner
                       aligndraft="right"
-                      colorcharacter={vision["electro"].color}
+                      colorcharacter=""
                     >
-                      <DraftCharacterContainer aligndraft="right">
-                        <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Lisa.png"
-                          h="100%"
-                          className="character-img-pick"
-                        />
-                        <Box className="character-vision-icon">
-                          {vision["electro"].logoSrc}
-                        </Box>
-                        <DraftCharacterNameWrapper className="character-name-wrapper">
-                          <DraftCharacterName>Lisa</DraftCharacterName>
-                        </DraftCharacterNameWrapper>
-                      </DraftCharacterContainer>
+                      <DraftCharacterContainer aligndraft="right"></DraftCharacterContainer>
                     </DraftCharacterPickBanner>
                   </DraftPickBannerWrapper>
                 </DraftPickBanner>
@@ -287,39 +233,15 @@ const Drafting: NextPage = () => {
                   <DraftPickBannerWrapper>
                     <DraftCharacterPickBanner
                       aligndraft="left"
-                      colorcharacter={vision["anemo"].color}
+                      colorcharacter=""
                     >
-                      <DraftCharacterContainer aligndraft="left">
-                        <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Mika.png"
-                          h="100%"
-                          className="character-img-pick"
-                        />
-                        <Box className="character-vision-icon">
-                          {vision["anemo"].logoSrc}
-                        </Box>
-                        <DraftCharacterNameWrapper className="character-name-wrapper">
-                          <DraftCharacterName>Mika</DraftCharacterName>
-                        </DraftCharacterNameWrapper>
-                      </DraftCharacterContainer>
+                      <DraftCharacterContainer aligndraft="left"></DraftCharacterContainer>
                     </DraftCharacterPickBanner>
                     <DraftCharacterPickBanner
                       aligndraft="right"
-                      colorcharacter={vision["hydro"].color}
+                      colorcharacter=""
                     >
-                      <DraftCharacterContainer aligndraft="right">
-                        <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Mona.png"
-                          h="100%"
-                          className="character-img-pick"
-                        />
-                        <Box className="character-vision-icon">
-                          {vision["hydro"].logoSrc}
-                        </Box>
-                        <DraftCharacterNameWrapper className="character-name-wrapper">
-                          <DraftCharacterName>Mona</DraftCharacterName>
-                        </DraftCharacterNameWrapper>
-                      </DraftCharacterContainer>
+                      <DraftCharacterContainer aligndraft="right"></DraftCharacterContainer>
                     </DraftCharacterPickBanner>
                   </DraftPickBannerWrapper>
                 </DraftPickBanner>

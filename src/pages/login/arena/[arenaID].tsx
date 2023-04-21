@@ -46,11 +46,13 @@ const ArenaPlayerLogin: NextPage = () => {
       role: "Drafter",
     },
   });
-  const [setArenaID, isLoadingSubmit, setLoadingSubmit] = userStore((state) => [
-    state.setArenaID,
-    state.isLoadingSubmit,
-    state.setLoadingSubmit,
-  ]);
+  const [setArenaID, isLoadingSubmit, setLoadingSubmit, setUserData] =
+    userStore((state) => [
+      state.setArenaID,
+      state.isLoadingSubmit,
+      state.setLoadingSubmit,
+      state.setUserData,
+    ]);
   const authCheck = useMutation({
     mutationFn: async (data: PlayerLoginProps) => {
       let submitResponse = await api.post("/account/player/login", data);
@@ -88,6 +90,7 @@ const ArenaPlayerLogin: NextPage = () => {
         setLoadingSubmit(false);
 
         if (res?.ok) {
+          setUserData(data.result);
           setArenaID(router.query?.arenaID);
           router.replace(`/arena/${router.query?.arenaID}`);
         }

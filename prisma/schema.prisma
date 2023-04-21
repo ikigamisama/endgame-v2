@@ -115,15 +115,16 @@ model Draft {
 }
 
 model CharacterDraft {
-  uid         String     @id @default(uuid())
+  uid         String      @id @default(uuid())
   draftID     String
-  characterID String
+  characterID String?
   status      String
+  index       String
   playerID    String
-  createdAt   DateTime?  @default(now())
-  character   Characters @relation(fields: [characterID], references: [id], onDelete: Cascade)
-  draft       Draft      @relation(fields: [draftID], references: [uid], onDelete: Cascade)
-  user        User       @relation(fields: [playerID], references: [id], onDelete: Cascade)
+  createdAt   DateTime?   @default(now())
+  character   Characters? @relation(fields: [characterID], references: [id], onDelete: Cascade)
+  draft       Draft       @relation(fields: [draftID], references: [uid], onDelete: Cascade)
+  user        User        @relation(fields: [playerID], references: [id], onDelete: Cascade)
 
   @@index([characterID])
   @@index([draftID])

@@ -7,6 +7,7 @@ import {
   CenterBox,
   FontHeaderPopup,
   LinkTextMenu,
+  ToastBox,
   ToastText,
 } from "@/src/styles";
 import {
@@ -137,6 +138,7 @@ const Arena: NextPage = () => {
 
   const group = getRootProps();
   const toastCopyLink = useToast();
+  const toastPopup = useToast();
   const watchCheckboxBoss: any = watch("is_manual_select_boss"),
     watchBossChoose = watch("boss_id");
 
@@ -188,17 +190,41 @@ const Arena: NextPage = () => {
     },
     onSuccess: (data) => {
       if (data.success) {
-        router.push(`/arena/${arena_id}/draft/123`);
+        router.push(`/arena/${arena_id}/draft/${data.draft_id}`);
       }
     },
   });
 
   const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
-    startDraft.mutate({
-      arenaID: arena_id,
-      player1: player1.user_id,
-      player2: player2.user_id,
-    });
+    if (player1.user_id !== "" && player2.user_id !== "") {
+      startDraft.mutate({
+        mode: data.mode,
+        arenaID: arena_id,
+        player1: player1.user_id,
+        player2: player2.user_id,
+        boss_id: data.boss_id,
+      });
+    } else {
+      toastPopup({
+        position: "top-right",
+        render: () => (
+          <ToastBox
+            px={8}
+            py={6}
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            gap={4}
+            borderLeft="10px solid #61b162"
+          >
+            <CheckCircleIcon boxSize={5} />
+            <ToastText>Players not set</ToastText>
+          </ToastBox>
+        ),
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   useEffect(() => {
@@ -234,11 +260,11 @@ const Arena: NextPage = () => {
     draftChannel.bind("arena-player-route", (data: any) => {
       if (data.arena_id === router.query.arenaID) {
         if (data.player1 === state.user.id) {
-          router.push(`/arena/${data.arena_id}/draft/123`);
+          router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
         }
 
         if (data.player2 === state.user.id) {
-          router.push(`/arena/${data.arena_id}/draft/123`);
+          router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
         }
       }
     });

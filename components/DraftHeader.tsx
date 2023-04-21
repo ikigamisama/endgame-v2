@@ -35,8 +35,6 @@ import { useUserData, userStore } from "@/libs/providers/UserContext";
 import { ButtonPopUpNav, FontHeaderPopup } from "@/src/styles";
 import { FormLabelText, FormSelect } from "@/src/styles/login";
 import { SettingsIcon } from "@chakra-ui/icons";
-import { useRouter } from "next/router";
-import { vision } from "@/libs/includes/color";
 import { useState } from "react";
 import { CharacterDraftProps, ModalFeatures } from "@/libs/helpers/types";
 import {
@@ -87,14 +85,14 @@ const ModalFeatureDraft = ({ isOpen, onClose, title }: ModalFeatures) => {
 const DraftHeader: React.FC<CharacterDraftProps> = ({
   onOpenCharacterModal,
   state,
+  router,
 }) => {
-  const router = useRouter();
-
-  const [setBackgroundBG] = userStore((state) => [state.setBackgroundBG]);
+  const [arena_id, setBackgroundBG] = userStore((state) => [
+    state.arena_id,
+    state.setBackgroundBG,
+  ]);
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
-
-  const [arena_id] = userStore((state) => [state.arena_id]);
 
   const onCloseModalRestartDraft = () => {
     setModalRestartDraft(!modalRestartDraft);
@@ -128,7 +126,9 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
         >
           <Flex flex={1} gap={4} justifyContent="flex-start">
             {state?.user.role === "GM" && (
-              <ButtonPopUpNav onClick={() => router.push(`/arena/${arena_id}`)}>
+              <ButtonPopUpNav
+                onClick={() => router?.push(`/arena/${arena_id}`)}
+              >
                 <BackIcon />
               </ButtonPopUpNav>
             )}
@@ -148,50 +148,50 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                 <BanCharacterWrapper
                   aligndraft="left"
                   widthcharacter="25%"
-                  colorcharacter={vision["pyro"].color}
+                  colorcharacter=""
                   indexcharacter="55"
                 >
-                  <Image
+                  {/* <Image
                     src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Amber.png"
                     w="100%"
                     alt="ban-player-1-character-d"
-                  />
+                  /> */}
                 </BanCharacterWrapper>
                 <BanCharacterWrapper
                   aligndraft="left"
                   widthcharacter="50%"
-                  colorcharacter={vision["cryo"].color}
+                  colorcharacter=""
                   indexcharacter="45"
                 >
-                  <Image
+                  {/* <Image
                     src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Aloy.png"
                     w="50%"
                     alt="ban-player-1-character-c"
-                  />
+                  /> */}
                 </BanCharacterWrapper>
                 <BanCharacterWrapper
                   aligndraft="left"
                   widthcharacter="75%"
-                  colorcharacter={vision["dendro"].color}
+                  colorcharacter=""
                   indexcharacter="35"
                 >
-                  <Image
+                  {/* <Image
                     src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Alhaitham.png"
                     w="33%"
                     alt="ban-player-1-character-b"
-                  />
+                  /> */}
                 </BanCharacterWrapper>
                 <BanCharacterWrapper
                   aligndraft="left"
                   widthcharacter="100%"
-                  colorcharacter={vision["geo"].color}
+                  colorcharacter=""
                   indexcharacter="25"
                 >
-                  <Image
+                  {/* <Image
                     src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Albedo.png"
                     w="25%"
                     alt="ban-player-1-character-a"
-                  />
+                  /> */}
                 </BanCharacterWrapper>
               </BanCharactersListWrapper>
             </BanCharactersListContainer>
@@ -208,57 +208,33 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
             <BanCharactersListContainer
               width="450px"
               aligndraft="right"
-              statusdraft="ban"
+              statusdraft="none"
             >
               <BanCharactersListWrapper width="425px">
                 <BanCharacterWrapper
                   aligndraft="right"
                   widthcharacter="25%"
-                  colorcharacter={vision["pyro"].color}
+                  colorcharacter=""
                   indexcharacter="55"
-                >
-                  <Image
-                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Bennett.png"
-                    w="100%"
-                    alt="ban-player-2-characte-8"
-                  />
-                </BanCharacterWrapper>
+                ></BanCharacterWrapper>
                 <BanCharacterWrapper
                   aligndraft="right"
                   widthcharacter="50%"
-                  colorcharacter={vision["electro"].color}
+                  colorcharacter=""
                   indexcharacter="45"
-                >
-                  <Image
-                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Beidou.png"
-                    w="50%"
-                    alt="ban-player-2-character-7"
-                  />
-                </BanCharacterWrapper>
+                ></BanCharacterWrapper>
                 <BanCharacterWrapper
                   aligndraft="right"
                   widthcharacter="75%"
-                  colorcharacter={vision["hydro"].color}
+                  colorcharacter=""
                   indexcharacter="35"
-                >
-                  <Image
-                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Barbara.png"
-                    w="33%"
-                    alt="ban-player-2-character-6"
-                  />
-                </BanCharacterWrapper>
+                ></BanCharacterWrapper>
                 <BanCharacterWrapper
                   aligndraft="right"
                   widthcharacter="100%"
-                  colorcharacter={vision["geo"].color}
+                  colorcharacter=""
                   indexcharacter="25"
-                >
-                  <Image
-                    src="https://endgame.otakuhobbitoysph.com/cdn/characters/ban/Arataki_Itto.png"
-                    w="25%"
-                    alt="ban-player-2-character-5"
-                  />
-                </BanCharacterWrapper>
+                ></BanCharacterWrapper>
               </BanCharactersListWrapper>
             </BanCharactersListContainer>
           </Flex>

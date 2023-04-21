@@ -1,3 +1,5 @@
+import { NextRouter } from "next/router";
+
 export declare interface UserFeatureAction {
     type: USER_FEATURE;
     payload: any;
@@ -82,6 +84,7 @@ export declare interface CharacterDraftProps{
     onCloseCharacterModal?: () => void
     onOpenCharacterModal?: () => void
     state?: UserDataPropState
+    router?: NextRouter
 }
 
 export declare interface ProfileChanges{
@@ -275,4 +278,11 @@ export type DraftFunctions = {
     searchCharacterList: (name: string, vision: string) => void
     setCharacterFilterVision: (vision: string) => void
     setCurrentCharacterChoice: (characterInfo:  CharacterInfoProps) => void
+}
+
+export declare interface CharacterDraftPayloadProps {
+    draftID: string
+    index: string
+    playerID: string
+    status: string
 }

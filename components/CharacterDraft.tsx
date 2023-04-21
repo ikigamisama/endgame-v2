@@ -57,6 +57,7 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 
 const CharacterDraft: React.FC<CharacterDraftProps> = ({
   statusCharacterModal,
@@ -93,6 +94,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
       });
       return listResponse.data.list;
     },
+    queryKey: ["characterDraftList"],
     onSuccess: (data) => {
       setCharactersList(data);
     },
@@ -296,53 +298,83 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
           <CharacterInfoWrapper>
             <CharacterPickInfoCard h="375px">
               <CharacterPickInfoCardCharacter colorpickedcharacter="">
-                <Box
-                  bgColor={colorConvertVision(
-                    currentCharacterChoose.vision !== ""
-                      ? currentCharacterChoose.vision
-                      : ""
-                  )}
-                  w="100%"
-                  height="100%"
+                <motion.div
+                  key={currentCharacterChoose.id}
+                  initial={{
+                    width: "0%",
+                  }}
+                  animate={{
+                    width: "100%",
+                    transition: { duration: 0.5 },
+                  }}
+                  style={{
+                    height: "100%",
+                  }}
                 >
-                  <Box className="character-picked-vision-icon">
-                    {currentCharacterChoose.vision === "anemo" && (
-                      <AnemoVisionIcon />
+                  <Box
+                    bgColor={colorConvertVision(
+                      currentCharacterChoose.vision !== ""
+                        ? currentCharacterChoose.vision
+                        : ""
                     )}
-                    {currentCharacterChoose.vision === "cryo" && (
-                      <CryoVisionIcon />
+                    w="100%"
+                    height="100%"
+                  >
+                    <Box className="character-picked-vision-icon">
+                      {currentCharacterChoose.vision === "anemo" && (
+                        <AnemoVisionIcon />
+                      )}
+                      {currentCharacterChoose.vision === "cryo" && (
+                        <CryoVisionIcon />
+                      )}
+                      {currentCharacterChoose.vision === "dendro" && (
+                        <DendroVisionIcon />
+                      )}
+                      {currentCharacterChoose.vision === "electro" && (
+                        <ElectroVisionIcon />
+                      )}
+                      {currentCharacterChoose.vision === "geo" && (
+                        <GeoVisionIcon />
+                      )}
+                      {currentCharacterChoose.vision === "hydro" && (
+                        <HydroVisionIcon />
+                      )}
+                      {currentCharacterChoose.vision === "pyro" && (
+                        <PyroVisionIcon />
+                      )}
+                    </Box>
+                    {currentCharacterChoose.pick_picture !== "" && (
+                      <motion.div
+                        key={currentCharacterChoose.pick_picture}
+                        initial={{
+                          y: -20,
+                          opacity: 0,
+                        }}
+                        animate={{
+                          y: 0,
+                          opacity: 1,
+                          transition: { delay: 0.75, duration: 0.25 },
+                        }}
+                        style={{
+                          height: "100%",
+                        }}
+                      >
+                        <Image
+                          className="character-picked-image-pick"
+                          src={currentCharacterChoose.pick_picture}
+                        />
+                      </motion.div>
                     )}
-                    {currentCharacterChoose.vision === "dendro" && (
-                      <DendroVisionIcon />
-                    )}
-                    {currentCharacterChoose.vision === "electro" && (
-                      <ElectroVisionIcon />
-                    )}
-                    {currentCharacterChoose.vision === "geo" && (
-                      <GeoVisionIcon />
-                    )}
-                    {currentCharacterChoose.vision === "hydro" && (
-                      <HydroVisionIcon />
-                    )}
-                    {currentCharacterChoose.vision === "pyro" && (
-                      <PyroVisionIcon />
+
+                    {currentCharacterChoose.name !== "" && (
+                      <CharacterPickInfoNameWrapper>
+                        <CharacterPickInfoNameText>
+                          {currentCharacterChoose.name}
+                        </CharacterPickInfoNameText>
+                      </CharacterPickInfoNameWrapper>
                     )}
                   </Box>
-                  {currentCharacterChoose.pick_picture !== "" && (
-                    <Image
-                      className="character-picked-image-pick"
-                      src={currentCharacterChoose.pick_picture}
-                    />
-                  )}
-
-                  {currentCharacterChoose.name !== "" && (
-                    <CharacterPickInfoNameWrapper>
-                      <CharacterPickInfoNameText>
-                        {currentCharacterChoose.name}
-                      </CharacterPickInfoNameText>
-                    </CharacterPickInfoNameWrapper>
-                  )}
-                </Box>
+                </motion.div>
               </CharacterPickInfoCardCharacter>
               <CharacterPickInfoCardDetails>
                 <Grid templateColumns="repeat(2, 1fr)" gap={4} mb={4}>
