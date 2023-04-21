@@ -18,8 +18,8 @@ model User {
   Arena          Arena[]
   Draft          Draft[]
   CharacterDraft CharacterDraft[]
-  player1        Arena[]          @relation("player1")
-  player2        Arena[]          @relation("player2")
+  player1        Draft[]          @relation("player1")
+  player2        Draft[]          @relation("player2")
   Settings       Settings[]
   ArenaPlayer    ArenaPlayer[]
 }
@@ -63,22 +63,17 @@ model Boss {
 }
 
 model Arena {
-  uid         String        @id @default(uuid())
-  host_id     String
-  player1_id  String?
-  player2_id  String?
-  mode        String?
-  type        String
-  createdAt   DateTime      @default(now())
-  user        User          @relation(fields: [host_id], references: [id], onDelete: Cascade)
-  player1     User?         @relation("player1", fields: [player1_id], references: [id], onDelete: Cascade)
-  player2     User?         @relation("player2", fields: [player2_id], references: [id], onDelete: Cascade)
+  uid       String   @id @default(uuid())
+  host_id   String
+  mode      String?
+  type      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [host_id], references: [id], onDelete: Cascade)
+
   Draft       Draft[]
   ArenaPlayer ArenaPlayer[]
 
   @@index([host_id])
-  @@index([player1_id])
-  @@index([player2_id])
 }
 
 model ArenaPlayer {
@@ -101,9 +96,13 @@ model Draft {
   timer                Int              @default(30)
   pause_timer          Int              @default(3)
   current_status_draft String?
+  player1_id           String?
+  player2_id           String?
   winner_user_id       String?
   isFinish             Boolean          @default(false)
   createdAt            DateTime?        @default(now())
+  player1              User?            @relation("player1", fields: [player1_id], references: [id], onDelete: Cascade)
+  player2              User?            @relation("player2", fields: [player2_id], references: [id], onDelete: Cascade)
   arena                Arena?           @relation(fields: [arenaID], references: [uid], onDelete: Cascade)
   boss                 Boss?            @relation(fields: [bossID], references: [id], onDelete: Cascade)
   user                 User?            @relation(fields: [winner_user_id], references: [id], onDelete: Cascade)
@@ -112,6 +111,8 @@ model Draft {
   @@index([arenaID])
   @@index([bossID])
   @@index([winner_user_id])
+  @@index([player1_id])
+  @@index([player2_id])
 }
 
 model CharacterDraft {

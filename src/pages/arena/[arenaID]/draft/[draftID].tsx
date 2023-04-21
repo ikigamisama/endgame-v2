@@ -3,11 +3,22 @@ import CharacterDraft from "@/components/CharacterDraft";
 import DraftCountdown from "@/components/DraftCountdown";
 import DraftFooter from "@/components/DraftFooter";
 import DraftHeader from "@/components/DraftHeader";
-import { ModalBoss } from "@/libs/helpers/types";
-import { vision } from "@/libs/includes/color";
+import { DraftInfoProps, ModalBoss } from "@/libs/helpers/types";
+import { convertVisionToColor } from "@/libs/includes/color";
+import {
+  AnemoVisionIcon,
+  CryoVisionIcon,
+  DendroVisionIcon,
+  ElectroVisionIcon,
+  GeoVisionIcon,
+  HydroVisionIcon,
+  PyroVisionIcon,
+} from "@/libs/includes/icons";
 import { WarpImgPNG, WarpImgGIF } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
+import { api } from "@/libs/providers/api";
 import { pusherClient } from "@/libs/providers/pusherClient";
+import { useDraftStore } from "@/libs/store/draft";
 import { ModalCharacterPickBlur } from "@/src/styles/CharacterPick";
 import {
   BossChooseText,
@@ -36,11 +47,12 @@ import {
   SimpleGrid,
   VStack,
 } from "@chakra-ui/react";
-
+import { useQuery } from "@tanstack/react-query";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
 
 const ModalBoss = ({
   isOpen,
@@ -94,10 +106,43 @@ const Drafting: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
   const router = useRouter();
 
-  const [applyCharacterModal, setApplyCharacterModal] =
-    useState<boolean>(false);
-  const [applyBossModal, setApplyBossModal] = useState<boolean>(false);
-  const [isStartDraft, setIsStartDraft] = useState<boolean>(false);
+  const [
+    applyCharacterModal,
+    setApplyCharacterModal,
+    applyBossModal,
+    setApplyBossModal,
+    isStartDraft,
+    setIsStartDraft,
+    player1,
+    player2,
+    setPlayer1Info,
+    setPlayer2Info,
+    pick,
+    ban,
+    setPickList,
+    setBanList,
+    banWidthSize,
+    boss,
+    setBossInfo,
+  ] = useDraftStore((state) => [
+    state.applyCharacterModal,
+    state.setApplyCharacterModal,
+    state.applyBossModal,
+    state.setApplyBossModal,
+    state.isStartDraft,
+    state.setIsStartDraft,
+    state.player1,
+    state.player2,
+    state.setPlayer1Info,
+    state.setPlayer2Info,
+    state.pick,
+    state.ban,
+    state.setPickList,
+    state.setBanList,
+    state.banWidthSize,
+    state.boss,
+    state.setBossInfo,
+  ]);
 
   const onToggleCharacterPickModal = () => {
     setApplyCharacterModal(!applyCharacterModal);
@@ -128,6 +173,50 @@ const Drafting: NextPage = () => {
       pusherClient.unsubscribe(draftChannel.name);
     };
   }, [router]);
+
+  const draftDataQuery = useQuery({
+    queryKey: ["draftData"],
+    queryFn: async () => {
+      const listResponse = await api.post("/arena/draft/get", {
+        arena_id: router.query.draftID,
+      });
+      return listResponse.data;
+    },
+    onSuccess: (data) => {
+      setPlayer1Info({
+        id: data.result.player1.id,
+        avatar: data.result.player1.avatar,
+        username: data.result.player1.username,
+      });
+      setPlayer2Info({
+        id: data.result.player2.id,
+        avatar: data.result.player2.avatar,
+        username: data.result.player2.username,
+      });
+
+      let pickList: DraftInfoProps[] = [],
+        banList: DraftInfoProps[] = [];
+
+      data.result.CharacterDraft.map((i: DraftInfoProps) => {
+        if (i.status === "pick") {
+          pickList.push(i);
+        } else {
+          banList.push(i);
+        }
+      });
+      if (data.result.bossID !== "" || data.result.bossID !== null) {
+        setBossInfo(data.result.boss);
+      }
+      setPickList(pickList, data.result.arena.mode);
+      setBanList(banList, data.result.arena.mode);
+
+      //console.log(data.result);
+    },
+  });
+
+  const colorConvertVision = (vision: string) => {
+    return convertVisionToColor(vision);
+  };
 
   return (
     <>
@@ -170,122 +259,174 @@ const Drafting: NextPage = () => {
           setBackgroundVid={setBackgroundVid}
           state={state}
           router={router}
+          ban={ban}
+          banWidth={banWidthSize}
+          boss={boss}
         />
 
-        <Container maxW="1275px" pt={4} height="calc(100vh - 115px)">
-          <VStack w="100%" h="100%" justifyContent="space-between">
-            <DraftCountdown />
-            <Flex flex={1} w="100%" height="100%" alignItems="center">
-              <VStack
-                w="100%"
-                gap={1}
-                height="525px"
-                justifyContent="center"
-                position="relative"
-                zIndex="15"
-              >
-                <DraftPickBanner aligndraft="left" currentpickdraft="false">
-                  <DraftPickBannerWrapper>
-                    <DraftCharacterPickBanner
+        {draftDataQuery.isLoading !== true && (
+          <Container maxW="1275px" pt={4} height="calc(100vh - 115px)">
+            <VStack w="100%" h="100%" justifyContent="space-between">
+              <DraftCountdown />
+              <Flex flex={1} w="100%" height="100%" alignItems="center">
+                <VStack
+                  w="100%"
+                  gap={1}
+                  height="525px"
+                  justifyContent="center"
+                  position="relative"
+                  zIndex="15"
+                >
+                  {pick?.map((pickData: DraftInfoProps[], i: number) => (
+                    <DraftPickBanner
                       aligndraft="left"
-                      colorcharacter={vision["pyro"].color}
+                      currentpickdraft="false"
+                      key={i}
                     >
-                      <DraftCharacterContainer aligndraft="left">
-                        <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/pick/Klee.png"
-                          h="100%"
-                          className="character-img-pick"
-                        />
-                        <Box className="character-vision-icon">
-                          {vision["pyro"].logoSrc}
-                        </Box>
-                        <DraftCharacterNameWrapper className="character-name-wrapper">
-                          <DraftCharacterName>Klee</DraftCharacterName>
-                        </DraftCharacterNameWrapper>
-                      </DraftCharacterContainer>
-                    </DraftCharacterPickBanner>
-                    <DraftCharacterPickBanner
-                      aligndraft="right"
-                      colorcharacter=""
-                    >
-                      <DraftCharacterContainer aligndraft="right"></DraftCharacterContainer>
-                    </DraftCharacterPickBanner>
-                  </DraftPickBannerWrapper>
-                </DraftPickBanner>
+                      <DraftPickBannerWrapper>
+                        {pickData.map(
+                          (pickDataSide: DraftInfoProps, ii: number) => (
+                            <DraftCharacterPickBanner
+                              aligndraft={ii === 0 ? "left" : "right"}
+                              colorcharacter=""
+                              key={ii}
+                            >
+                              <motion.div
+                                key={pickDataSide.characterID}
+                                initial={{
+                                  width: "0%",
+                                }}
+                                animate={{
+                                  width: "100%",
+                                  transition: { duration: 0.5 },
+                                }}
+                                style={{
+                                  height: "100%",
+                                  backgroundColor:
+                                    pickDataSide.characterID !== null
+                                      ? colorConvertVision(
+                                          pickDataSide.character.vision
+                                        )
+                                      : "",
+                                }}
+                              >
+                                <DraftCharacterContainer
+                                  aligndraft={ii === 0 ? "left" : "right"}
+                                >
+                                  {pickDataSide.characterID !== null && (
+                                    <>
+                                      <motion.div
+                                        key={
+                                          pickDataSide.character.pick_picture
+                                        }
+                                        initial={{
+                                          y: -20,
+                                          opacity: 0,
+                                        }}
+                                        animate={{
+                                          y: 0,
+                                          opacity: 1,
+                                          transition: {
+                                            delay: 0.65,
+                                            duration: 0.5,
+                                          },
+                                        }}
+                                        style={{
+                                          width: "100%",
+                                          height: "100%",
+                                        }}
+                                      >
+                                        <Image
+                                          src={
+                                            pickDataSide.character.pick_picture
+                                          }
+                                          h="100%"
+                                          className="character-img-pick"
+                                        />
+                                      </motion.div>
+                                      <motion.div
+                                        key={pickDataSide.character.vision}
+                                        initial={{
+                                          y: -20,
+                                          opacity: 0,
+                                        }}
+                                        animate={{
+                                          y: 0,
+                                          opacity: 1,
+                                          transition: {
+                                            delay: 0.85,
+                                            duration: 0.5,
+                                          },
+                                        }}
+                                        style={{
+                                          height: "100%",
+                                        }}
+                                      >
+                                        <Box className="character-vision-icon">
+                                          {pickDataSide.character.vision ===
+                                            "anemo" && <AnemoVisionIcon />}
+                                          {pickDataSide.character.vision ===
+                                            "cryo" && <CryoVisionIcon />}
+                                          {pickDataSide.character.vision ===
+                                            "dendro" && <DendroVisionIcon />}
+                                          {pickDataSide.character.vision ===
+                                            "electro" && <ElectroVisionIcon />}
+                                          {pickDataSide.character.vision ===
+                                            "geo" && <GeoVisionIcon />}
+                                          {pickDataSide.character.vision ===
+                                            "hydro" && <HydroVisionIcon />}
+                                          {pickDataSide.character.vision ===
+                                            "pyro" && <PyroVisionIcon />}
+                                        </Box>
+                                      </motion.div>
 
-                <DraftPickBanner aligndraft="left" currentpickdraft="false">
-                  <DraftPickBannerWrapper>
-                    <DraftCharacterPickBanner
-                      aligndraft="left"
-                      colorcharacter=""
-                    >
-                      <DraftCharacterContainer aligndraft="left"></DraftCharacterContainer>
-                    </DraftCharacterPickBanner>
-                    <DraftCharacterPickBanner
-                      aligndraft="right"
-                      colorcharacter=""
-                    >
-                      <DraftCharacterContainer aligndraft="right"></DraftCharacterContainer>
-                    </DraftCharacterPickBanner>
-                  </DraftPickBannerWrapper>
-                </DraftPickBanner>
+                                      <DraftCharacterNameWrapper className="character-name-wrapper">
+                                        <DraftCharacterName>
+                                          {pickDataSide.character.name}
+                                        </DraftCharacterName>
+                                      </DraftCharacterNameWrapper>
+                                    </>
+                                  )}
+                                </DraftCharacterContainer>
+                              </motion.div>
+                            </DraftCharacterPickBanner>
+                          )
+                        )}
+                      </DraftPickBannerWrapper>
+                    </DraftPickBanner>
+                  ))}
 
-                <DraftPickBanner aligndraft="left" currentpickdraft="false">
-                  <DraftPickBannerWrapper>
-                    <DraftCharacterPickBanner
-                      aligndraft="left"
-                      colorcharacter=""
-                    >
-                      <DraftCharacterContainer aligndraft="left"></DraftCharacterContainer>
-                    </DraftCharacterPickBanner>
-                    <DraftCharacterPickBanner
-                      aligndraft="right"
-                      colorcharacter=""
-                    >
-                      <DraftCharacterContainer aligndraft="right"></DraftCharacterContainer>
-                    </DraftCharacterPickBanner>
-                  </DraftPickBannerWrapper>
-                </DraftPickBanner>
+                  <DraftBossCard>
+                    <Box position="relative" zIndex="25" w="100%" h="100%">
+                      <DraftBossCardBGImg
+                        src={isStartDraft === true ? WarpImgGIF : WarpImgPNG}
+                      />
 
-                <DraftPickBanner aligndraft="left" currentpickdraft="false">
-                  <DraftPickBannerWrapper>
-                    <DraftCharacterPickBanner
-                      aligndraft="left"
-                      colorcharacter=""
-                    >
-                      <DraftCharacterContainer aligndraft="left"></DraftCharacterContainer>
-                    </DraftCharacterPickBanner>
-                    <DraftCharacterPickBanner
-                      aligndraft="right"
-                      colorcharacter=""
-                    >
-                      <DraftCharacterContainer aligndraft="right"></DraftCharacterContainer>
-                    </DraftCharacterPickBanner>
-                  </DraftPickBannerWrapper>
-                </DraftPickBanner>
-
-                <DraftBossCard>
-                  <Box position="relative" zIndex="25" w="100%" h="100%">
-                    <DraftBossCardBGImg
-                      src={isStartDraft === true ? WarpImgGIF : WarpImgPNG}
-                    />
-
-                    {/* <Box position="relative" zIndex="50">
+                      {/* <Box position="relative" zIndex="50">
                       <Image
                         src="https://endgame.otakuhobbitoysph.com/cdn/characters/flash/Keqing.png"
                         alt="placements-flash"
                         width="100%"
                       />
                     </Box> */}
-                  </Box>
-                </DraftBossCard>
-              </VStack>
-            </Flex>
-            <Flex flex={1} w="100%" alignItems="flex-end" mb="-15px !important">
-              <DraftFooter />
-            </Flex>
-          </VStack>
-        </Container>
+                    </Box>
+                  </DraftBossCard>
+                </VStack>
+              </Flex>
+              <Flex
+                flex={1}
+                w="100%"
+                alignItems="flex-end"
+                mb="-15px !important"
+              >
+                <DraftFooter
+                  player1Name={player1.username}
+                  player2Name={player2.username}
+                />
+              </Flex>
+            </VStack>
+          </Container>
+        )}
       </ModalCharacterPickBlur>
     </>
   );

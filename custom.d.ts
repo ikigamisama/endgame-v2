@@ -16,7 +16,9 @@ declare module "next-auth" {
     };
   }
 }
-
+interface MyStringConstructor extends StringConstructor {
+  includes(searchString: string): boolean;
+}
 
 declare module '*.png' {
     const content: StaticImageData;

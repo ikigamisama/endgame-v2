@@ -1,3 +1,4 @@
+import { PlayerNameDraft } from "@/libs/helpers/types";
 import {
   DraftPlayerText,
   DraftPlayerTextWrapper,
@@ -6,19 +7,23 @@ import {
   DraftPlayersNamePlate,
 } from "@/src/styles/Draft";
 import { Box } from "@chakra-ui/react";
+import React from "react";
 
-const DraftFooter: React.FC = () => {
+const DraftFooter: React.FC<PlayerNameDraft> = ({
+  player1Name,
+  player2Name,
+}) => {
   return (
     <DraftPlayersNamePlate>
       <DraftPlayerTextWrapper aligndraft="left">
-        <DraftPlayerText>Apple Silver</DraftPlayerText>
+        <DraftPlayerText>{player1Name}</DraftPlayerText>
       </DraftPlayerTextWrapper>
       <Box width="14%" />
       <DraftPlayerVersusWrapper>
         <DraftPlayerVersusText>VS</DraftPlayerVersusText>
       </DraftPlayerVersusWrapper>
       <DraftPlayerTextWrapper aligndraft="right">
-        <DraftPlayerText>Mema Team</DraftPlayerText>
+        <DraftPlayerText>{player2Name}</DraftPlayerText>
       </DraftPlayerTextWrapper>
     </DraftPlayersNamePlate>
   );

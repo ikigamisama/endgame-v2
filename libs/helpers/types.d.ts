@@ -86,6 +86,9 @@ export declare interface CharacterDraftProps{
     state?: UserDataPropState
     router?: NextRouter
     setBackgroundVid?: ((data: VideoPropsSettings) => void) | undefined
+    ban?: DraftSketchProps
+    banWidth?: number
+    boss?: BossInfoProps | undefined
 }
 
 export declare interface ProfileChanges{
@@ -247,8 +250,35 @@ export type DraftPlayerCharacterInfo = {
 }
 
 export type DraftSketchProps = {
-   player1: DraftPlayerCharacterInfo,
-   player2: DraftPlayerCharacterInfo
+   player1: DraftInfoProps[],
+   player2: DraftInfoProps[]
+}
+
+export type PlayerDraftInfo = {
+    id: string
+    username: string
+    avatar: string
+}
+export type DraftBanLayout = {
+    wrapperWidthSize: string
+    imageWidthSize: string
+    indexCharacter: string
+}
+export type DraftInfoProps = {
+    uid: string
+    draftID: string,
+    character: CharacterInfoProps
+    characterID: string | null
+    status: 'pick' | 'ban' | string
+    index: string
+    wrapperWidthSize?: string
+    imageWidthSize?: string
+    indexCharacter?: string
+}
+
+export type DraftBanFormat = {
+    player1: DraftInfoProps[]
+    player2: DraftInfoProps[]
 }
 
 export type DraftStateProps = {
@@ -266,7 +296,11 @@ export type DraftStateProps = {
     timer: number
     boss: BossInfoProps
     currentCharacterChoose: CharacterInfoProps
-    draft: any
+    player1: PlayerDraftInfo
+    player2: PlayerDraftInfo
+    pick: any,
+    ban: DraftBanFormat,
+    banWidthSize: number
 }
 
 export type DraftFunctions = {
@@ -279,6 +313,11 @@ export type DraftFunctions = {
     searchCharacterList: (name: string, vision: string) => void
     setCharacterFilterVision: (vision: string) => void
     setCurrentCharacterChoice: (characterInfo:  CharacterInfoProps) => void
+    setPlayer1Info: (player: PlayerDraftInfo) => void
+    setPlayer2Info: (player: PlayerDraftInfo) => void
+    setBossInfo: (bossInfo: BossInfoProps) => void
+    setPickList: (pickList: DraftInfoProps[], mode : string) => void
+    setBanList: (banList: DraftInfoProps[], mode : string) => void
 }
 
 export declare interface CharacterDraftPayloadProps {
@@ -291,4 +330,13 @@ export declare interface CharacterDraftPayloadProps {
 export type BackToArenaProps = {
    draft_id: string | string[] | undefined
    arena_id: string | string[] | undefined
+}
+
+export declare interface PlayerNameDraft {
+    player1Name: string
+    player2Name: string
+}
+
+export type DraftPickFormat = {
+    
 }

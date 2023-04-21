@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import { CharacterInfoProps, DraftFunctions, DraftStateProps } from '../helpers/types'
+import { BossInfoProps, CharacterInfoProps, DraftFunctions, DraftInfoProps, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
+import { draftLayoutBan, draftLayoutPick, getBanWidth } from '../providers/draft'
 
 
 const initialState: DraftStateProps = {
@@ -39,10 +40,19 @@ const initialState: DraftStateProps = {
         is_visible: true,
         nation: ''
     },
-    draft: {
-        player1: [],
-        player2: []
-    }
+    player1: {
+        id: '',
+        username: '',
+        avatar: '',
+    },
+    player2: {
+        id: '',
+        username: '',
+        avatar: '',
+    },
+    pick: [],
+    ban: {player1: [], player2: []},
+    banWidthSize: 0
     
 }
 
@@ -91,6 +101,22 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     },
     setCurrentCharacterChoice: (characterInfo:  CharacterInfoProps) => {
         set({currentCharacterChoose: characterInfo})
-    }   
+    } ,
+    setPlayer1Info: (player: PlayerDraftInfo ) => {
+        set({ player1: player });
+    },
+    setPlayer2Info: (player: PlayerDraftInfo ) => {
+        set({ player2: player });
+    },
+    setBossInfo: (bossInfo: BossInfoProps) => {
+        set({ boss: bossInfo })
+    },
+    setPickList: (pickList: DraftInfoProps[], mode: string ) => {
+        set({ pick: draftLayoutPick(mode ,pickList) });
+    },
+    setBanList: (banList: DraftInfoProps[], mode: string ) => {
+        set({ banWidthSize: getBanWidth(mode) })
+        set({ ban: draftLayoutBan(mode, banList) });
+    }
 
 }))

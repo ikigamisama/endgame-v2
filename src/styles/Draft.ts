@@ -19,6 +19,7 @@ export const BossDraftWrapper = styled(Box)`
     background-color: #1E223F;
     display: flex;
     align-items: flex-end;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 
     & > img{
         position: absolute;
@@ -50,7 +51,7 @@ export const BanCharactersListContainer = styled(Box)<DraftPositionProps>`
     ${(props) => (props.aligndraft === 'left' ? 'border-bottom-left-radius: 15px;' : 'border-bottom-right-radius: 15px;')}
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-end' : 'flex-start')};
     ${(props) => (props.statusdraft === 'none' ? null : 'box-shadow: 0px 0px 16px 4px rgba(203, 53, 53, 1);background-color: #c93535;')}
-   
+   overflow: hidden;
 ` 
 
 export const BanCharactersListWrapper = styled(Box)`
@@ -219,6 +220,7 @@ export const DraftCharacterPickBanner = styled(Box)<DraftPositionProps>`
 
 export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
     width: 57.5%;
+    height: 100%;
     position: relative;
     display: flex;
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')};
@@ -233,7 +235,7 @@ export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
         width: 65%;
     }
 
-    & > .character-vision-icon{
+    & .character-vision-icon{
         position: absolute;
         bottom: 0;
         ${(props) => (props.aligndraft === 'left' ? 'right: 15px;' : 'left: 15px;')}
@@ -242,16 +244,15 @@ export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
         z-index: 15;
     }
 
-    & > .character-name-wrapper{
+    & .character-name-wrapper{
          ${(props) => (props.aligndraft === 'left' ? 'left: 0;' : 'right: 0;')}
          background: linear-gradient(${(props) => (props.aligndraft === 'left' ? '45deg' : '270deg')}, transparent 0%, rgba(0,0,0,1) 100%);
         z-index: 17;
     }
 
 
-    & > div > p{
+    & div p{
         ${(props) => (props.aligndraft === 'left' ? 'padding-right: 165px;text-align: right;' : 'padding-left: 165px;text-align: left;')}
-
     }
 `
 

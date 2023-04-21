@@ -16,43 +16,32 @@ export default async function handler(
 
         if(session){
             try{
-                const updateArena = await prisma.arena.update({
-                    where: {
-                        uid: req.body.arenaID
-                    },
+                const createDraft = await prisma.draft.create({
                     data:{
-                        mode: req.body.mode,
+                        arenaID: req.body.arenaID,
+                        bossID: req.body.boss_id,
                         player1_id: req.body.player1,
                         player2_id: req.body.player2,
                     }
                 })
 
-                if(updateArena){
-                    const createDraft = await prisma.draft.create({
-                        data:{
-                            arenaID: req.body.arenaID,
-                            bossID: req.body.boss_id,
-                        }
-                    })
+                const createDraftData = await prisma.characterDraft.createMany({
+                    data: generateDraftSlot(req.body.mode, createDraft.uid, req.body.player1, req.body.player2)
+                })
 
-                    const createDraftData = await prisma.characterDraft.createMany({
-                        data: generateDraftSlot(req.body.mode, createDraft.uid, req.body.player1, req.body.player2)
+               if(createDraft && createDraftData){
+                    pusherServer.trigger('drafting', 'arena-player-route', {
+                        arena_id: req.body.arenaID,
+                        draft_id: createDraft.uid,
+                        player1: req.body.player1,
+                        player2: req.body.player2,
                     })
-
-                   if(createDraft && createDraftData){
-                        pusherServer.trigger('drafting', 'arena-player-route', {
-                            arena_id: req.body.arenaID,
-                            draft_id: createDraft.uid,
-                            player1: req.body.player1,
-                            player2: req.body.player2,
-                        })
-        
-                        res.status(200).json({ 
-                            success: true,
-                            draft_id: createDraft.uid,
-                        })
-                   }
-                }  
+    
+                    res.status(200).json({ 
+                        success: true,
+                        draft_id: createDraft.uid,
+                    })
+               }
             }
             catch(err) {
                 res.status(200).json({ 

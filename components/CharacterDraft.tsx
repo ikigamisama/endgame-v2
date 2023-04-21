@@ -1,5 +1,5 @@
-import { CharacterDraftProps, CharacterInfoProps } from "@/libs/helpers/types";
-import { convertVisionToColor, vision } from "@/libs/includes/color";
+import { CharacterDraftProps } from "@/libs/helpers/types";
+import { convertVisionToColor } from "@/libs/includes/color";
 import {
   AllElementVisionIcon,
   AnemoVisionIcon,
