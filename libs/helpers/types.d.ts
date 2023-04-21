@@ -85,6 +85,7 @@ export declare interface CharacterDraftProps{
     onOpenCharacterModal?: () => void
     state?: UserDataPropState
     router?: NextRouter
+    setBackgroundVid?: ((data: VideoPropsSettings) => void) | undefined
 }
 
 export declare interface ProfileChanges{
@@ -285,4 +286,9 @@ export declare interface CharacterDraftPayloadProps {
     index: string
     playerID: string
     status: string
+}
+
+export type BackToArenaProps = {
+   draft_id: string | string[] | undefined
+   arena_id: string | string[] | undefined
 }

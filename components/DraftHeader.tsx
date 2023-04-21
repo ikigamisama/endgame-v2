@@ -36,13 +36,19 @@ import { ButtonPopUpNav, FontHeaderPopup } from "@/src/styles";
 import { FormLabelText, FormSelect } from "@/src/styles/login";
 import { SettingsIcon } from "@chakra-ui/icons";
 import { useState } from "react";
-import { CharacterDraftProps, ModalFeatures } from "@/libs/helpers/types";
+import {
+  BackToArenaProps,
+  CharacterDraftProps,
+  ModalFeatures,
+} from "@/libs/helpers/types";
 import {
   EndgameModalContent,
   EndgameModalWrapper,
   ModalEndgameButton,
   ModalTextEndgame,
 } from "@/src/styles/Modal";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "@/libs/providers/api";
 
 const ModalFeatureDraft = ({ isOpen, onClose, title }: ModalFeatures) => {
   return (
@@ -84,13 +90,11 @@ const ModalFeatureDraft = ({ isOpen, onClose, title }: ModalFeatures) => {
 
 const DraftHeader: React.FC<CharacterDraftProps> = ({
   onOpenCharacterModal,
+  setBackgroundVid,
   state,
   router,
 }) => {
-  const [arena_id, setBackgroundBG] = userStore((state) => [
-    state.arena_id,
-    state.setBackgroundBG,
-  ]);
+  const [arena_id] = userStore((state) => [state.arena_id]);
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
 
@@ -101,6 +105,13 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   const onCloseModalSwitchDraft = () => {
     setModalSwitchDraft(!modalSwitchDraft);
   };
+
+  const backArenaDrafters = useMutation({
+    mutationFn: async (data: BackToArenaProps) => {
+      let submitResponse = await api.post("/arena/draft/end", data);
+      return submitResponse.data;
+    },
+  });
 
   return (
     <>
@@ -127,7 +138,12 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
           <Flex flex={1} gap={4} justifyContent="flex-start">
             {state?.user.role === "GM" && (
               <ButtonPopUpNav
-                onClick={() => router?.push(`/arena/${arena_id}`)}
+                onClick={() =>
+                  backArenaDrafters.mutate({
+                    draft_id: router?.query.draftID,
+                    arena_id: router?.query.arenaID,
+                  })
+                }
               >
                 <BackIcon />
               </ButtonPopUpNav>
@@ -261,10 +277,12 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                           .replace("/video/bg/", "")
                           .replace("_bg.mp4", "")}
                         onChange={(e) => {
-                          setBackgroundBG({
-                            mp4: "/video/bg/" + e.target.value + "_bg.mp4",
-                            webm: "/video/bg/" + e.target.value + "_bg.webm",
-                          });
+                          if (setBackgroundVid) {
+                            setBackgroundVid({
+                              mp4: "/video/bg/" + e.target.value + "_bg.mp4",
+                              webm: "/video/bg/" + e.target.value + "_bg.webm",
+                            });
+                          }
                         }}
                       >
                         <option value="stars">Default</option>

@@ -7,6 +7,7 @@ import { ModalBoss } from "@/libs/helpers/types";
 import { vision } from "@/libs/includes/color";
 import { WarpImgPNG, WarpImgGIF } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
+import { pusherClient } from "@/libs/providers/pusherClient";
 import { ModalCharacterPickBlur } from "@/src/styles/CharacterPick";
 import {
   BossChooseText,
@@ -90,7 +91,7 @@ const ModalBoss = ({
 };
 
 const Drafting: NextPage = () => {
-  const { state } = useUserData();
+  const { state, setBackgroundVid } = useUserData();
   const router = useRouter();
 
   const [applyCharacterModal, setApplyCharacterModal] =
@@ -110,7 +111,23 @@ const Drafting: NextPage = () => {
 
   const onDeclineRerollBoss = () => {};
 
-  useEffect(() => {}, [router]);
+  useEffect(() => {
+    const arenaChannel = pusherClient.subscribe("arena-room"),
+      draftChannel = pusherClient.subscribe("drafting");
+
+    arenaChannel.bind("back-arena", (data: any) => {
+      if (router.query.draftID === data.draftID) {
+        router.push(`/arena/${data.arenaID}`);
+      }
+    });
+
+    return () => {
+      arenaChannel.unbind();
+      draftChannel.unbind();
+      pusherClient.unsubscribe(arenaChannel.name);
+      pusherClient.unsubscribe(draftChannel.name);
+    };
+  }, [router]);
 
   return (
     <>
@@ -150,6 +167,7 @@ const Drafting: NextPage = () => {
         <DraftHeader
           statusCharacterModal={applyCharacterModal}
           onOpenCharacterModal={onToggleCharacterPickModal}
+          setBackgroundVid={setBackgroundVid}
           state={state}
           router={router}
         />

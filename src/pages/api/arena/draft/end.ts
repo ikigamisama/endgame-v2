@@ -15,8 +15,13 @@ export default async function handler(
 
         if(session){
             try{
+                pusherServer.trigger('arena-room', 'back-arena', { draftID: req.body.draft_id, arenaID: req.body.arena_id })
                 res.status(200).json({ 
-                    success: true
+                    success: true,
+                    data: {
+                        draftID: req.body.draft_id, 
+                        arenaID: req.body.arena_id
+                    }
                 })
             }
             catch(err) {
