@@ -281,6 +281,13 @@ export type DraftBanFormat = {
     player2: DraftInfoProps[]
 }
 
+
+export type SequenceDraft = {
+    audio: string
+    player: string
+    index: string
+}
+
 export type DraftStateProps = {
     init: string
     characters: CharacterInfoProps[]
@@ -301,6 +308,8 @@ export type DraftStateProps = {
     pick: any,
     ban: DraftBanFormat,
     banWidthSize: number
+    sequence: any
+    turn: number
 }
 
 export type DraftFunctions = {
@@ -318,6 +327,9 @@ export type DraftFunctions = {
     setBossInfo: (bossInfo: BossInfoProps) => void
     setPickList: (pickList: DraftInfoProps[], mode : string) => void
     setBanList: (banList: DraftInfoProps[], mode : string) => void
+    setTimer: (timer: number) => void
+    setSequenceList: (mode: string) => void
+    setTurnSequence: (turn: number) => void
 }
 
 export declare interface CharacterDraftPayloadProps {
@@ -337,6 +349,16 @@ export declare interface PlayerNameDraft {
     player2Name: string
 }
 
-export type DraftPickFormat = {
-    
+export type DraftCountdownProps = {
+    timer: number
+    player1IsReroll: string
+    player2IsReroll: string
 }
+
+
+export type TimerUpdateProps = {
+    timer: number
+    draft_id: string | string[] | undefined
+    isContinuingCooldown: boolean
+    isPauseTimer: boolean
+} 

@@ -1,3 +1,4 @@
+import { DraftCountdownProps } from "@/libs/helpers/types";
 import {
   DraftCountdownCard,
   DraftCountdownCardWrapper,
@@ -6,7 +7,11 @@ import {
 } from "@/src/styles/Draft";
 import { Flex } from "@chakra-ui/react";
 
-const DraftCountdown = () => {
+const DraftCountdown: React.FC<DraftCountdownProps> = ({
+  timer,
+  player1IsReroll,
+  player2IsReroll,
+}) => {
   return (
     <Flex
       flex={1}
@@ -19,7 +24,7 @@ const DraftCountdown = () => {
       <DraftRerollBanner bgColor="#61b162">Reroll</DraftRerollBanner>
       <DraftCountdownCard>
         <DraftCountdownCardWrapper>
-          <DraftCountdownText>23</DraftCountdownText>
+          <DraftCountdownText>{timer}</DraftCountdownText>
         </DraftCountdownCardWrapper>
       </DraftCountdownCard>
       <DraftRerollBanner bgColor="#95292d">No Reroll</DraftRerollBanner>

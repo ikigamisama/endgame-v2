@@ -1,4 +1,4 @@
-import { CharacterDraftPayloadProps, DraftBanFormat, DraftBanLayout, DraftInfoProps } from "../helpers/types";
+import { CharacterDraftPayloadProps, DraftBanFormat, DraftBanLayout, DraftInfoProps, SequenceDraft } from "../helpers/types";
 
 function getLengthByMode (mode: string): number {
     let length = 0;
@@ -201,4 +201,237 @@ export function draftLayoutPick(mode: string, pick: DraftInfoProps[]) : DraftInf
         }
     }
     return newPickDraftFormat;
+}
+
+
+export function createSequence (mode: string): SequenceDraft[] {
+    let sequenceList:SequenceDraft[] = [];
+    switch(mode){
+        case "1v1": {
+            sequenceList = [
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-1'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-1'
+                },
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-1'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-1'
+                },
+            ]
+            break;
+        }
+        case "2v2": {
+            sequenceList = [
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-1'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-1'
+                },
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-1'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-1'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-2'
+                },
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-2'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-2'
+                },
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-2'
+                },
+            ]
+            break;
+        }
+        case "3v3": {
+            sequenceList = [
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-1'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-1'
+                },
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-2'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-2'
+                },
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-1'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-1'
+                },
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-2'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-2'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-3'
+                },
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-3'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-3'
+                },
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-3'
+                }
+            ]
+            break;
+        }
+        case "4v4": {
+            sequenceList = [
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-1'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-1'
+                },
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-2'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-2'
+                },
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-1'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-1'
+                },
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-2'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-2'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-3'
+                },
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-3'
+                },
+                {
+                    audio: 'teamTwoBan',
+                    player: 'player2',
+                    index: 'player-2-ban-4'
+                },
+                {
+                    audio: 'teamOneBan',
+                    player: 'player1',
+                    index: 'player-1-ban-4'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-3'
+                },
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-3'
+                },
+                {
+                    audio: 'teamTwoPick',
+                    player: 'player2',
+                    index: 'player-2-pick-4'
+                },
+               
+                {
+                    audio: 'teamOnePick',
+                    player: 'player1',
+                    index: 'player-1-pick-4'
+                },
+               
+            ]
+            break;
+        }
+    }
+
+
+    return sequenceList;
+
 }

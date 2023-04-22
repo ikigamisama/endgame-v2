@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { BossInfoProps, CharacterInfoProps, DraftFunctions, DraftInfoProps, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
-import { draftLayoutBan, draftLayoutPick, getBanWidth } from '../providers/draft'
+import { createSequence, draftLayoutBan, draftLayoutPick, getBanWidth } from '../providers/draft'
 
 
 const initialState: DraftStateProps = {
@@ -52,8 +52,9 @@ const initialState: DraftStateProps = {
     },
     pick: [],
     ban: {player1: [], player2: []},
-    banWidthSize: 0
-    
+    banWidthSize: 0,
+    sequence: [],
+    turn: 0
 }
 
 export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get) => ({ 
@@ -117,6 +118,14 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     setBanList: (banList: DraftInfoProps[], mode: string ) => {
         set({ banWidthSize: getBanWidth(mode) })
         set({ ban: draftLayoutBan(mode, banList) });
+    },
+    setTimer: (timer: number) => {
+        set({ timer: timer })
+    },
+    setSequenceList: (mode: string) => {
+        set({ sequence: createSequence(mode) })
+    },
+    setTurnSequence: (turn: number) => {
+        set({ turn: turn })
     }
-
 }))

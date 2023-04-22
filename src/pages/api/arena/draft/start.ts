@@ -16,6 +16,16 @@ export default async function handler(
 
         if(session){
             try{
+
+                const updateArena = await prisma.arena.update({
+                    where:{
+                        uid: req.body.arenaID,
+                    },
+                    data:{
+                        mode: req.body.mode,
+                       
+                    }
+                })
                 const createDraft = await prisma.draft.create({
                     data:{
                         arenaID: req.body.arenaID,
@@ -29,7 +39,7 @@ export default async function handler(
                     data: generateDraftSlot(req.body.mode, createDraft.uid, req.body.player1, req.body.player2)
                 })
 
-               if(createDraft && createDraftData){
+               if(updateArena && createDraft && createDraftData){
                     pusherServer.trigger('drafting', 'arena-player-route', {
                         arena_id: req.body.arenaID,
                         draft_id: createDraft.uid,

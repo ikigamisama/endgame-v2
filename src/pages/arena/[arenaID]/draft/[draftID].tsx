@@ -3,7 +3,11 @@ import CharacterDraft from "@/components/CharacterDraft";
 import DraftCountdown from "@/components/DraftCountdown";
 import DraftFooter from "@/components/DraftFooter";
 import DraftHeader from "@/components/DraftHeader";
-import { DraftInfoProps, ModalBoss } from "@/libs/helpers/types";
+import {
+  DraftInfoProps,
+  ModalBoss,
+  TimerUpdateProps,
+} from "@/libs/helpers/types";
 import { convertVisionToColor } from "@/libs/includes/color";
 import {
   AnemoVisionIcon,
@@ -47,7 +51,7 @@ import {
   SimpleGrid,
   VStack,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -124,6 +128,10 @@ const Drafting: NextPage = () => {
     banWidthSize,
     boss,
     setBossInfo,
+    timer,
+    setTimer,
+    sequence,
+    setSequenceList,
   ] = useDraftStore((state) => [
     state.applyCharacterModal,
     state.setApplyCharacterModal,
@@ -142,6 +150,10 @@ const Drafting: NextPage = () => {
     state.banWidthSize,
     state.boss,
     state.setBossInfo,
+    state.timer,
+    state.setTimer,
+    state.sequence,
+    state.setSequenceList,
   ]);
 
   const onToggleCharacterPickModal = () => {
@@ -156,26 +168,66 @@ const Drafting: NextPage = () => {
 
   const onDeclineRerollBoss = () => {};
 
+  const timerUpdate = useMutation({
+    mutationFn: async (data: TimerUpdateProps) => {
+      let submitResponse = await api.post("/arena/draft/timer", data);
+      return submitResponse.data;
+    },
+  });
+
   useEffect(() => {
     const arenaChannel = pusherClient.subscribe("arena-room"),
-      draftChannel = pusherClient.subscribe("drafting");
+      draftChannel = pusherClient.subscribe("drafting"),
+      timerChannel = pusherClient.subscribe("draft_timer");
 
     arenaChannel.bind("back-arena", (data: any) => {
       if (router.query.draftID === data.draftID) {
         router.push(`/arena/${data.arenaID}`);
       }
     });
+    let interval: any;
+    timerChannel.bind("update", (data: any) => {
+      if (router.query.draftID === data.draft_id) {
+        let countdown = data.timer;
+        setTimer(countdown);
+
+        if (data.isPauseTimer) {
+          clearInterval(interval);
+        } else {
+          interval = setInterval(() => {
+            countdown--;
+            setTimer(countdown);
+
+            if (state.user.role === "GM") {
+              timerUpdate.mutate({
+                timer: countdown,
+                draft_id: router.query.draftID,
+                isContinuingCooldown: true,
+                isPauseTimer: false,
+              });
+            }
+
+            if (countdown <= 0) {
+              clearInterval(interval);
+            }
+          }, 1000);
+        }
+      }
+    });
 
     return () => {
       arenaChannel.unbind();
       draftChannel.unbind();
+      timerChannel.unbind();
       pusherClient.unsubscribe(arenaChannel.name);
       pusherClient.unsubscribe(draftChannel.name);
+      pusherClient.unsubscribe(timerChannel.name);
+      clearInterval(interval);
     };
-  }, [router]);
+  }, [router, state.user]);
 
   const draftDataQuery = useQuery({
-    queryKey: ["draftData"],
+    queryKey: ["draftData", router.query.draftID],
     queryFn: async () => {
       const listResponse = await api.post("/arena/draft/get", {
         arena_id: router.query.draftID,
@@ -183,6 +235,7 @@ const Drafting: NextPage = () => {
       return listResponse.data;
     },
     onSuccess: (data) => {
+      setTimer(data.result.timer);
       setPlayer1Info({
         id: data.result.player1.id,
         avatar: data.result.player1.avatar,
@@ -209,8 +262,8 @@ const Drafting: NextPage = () => {
       }
       setPickList(pickList, data.result.arena.mode);
       setBanList(banList, data.result.arena.mode);
-
-      //console.log(data.result);
+      setSequenceList(data.result.arena.mode);
+      setIsStartDraft(data.result.current_status_draft === null ? false : true);
     },
   });
 
@@ -267,7 +320,11 @@ const Drafting: NextPage = () => {
         {draftDataQuery.isLoading !== true && (
           <Container maxW="1275px" pt={4} height="calc(100vh - 115px)">
             <VStack w="100%" h="100%" justifyContent="space-between">
-              <DraftCountdown />
+              <DraftCountdown
+                timer={timer}
+                player1IsReroll=""
+                player2IsReroll=""
+              />
               <Flex flex={1} w="100%" height="100%" alignItems="center">
                 <VStack
                   w="100%"
@@ -397,18 +454,40 @@ const Drafting: NextPage = () => {
                   ))}
 
                   <DraftBossCard>
-                    <Box position="relative" zIndex="25" w="100%" h="100%">
+                    <Box
+                      position="relative"
+                      zIndex="25"
+                      w="100%"
+                      h="100%"
+                      cursor="pointer"
+                      onClick={() => {
+                        // if (state.user.role === "GM") {
+                        //   timerUpdate.mutate({
+                        //     timer: 10,
+                        //     draft_id: router.query.draftID,
+                        //     isContinuingCooldown: false,
+                        //     isPauseTimer: false,
+                        //   });
+                        // } else {
+                        //   timerUpdate.mutate({
+                        //     timer: timer,
+                        //     draft_id: router.query.draftID,
+                        //     isContinuingCooldown: false,
+                        //     isPauseTimer: true,
+                        //   });
+                        // }
+                      }}
+                    >
                       <DraftBossCardBGImg
                         src={isStartDraft === true ? WarpImgGIF : WarpImgPNG}
                       />
-
-                      {/* <Box position="relative" zIndex="50">
-                      <Image
-                        src="https://endgame.otakuhobbitoysph.com/cdn/characters/flash/Keqing.png"
-                        alt="placements-flash"
-                        width="100%"
-                      />
-                    </Box> */}
+                      <Box position="relative" zIndex="50">
+                        {/* <Image
+                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/flash/Keqing.png"
+                          alt="placements-flash"
+                          width="100%"
+                        /> */}
+                      </Box>
                     </Box>
                   </DraftBossCard>
                 </VStack>
