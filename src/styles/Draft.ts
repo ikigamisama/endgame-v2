@@ -320,3 +320,67 @@ export const BossModalButtons = styled(Button)`
     font-size: 1.5rem;
     padding: 28px 50px;
 `
+
+export const DraftButtonStart = styled(Button)`
+    font-family: 'GenshinFont',sans-serif;
+    background-color: #1E223F;
+    border-radius: 100%;
+    font-size: 30px;
+    width: 250px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    z-index: 0;
+    position: relative;
+
+    & > svg{
+        width: 150px;
+        height: 150px;
+    }
+
+    &:before{
+        content: '';
+        background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+        position: absolute;
+        top: -10px;
+        left:-10px;
+        background-size: 400%;
+        z-index: -1;
+        filter: blur(15px);
+        width: calc(100% + 35px);
+        height: calc(100% + 35px);
+        animation: glowing 20s linear infinite;
+        opacity: 0;
+        transition: opacity .3s ease-in-out;
+        border-radius: 100%;
+    }
+
+    &:active{
+        color: white
+    }
+    &:hover:before {
+        opacity: 1;
+    }
+    &:active:after {
+        background: transparent;
+    }
+
+    &:after {
+        z-index: -1;
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #1E223F;
+        left: 0;
+        top: 0;
+        border-radius: 100%;
+    }
+    
+    @keyframes glowing {
+        0% { background-position: 0 0; }
+        50% { background-position: 400% 0; }
+        100% { background-position: 0 0; }
+    }
+
+`

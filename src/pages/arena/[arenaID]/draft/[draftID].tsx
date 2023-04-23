@@ -17,6 +17,7 @@ import {
   GeoVisionIcon,
   HydroVisionIcon,
   PyroVisionIcon,
+  StartIcon,
 } from "@/libs/includes/icons";
 import { WarpImgPNG, WarpImgGIF } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
@@ -30,6 +31,7 @@ import {
   BossModalButtons,
   DraftBossCard,
   DraftBossCardBGImg,
+  DraftButtonStart,
   DraftCharacterContainer,
   DraftCharacterName,
   DraftCharacterNameWrapper,
@@ -486,7 +488,18 @@ const Drafting: NextPage = () => {
                       <DraftBossCardBGImg
                         src={isStartDraft === true ? WarpImgGIF : WarpImgPNG}
                       />
-                      <Box position="relative" zIndex="50">
+                      <Box
+                        position="relative"
+                        zIndex="50"
+                        w="100%"
+                        height="100%"
+                      >
+                        <Center w="100%" height="100%">
+                          <DraftButtonStart>
+                            <StartIcon />
+                            Start
+                          </DraftButtonStart>
+                        </Center>
                         {/* <Image
                           src="https://endgame.otakuhobbitoysph.com/cdn/characters/flash/Keqing.png"
                           alt="placements-flash"
