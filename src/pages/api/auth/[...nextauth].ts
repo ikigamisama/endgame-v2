@@ -97,8 +97,7 @@ export const authentication: NextAuthOptions = {
         signOut: '/logout',
         // error: '/auth/error',
         // signOut: '/auth/signout'
-    },
-    debug: true
+    }
 }
 
 export default NextAuth(authentication);
