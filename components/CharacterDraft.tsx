@@ -74,6 +74,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     searchCharacterList,
     currentCharacterChoose,
     setCurrentCharacterChoice,
+    pickListCharacterDraft,
+    banListCharacterDraft,
   ] = useDraftStore((state) => [
     state.boss,
     state.characters,
@@ -85,6 +87,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     state.searchCharacterList,
     state.currentCharacterChoose,
     state.setCurrentCharacterChoice,
+    state.pickListCharacterDraft,
+    state.banListCharacterDraft,
   ]);
 
   const characterListQuery = useQuery({
@@ -440,60 +444,40 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               <CharacterPickInfoCardBody>
                 <SimpleGrid columns={2} spacing={16} w="100%">
                   <Grid templateColumns="repeat(4, 1fr)" gap={2}>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="ban"
-                      >
-                        {/* <CharacterDraftPlayerImg rarity="4">
-                          <Image src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Bennett.png" />
-                        </CharacterDraftPlayerImg> */}
-                      </CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="ban"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="ban"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="ban"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
+                    {banListCharacterDraft.player1.map((draft, keyDraft) => (
+                      <GridItem key={keyDraft}>
+                        <CharacterDraftPlayerWrapper
+                          currentdraft="false"
+                          drafttype="ban"
+                        >
+                          {draft.characterID !== null && (
+                            <CharacterDraftPlayerImg
+                              rarity={draft.character.rarity}
+                            >
+                              <Image src={draft.character.draft_picture} />
+                            </CharacterDraftPlayerImg>
+                          )}
+                        </CharacterDraftPlayerWrapper>
+                      </GridItem>
+                    ))}
                   </Grid>
                   <Grid templateColumns="repeat(4, 1fr)" gap={2}>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="ban"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="ban"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="ban"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="ban"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
+                    {banListCharacterDraft.player2.map((draft, keyDraft) => (
+                      <GridItem key={keyDraft}>
+                        <CharacterDraftPlayerWrapper
+                          currentdraft="false"
+                          drafttype="ban"
+                        >
+                          {draft.characterID !== null && (
+                            <CharacterDraftPlayerImg
+                              rarity={draft.character.rarity}
+                            >
+                              <Image src={draft.character.draft_picture} />
+                            </CharacterDraftPlayerImg>
+                          )}
+                        </CharacterDraftPlayerWrapper>
+                      </GridItem>
+                    ))}
                   </Grid>
                 </SimpleGrid>
               </CharacterPickInfoCardBody>
@@ -505,60 +489,40 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               <CharacterPickInfoCardBody>
                 <SimpleGrid columns={2} spacing={16} w="100%">
                   <Grid templateColumns="repeat(4, 1fr)" gap={2}>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="pick"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="pick"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="pick"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="pick"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
+                    {pickListCharacterDraft.player1.map((draft, keyDraft) => (
+                      <GridItem key={keyDraft}>
+                        <CharacterDraftPlayerWrapper
+                          currentdraft="false"
+                          drafttype="pick"
+                        >
+                          {draft.characterID !== null && (
+                            <CharacterDraftPlayerImg
+                              rarity={draft.character.rarity}
+                            >
+                              <Image src={draft.character.draft_picture} />
+                            </CharacterDraftPlayerImg>
+                          )}
+                        </CharacterDraftPlayerWrapper>
+                      </GridItem>
+                    ))}
                   </Grid>
                   <Grid templateColumns="repeat(4, 1fr)" gap={2}>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="pick"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="pick"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="pick"
-                      ></CharacterDraftPlayerWrapper>
-                    </GridItem>
-                    <GridItem>
-                      <CharacterDraftPlayerWrapper
-                        currentdraft="false"
-                        drafttype="pick"
-                      >
-                        {/* <CharacterDraftPlayerImg rarity="5">
-                          <Image src="https://endgame.otakuhobbitoysph.com/cdn/characters/thumbnail/Kaedehara_Kazuha.png" />
-                        </CharacterDraftPlayerImg> */}
-                      </CharacterDraftPlayerWrapper>
-                    </GridItem>
+                    {pickListCharacterDraft.player2.map((draft, keyDraft) => (
+                      <GridItem key={keyDraft}>
+                        <CharacterDraftPlayerWrapper
+                          currentdraft="false"
+                          drafttype="pick"
+                        >
+                          {draft.characterID !== null && (
+                            <CharacterDraftPlayerImg
+                              rarity={draft.character.rarity}
+                            >
+                              <Image src={draft.character.draft_picture} />
+                            </CharacterDraftPlayerImg>
+                          )}
+                        </CharacterDraftPlayerWrapper>
+                      </GridItem>
+                    ))}
                   </Grid>
                 </SimpleGrid>
               </CharacterPickInfoCardBody>

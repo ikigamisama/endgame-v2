@@ -1,4 +1,4 @@
-import { CharacterDraftPayloadProps, DraftBanFormat, DraftBanLayout, DraftInfoProps, SequenceDraft } from "../helpers/types";
+import { CharacterDraftPayloadProps, DraftBanFormat, DraftBanLayout, DraftCharacterList, DraftInfoProps, SequenceDraft } from "../helpers/types";
 
 function getLengthByMode (mode: string): number {
     let length = 0;
@@ -202,6 +202,46 @@ export function draftLayoutPick(mode: string, pick: DraftInfoProps[]) : DraftInf
     }
     return newPickDraftFormat;
 }
+
+export function arrangeDraftCharacterlistModal(list: DraftInfoProps[]):  DraftCharacterList{
+    let player1: DraftInfoProps[] = [],
+        player2: DraftInfoProps[] = [];
+
+
+    list.map((data: DraftInfoProps)  => {
+        if(data.index === "player-1-pick-1" || data.index === "player-1-pick-2" || data.index === "player-1-pick-3" || data.index === "player-1-pick-4"){
+            player1.push(data)
+        }
+
+        if(data.index === "player-2-pick-1" || data.index === "player-2-pick-2" || data.index === "player-2-pick-3" || data.index === "player-2-pick-4"){
+            player2.push(data)
+        }
+
+        if(data.index === "player-1-ban-1" || data.index === "player-1-ban-2" || data.index === "player-1-ban-3" || data.index === "player-1-ban-4"){
+            player1.push(data)
+        }
+
+        if(data.index === "player-2-ban-1" || data.index === "player-2-ban-2" || data.index === "player-2-ban-3" || data.index === "player-2-ban-4"){
+            player2.push(data)
+        }
+    })
+
+    let sortedPlayer2 = player2.sort((a, b) => {
+        if (a.index < b.index) {
+          return 1;
+        }
+        if (a.index > b.index) {
+          return -1;
+        }
+        return 0;
+      });
+    
+    return {
+        player1: player1,
+        player2: sortedPlayer2,
+    }
+}
+
 
 
 export function createSequence (mode: string): SequenceDraft[] {
@@ -430,8 +470,5 @@ export function createSequence (mode: string): SequenceDraft[] {
             break;
         }
     }
-
-
     return sequenceList;
-
 }

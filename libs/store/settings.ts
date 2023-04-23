@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { BossInfoProps, CharacterInfoProps, ProfileChanges, SettingActions, SettingState } from '../helpers/types'
+import { mountStoreDevtool } from 'simple-zustand-devtools'
 
 const initialState: SettingState = {
     isGeneratePassword: false,
@@ -98,3 +99,5 @@ export const useSettingsStore = create<SettingState & SettingActions>((set, get)
     }
 }))
 
+
+mountStoreDevtool('SettingsStore', useSettingsStore);

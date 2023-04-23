@@ -47,6 +47,7 @@
     "@types/react-typing-effect": "^2.0.3",
     "eslint": "^8.23.1",
     "eslint-config-next": "^12.3.0",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "simple-zustand-devtools": "^1.1.0"
   }
 }

@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { ArenaPlayerFunction, ArenaPlayers, ArenaPlayersPayloadFeature, ArenaPlayersState } from '../helpers/types'
+import { mountStoreDevtool } from 'simple-zustand-devtools'
 
 
 const initialState: ArenaPlayersState = {
@@ -85,3 +86,6 @@ export const useArenaStore = create<ArenaPlayersState & ArenaPlayerFunction>((se
         set({arenaPlayers: arenaNewPlayers})
     }
 }))
+
+
+mountStoreDevtool('ArenaStore', useArenaStore);

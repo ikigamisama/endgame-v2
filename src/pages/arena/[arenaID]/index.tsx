@@ -85,7 +85,11 @@ const Arena: NextPage = () => {
     },
   });
 
-  const [arena_id] = userStore((state) => [state.arena_id]);
+  const [arena_id, isLoadingSubmit, setLoadingSubmit] = userStore((state) => [
+    state.arena_id,
+    state.isLoadingSubmit,
+    state.setLoadingSubmit,
+  ]);
 
   const [bossList, setBossList] = useSettingsStore((state) => [
     state.bossList,
@@ -196,6 +200,7 @@ const Arena: NextPage = () => {
   });
 
   const submitArenaToDraft: SubmitHandler<ArenaDraftProps> = (data) => {
+    setLoadingSubmit(true);
     if (player1.user_id !== "" && player2.user_id !== "") {
       startDraft.mutate({
         mode: data.mode,
@@ -234,6 +239,18 @@ const Arena: NextPage = () => {
       }
     });
   }, [watchBossChoose]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: any) => {
+      alert(e);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
     const arenaChannel = pusherClient.subscribe("arena-room"),
@@ -690,7 +707,16 @@ const Arena: NextPage = () => {
 
                           <ArenaPaddingWrap>
                             <FormSubmitButton type="submit">
-                              Start Game
+                              {isLoadingSubmit === true ? (
+                                <Spinner
+                                  thickness="5px"
+                                  speed="0.5s"
+                                  emptyColor="#ECDEB5"
+                                  color="#1E223F"
+                                />
+                              ) : (
+                                "Start Game"
+                              )}
                             </FormSubmitButton>
                           </ArenaPaddingWrap>
                         </form>

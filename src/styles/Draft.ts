@@ -74,7 +74,6 @@ export const BanCharacterWrapper = styled(Box)<DraftPositionProps>`
     overflow:hidden;
     display: flex;
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')};
-
 `
 
 export const DraftRerollBanner = styled(Box)`
@@ -226,13 +225,13 @@ export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')};
     z-index: 12;
 
-    & > .character-img-pick{
+    &  .character-img-pick{
         position: absolute;
         top: 0;
         ${(props) => (props.aligndraft === 'left' ? 'left: 0;' : 'right: 0;')}
         ${(props) => (props.aligndraft === 'right' ? 'transform:scaleX(-1)' : '')};
         z-index: 22;
-        width: 65%;
+        width: 60%;
     }
 
     & .character-vision-icon{

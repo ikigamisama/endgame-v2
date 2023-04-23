@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { BossInfoProps, CharacterInfoProps, DraftFunctions, DraftInfoProps, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
-import { createSequence, draftLayoutBan, draftLayoutPick, getBanWidth } from '../providers/draft'
-
+import { arrangeDraftCharacterlistModal, createSequence, draftLayoutBan, draftLayoutPick, getBanWidth } from '../providers/draft'
+import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 const initialState: DraftStateProps = {
     init: "",
@@ -52,6 +52,8 @@ const initialState: DraftStateProps = {
     },
     pick: [],
     ban: {player1: [], player2: []},
+    pickListCharacterDraft: {player1: [], player2: []},
+    banListCharacterDraft: {player1: [], player2: []},
     banWidthSize: 0,
     sequence: [],
     turn: 0
@@ -113,9 +115,11 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
         set({ boss: bossInfo })
     },
     setPickList: (pickList: DraftInfoProps[], mode: string ) => {
+        set({ pickListCharacterDraft: arrangeDraftCharacterlistModal(pickList)})
         set({ pick: draftLayoutPick(mode ,pickList) });
     },
     setBanList: (banList: DraftInfoProps[], mode: string ) => {
+        set({ banListCharacterDraft: arrangeDraftCharacterlistModal(banList)})
         set({ banWidthSize: getBanWidth(mode) })
         set({ ban: draftLayoutBan(mode, banList) });
     },
@@ -129,3 +133,5 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
         set({ turn: turn })
     }
 }))
+
+mountStoreDevtool('DraftStore', useDraftStore);

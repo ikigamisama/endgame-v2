@@ -42,7 +42,7 @@ export type GetRandomNumberOptions = {
 export declare interface DraftPositionProps{
     aligndraft: 'left' | 'right' | string
     widthcharacter?: string
-    colorcharacter?: string
+    colorcharacter?: any
     indexcharacter?: string
     statusdraft?: 'pick' | 'ban' | 'none' | string
     currentpickdraft?: 'true' | 'false'
@@ -89,6 +89,7 @@ export declare interface CharacterDraftProps{
     ban?: DraftSketchProps
     banWidth?: number
     boss?: BossInfoProps | undefined
+    colorConvertVision?: ((vision: string) => void) | undefined
 }
 
 export declare interface ProfileChanges{
@@ -288,6 +289,11 @@ export type SequenceDraft = {
     index: string
 }
 
+export type DraftCharacterList = {
+    player1: DraftInfoProps[]
+    player2: DraftInfoProps[]
+}
+
 export type DraftStateProps = {
     init: string
     characters: CharacterInfoProps[]
@@ -305,8 +311,10 @@ export type DraftStateProps = {
     currentCharacterChoose: CharacterInfoProps
     player1: PlayerDraftInfo
     player2: PlayerDraftInfo
-    pick: any,
+    pick: DraftInfoProps[][],
     ban: DraftBanFormat,
+    pickListCharacterDraft: DraftCharacterList
+    banListCharacterDraft: DraftCharacterList
     banWidthSize: number
     sequence: any
     turn: number
@@ -330,6 +338,7 @@ export type DraftFunctions = {
     setTimer: (timer: number) => void
     setSequenceList: (mode: string) => void
     setTurnSequence: (turn: number) => void
+
 }
 
 export declare interface CharacterDraftPayloadProps {

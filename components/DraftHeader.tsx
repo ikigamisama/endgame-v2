@@ -96,6 +96,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   ban,
   banWidth,
   boss,
+  colorConvertVision,
 }) => {
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
@@ -170,7 +171,8 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                       widthcharacter={banData.wrapperWidthSize}
                       colorcharacter={
                         banData.characterID !== null
-                          ? banData.character.vision
+                          ? colorConvertVision &&
+                            colorConvertVision(banData.character.vision)
                           : ""
                       }
                       indexcharacter={banData.indexCharacter}

@@ -310,6 +310,7 @@ const Drafting: NextPage = () => {
           statusCharacterModal={applyCharacterModal}
           onOpenCharacterModal={onToggleCharacterPickModal}
           setBackgroundVid={setBackgroundVid}
+          colorConvertVision={colorConvertVision}
           state={state}
           router={router}
           ban={ban}
@@ -359,6 +360,9 @@ const Drafting: NextPage = () => {
                                 }}
                                 style={{
                                   height: "100%",
+                                  display: "flex",
+                                  justifyContent:
+                                    ii === 0 ? "flex-start" : "flex-end",
                                   backgroundColor:
                                     pickDataSide.characterID !== null
                                       ? colorConvertVision(
