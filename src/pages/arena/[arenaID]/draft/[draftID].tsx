@@ -185,6 +185,7 @@ const Drafting: NextPage = () => {
         router.push(`/arena/${data.arenaID}`);
       }
     });
+
     let interval: any;
     timerChannel.bind("update", (data: any) => {
       if (router.query.draftID === data.draft_id) {
