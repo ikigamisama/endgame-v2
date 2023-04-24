@@ -319,6 +319,16 @@ export const BossModalButtons = styled(Button)`
     border-radius: 33px;
     font-size: 1.5rem;
     padding: 28px 50px;
+
+    &:hover{
+        background-color: #ecdeb5 !important;
+    }
+
+    &:focus{
+        outline: none !important;
+        box-shadow: none;
+        border: 2px solid #ecdeb5;
+    }
 `
 
 export const DraftButtonStart = styled(Button)`

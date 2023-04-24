@@ -93,12 +93,14 @@ model Draft {
   uid                  String           @id @default(uuid())
   arenaID              String?
   bossID               String?
-  timer                Int              @default(30)
+  timer                Int              @default(0)
   pause_timer          Int              @default(3)
   current_status_draft String?
   player1_id           String?
   player2_id           String?
   winner_user_id       String?
+  player1_reroll       Boolean?
+  player2_reroll       Boolean?
   isFinish             Boolean          @default(false)
   createdAt            DateTime?        @default(now())
   player1              User?            @relation("player1", fields: [player1_id], references: [id], onDelete: Cascade)

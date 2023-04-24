@@ -25,8 +25,6 @@ export declare interface AvatarProps{
     src: string
 }
 
-
-
 export declare interface ArenaDraftProps{
     user_gm_id: string
     mode: "1v1" | "2v2" | "3v3" | "4v4" | string,
@@ -64,10 +62,13 @@ export declare interface ModalFeatures{
 export declare interface ModalBoss{
     isOpen: boolean
     onClose: () => void
-    onAccept: () => void
-    onDecline: () => void
-    boss: string
+    onAccept: (playerID: string, playerPosition: string) => void
+    onDecline: (playerID: string, playerPosition: string) => void
+    boss: BossInfoProps
     timer: number
+    user_state: any,
+    player1: PlayerDraftInfo
+    player2: PlayerDraftInfo
 }
 
 export declare interface CharacterDraftDesignProps{
@@ -294,6 +295,12 @@ export type DraftCharacterList = {
     player2: DraftInfoProps[]
 }
 
+export type DraftSequence = {
+    audio: string,
+    player: string,
+    index: string
+}
+
 export type DraftStateProps = {
     init: string
     characters: CharacterInfoProps[]
@@ -303,12 +310,12 @@ export type DraftStateProps = {
     applyCharacterModal: boolean
     applyBossModal: boolean
     isStartDraft : boolean
-    currentDraftPhase: string
     currentPlayerDraft: string
     currentAudioPlay: string
     timer: number
     boss: BossInfoProps
     currentCharacterChoose: CharacterInfoProps
+    finalCharacterChoose: CharacterInfoProps
     player1: PlayerDraftInfo
     player2: PlayerDraftInfo
     pick: DraftInfoProps[][],
@@ -316,8 +323,14 @@ export type DraftStateProps = {
     pickListCharacterDraft: DraftCharacterList
     banListCharacterDraft: DraftCharacterList
     banWidthSize: number
-    sequence: any
-    turn: number
+    sequence: DraftSequence[]
+    turn: number,
+    currentSequence: DraftSequence
+    currentCharacterFlash: string
+    currentBossFlash: string,
+    player1_reroll: boolean | null
+    player2_reroll: boolean | null
+    draftSituation: string
 }
 
 export type DraftFunctions = {
@@ -337,8 +350,13 @@ export type DraftFunctions = {
     setBanList: (banList: DraftInfoProps[], mode : string) => void
     setTimer: (timer: number) => void
     setSequenceList: (mode: string) => void
-    setTurnSequence: (turn: number) => void
-
+    setCurrentSequence: (currentSequence: DraftSequence) => void
+    setCurrentAudioPlay: (audio: string) => void
+    setCurrentCharacterFlash: (img: string) => void
+    setCurrentBossFlash: (img: string) => void
+    setPlayer1Reroll: (roll: boolean | null) => void
+    setPlayer2Reroll: (roll: boolean | null) => void
+    setDraftSituation: (situation: string) => void
 }
 
 export declare interface CharacterDraftPayloadProps {
@@ -360,8 +378,8 @@ export declare interface PlayerNameDraft {
 
 export type DraftCountdownProps = {
     timer: number
-    player1IsReroll: string
-    player2IsReroll: string
+    player1IsReroll: boolean | null
+    player2IsReroll: boolean | null
 }
 
 
@@ -370,4 +388,5 @@ export type TimerUpdateProps = {
     draft_id: string | string[] | undefined
     isContinuingCooldown: boolean
     isPauseTimer: boolean
+    function: string
 } 

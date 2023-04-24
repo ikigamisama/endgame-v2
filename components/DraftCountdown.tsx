@@ -21,13 +21,30 @@ const DraftCountdown: React.FC<DraftCountdownProps> = ({
       alignItems="center"
       justifyContent="center"
     >
-      <DraftRerollBanner bgColor="#61b162">Reroll</DraftRerollBanner>
+      {player1IsReroll !== null && timer === 0 ? (
+        <>
+          {player1IsReroll === true ? (
+            <DraftRerollBanner bgColor="#61b162">Reroll</DraftRerollBanner>
+          ) : (
+            <DraftRerollBanner bgColor="#95292d">No Reroll</DraftRerollBanner>
+          )}
+        </>
+      ) : null}
+
       <DraftCountdownCard>
         <DraftCountdownCardWrapper>
           <DraftCountdownText>{timer}</DraftCountdownText>
         </DraftCountdownCardWrapper>
       </DraftCountdownCard>
-      <DraftRerollBanner bgColor="#95292d">No Reroll</DraftRerollBanner>
+      {player2IsReroll !== null && timer === 0 ? (
+        <>
+          {player1IsReroll === true ? (
+            <DraftRerollBanner bgColor="#61b162">Reroll</DraftRerollBanner>
+          ) : (
+            <DraftRerollBanner bgColor="#95292d">No Reroll</DraftRerollBanner>
+          )}
+        </>
+      ) : null}
     </Flex>
   );
 };

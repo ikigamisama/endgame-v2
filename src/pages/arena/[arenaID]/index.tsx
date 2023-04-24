@@ -525,23 +525,25 @@ const Arena: NextPage = () => {
                                     position="relative"
                                     cursor="pointer"
                                     onClick={() => {
-                                      openModalConfirmSetPlayer(
-                                        {
-                                          id: player1.id,
-                                          arena_id: player1.arena_id,
-                                          user_id: player1.user_id,
-                                          isActive: player1.isActive,
-                                          joinedDate: player1.joinedDate,
-                                          user: {
-                                            id: player1.user?.id,
-                                            username: player1.user?.username,
-                                            role: player1.user?.role,
-                                            avatar: player1.user?.avatar,
+                                      if (player1.id !== "") {
+                                        openModalConfirmSetPlayer(
+                                          {
+                                            id: player1.id,
+                                            arena_id: player1.arena_id,
+                                            user_id: player1.user_id,
+                                            isActive: player1.isActive,
+                                            joinedDate: player1.joinedDate,
+                                            user: {
+                                              id: player1.user?.id,
+                                              username: player1.user?.username,
+                                              role: player1.user?.role,
+                                              avatar: player1.user?.avatar,
+                                            },
                                           },
-                                        },
-                                        "remove",
-                                        "player1"
-                                      );
+                                          "remove",
+                                          "player1"
+                                        );
+                                      }
                                     }}
                                   >
                                     <AvatarCircle>
@@ -569,23 +571,25 @@ const Arena: NextPage = () => {
                                     position="relative"
                                     cursor="pointer"
                                     onClick={() => {
-                                      openModalConfirmSetPlayer(
-                                        {
-                                          id: player2.id,
-                                          arena_id: player2.arena_id,
-                                          user_id: player2.user_id,
-                                          isActive: player2.isActive,
-                                          joinedDate: player2.joinedDate,
-                                          user: {
-                                            id: player2.user?.id,
-                                            username: player2.user?.username,
-                                            role: player2.user?.role,
-                                            avatar: player2.user?.avatar,
+                                      if (player2.id !== "") {
+                                        openModalConfirmSetPlayer(
+                                          {
+                                            id: player2.id,
+                                            arena_id: player2.arena_id,
+                                            user_id: player2.user_id,
+                                            isActive: player2.isActive,
+                                            joinedDate: player2.joinedDate,
+                                            user: {
+                                              id: player2.user?.id,
+                                              username: player2.user?.username,
+                                              role: player2.user?.role,
+                                              avatar: player2.user?.avatar,
+                                            },
                                           },
-                                        },
-                                        "remove",
-                                        "player2"
-                                      );
+                                          "remove",
+                                          "player2"
+                                        );
+                                      }
                                     }}
                                   >
                                     <AvatarCircle>

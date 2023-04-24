@@ -70,19 +70,6 @@ export const UserProvider = ({ children }: any) => {
       state.setArenaID,
     ]);
 
-  const arenaQuery = useQuery({
-    queryKey: ["arenaData"],
-    queryFn: async () => {
-      const listResponse = await api.get("/arena/get");
-      return listResponse.data;
-    },
-    onSuccess: (data) => {
-      if (session?.user?.role === "GM") {
-        setArenaID(data.arena.uid);
-      }
-    },
-  });
-
   const editSettings = useMutation({
     mutationFn: async (data: VideoPropsSettings) => {
       let submitResponse = await api.put("/account/settings/edit", data);
@@ -99,6 +86,19 @@ export const UserProvider = ({ children }: any) => {
     queryFn: async () => {
       const listResponse = await api.get("/account/settings/get");
       return listResponse.data;
+    },
+  });
+
+  const arenaQuery = useQuery({
+    queryKey: ["arenaData"],
+    queryFn: async () => {
+      const listResponse = await api.get("/arena/get");
+      return listResponse.data;
+    },
+    onSuccess: (data) => {
+      if (session?.user?.role === "GM") {
+        setArenaID(data.arena.uid);
+      }
     },
   });
 

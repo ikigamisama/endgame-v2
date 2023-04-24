@@ -20,7 +20,7 @@ export default async function handler(
                     data: { timer: req.body.timer },
                 });
                 if(req.body.isContinuingCooldown === false){
-                    pusherServer.trigger("draft_timer", "update", {draft_id: req.body.draft_id, timer: req.body.timer,isPauseTimer: req.body.isPauseTimer });
+                    pusherServer.trigger("draft_timer", req.body.function, {draft_id: req.body.draft_id, timer: req.body.timer,isPauseTimer: req.body.isPauseTimer });
                 }
                 
                 res.status(200).json({ 

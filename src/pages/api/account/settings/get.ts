@@ -51,6 +51,13 @@ export default async function handler(
                     }
                 })
             }
+            else{
+                res.status(401).json({ 
+                    success: false,
+                })
+            }
+            
+
         }
         catch(err) {
             res.status(200).json({ 

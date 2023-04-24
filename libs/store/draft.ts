@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { BossInfoProps, CharacterInfoProps, DraftFunctions, DraftInfoProps, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
+import { BossInfoProps, CharacterInfoProps, DraftFunctions, DraftInfoProps, DraftSequence, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
 import { arrangeDraftCharacterlistModal, createSequence, draftLayoutBan, draftLayoutPick, getBanWidth } from '../providers/draft'
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
@@ -12,10 +12,8 @@ const initialState: DraftStateProps = {
     applyCharacterModal: false,
     applyBossModal: false,
     isStartDraft: false,
-    currentDraftPhase: "",
     currentPlayerDraft: "",
-    currentAudioPlay: "",
-    timer: 30,
+    timer: 0,
     boss: {
         id: "",
         name: "",
@@ -25,6 +23,22 @@ const initialState: DraftStateProps = {
         is_visible: true
     },
     currentCharacterChoose: {
+        id:'',
+        name: '',
+        display_name: '',
+        rarity: '',
+        vision: '',
+        weapon: '',
+        draft_picture: '',
+        pick_picture: '',
+        flash_picture: '',
+        ban_picture: '',
+        ban_audio:   '',
+        pick_audio:  '',
+        is_visible: true,
+        nation: ''
+    },
+    finalCharacterChoose:{
         id:'',
         name: '',
         display_name: '',
@@ -56,7 +70,18 @@ const initialState: DraftStateProps = {
     banListCharacterDraft: {player1: [], player2: []},
     banWidthSize: 0,
     sequence: [],
-    turn: 0
+    turn: 0,
+    currentSequence: {
+        audio: '',
+        player: '',
+        index: ''
+    },
+    currentAudioPlay: "",
+    currentCharacterFlash:"",
+    currentBossFlash: "",
+    player1_reroll: null,
+    player2_reroll: null,
+    draftSituation: ''
 }
 
 export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get) => ({ 
@@ -129,8 +154,26 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     setSequenceList: (mode: string) => {
         set({ sequence: createSequence(mode) })
     },
-    setTurnSequence: (turn: number) => {
-        set({ turn: turn })
+    setCurrentSequence: (currentSequence: DraftSequence) => {
+        set({ currentSequence: currentSequence })
+    },
+    setCurrentAudioPlay: (audio: string) => {
+        set({currentAudioPlay: audio})
+    },
+    setCurrentCharacterFlash: (img: string) => {
+        set({currentCharacterFlash: img})
+    },
+    setCurrentBossFlash: (img: string) => {
+        set({currentBossFlash: img})
+    },
+    setPlayer1Reroll: (roll: boolean | null) => {
+        set({player1_reroll: roll})
+    },
+    setPlayer2Reroll: (roll: boolean | null) => {
+        set({player2_reroll: roll})
+    },
+    setDraftSituation: (situation: string) => {
+        set({ draftSituation: situation })
     }
 }))
 

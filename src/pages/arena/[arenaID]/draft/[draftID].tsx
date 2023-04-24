@@ -19,7 +19,7 @@ import {
   PyroVisionIcon,
   StartIcon,
 } from "@/libs/includes/icons";
-import { WarpImgPNG, WarpImgGIF } from "@/libs/includes/image";
+import { WarpImgPNG, WarpImgGIF, BossImageRandom } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
 import { api } from "@/libs/providers/api";
 import { pusherClient } from "@/libs/providers/pusherClient";
@@ -59,6 +59,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { Howl } from "howler";
 
 const ModalBoss = ({
   isOpen,
@@ -67,6 +68,9 @@ const ModalBoss = ({
   onDecline,
   boss,
   timer,
+  user_state,
+  player1,
+  player2,
 }: ModalBoss) => {
   return (
     <Modal
@@ -75,6 +79,7 @@ const ModalBoss = ({
       isOpen={isOpen}
       motionPreset="slideInBottom"
       isCentered
+      closeOnOverlayClick={false}
     >
       <ModalOverlay />
 
@@ -83,19 +88,44 @@ const ModalBoss = ({
           <ModalBody p={10}>
             <Center>
               <BossChooseWrapper>
-                <Img
-                  src="https://endgame.otakuhobbitoysph.com/cdn/boss/icon/Aeonblight_Drake.png"
-                  width="100%"
-                />
+                <Img src={boss !== null ? boss.picture : ""} width="100%" />
               </BossChooseWrapper>
             </Center>
             <BossChooseText fontSize="2.5rem" mb={8}>
-              {boss} is selected randomly. Reroll ?
+              {boss !== null ? boss.name : ""} is selected randomly. Reroll ?
             </BossChooseText>
 
             <SimpleGrid columns={2} spacing={8} mb={8}>
-              <BossModalButtons onClick={onAccept}>Accept</BossModalButtons>
-              <BossModalButtons onClick={onDecline}>Decline</BossModalButtons>
+              <BossModalButtons
+                onClick={(e) => {
+                  e.preventDefault();
+                  onAccept(
+                    user_state.id,
+                    player1.id === user_state.id
+                      ? "player1"
+                      : player2.id === user_state.id
+                      ? "player2"
+                      : ""
+                  );
+                }}
+              >
+                Reroll
+              </BossModalButtons>
+              <BossModalButtons
+                onClick={(e) => {
+                  e.preventDefault();
+                  onDecline(
+                    user_state.id,
+                    player1.id === user_state.id
+                      ? "player1"
+                      : player2.id === user_state.id
+                      ? "player2"
+                      : ""
+                  );
+                }}
+              >
+                No Reroll
+              </BossModalButtons>
             </SimpleGrid>
 
             <BossChooseText fontSize="1.25rem">
@@ -134,6 +164,19 @@ const Drafting: NextPage = () => {
     setTimer,
     sequence,
     setSequenceList,
+    currentSequence,
+    currentAudioPlay,
+    currentCharacterFlash,
+    setCurrentAudioPlay,
+    setCurrentCharacterFlash,
+    currentBossFlash,
+    setCurrentBossFlash,
+    player1_reroll,
+    player2_reroll,
+    draftSituation,
+    setDraftSituation,
+    setPlayer1Reroll,
+    setPlayer2Reroll,
   ] = useDraftStore((state) => [
     state.applyCharacterModal,
     state.setApplyCharacterModal,
@@ -156,6 +199,19 @@ const Drafting: NextPage = () => {
     state.setTimer,
     state.sequence,
     state.setSequenceList,
+    state.currentSequence,
+    state.currentAudioPlay,
+    state.currentCharacterFlash,
+    state.setCurrentAudioPlay,
+    state.setCurrentCharacterFlash,
+    state.currentBossFlash,
+    state.setCurrentBossFlash,
+    state.player1_reroll,
+    state.player2_reroll,
+    state.draftSituation,
+    state.setDraftSituation,
+    state.setPlayer1Reroll,
+    state.setPlayer2Reroll,
   ]);
 
   const onToggleCharacterPickModal = () => {
@@ -165,69 +221,6 @@ const Drafting: NextPage = () => {
   const onToggleBossRevealModal = () => {
     setApplyBossModal(!applyBossModal);
   };
-
-  const onAcceptRerollBoss = () => {};
-
-  const onDeclineRerollBoss = () => {};
-
-  const timerUpdate = useMutation({
-    mutationFn: async (data: TimerUpdateProps) => {
-      let submitResponse = await api.post("/arena/draft/timer", data);
-      return submitResponse.data;
-    },
-  });
-
-  useEffect(() => {
-    const arenaChannel = pusherClient.subscribe("arena-room"),
-      draftChannel = pusherClient.subscribe("drafting"),
-      timerChannel = pusherClient.subscribe("draft_timer");
-
-    arenaChannel.bind("back-arena", (data: any) => {
-      if (router.query.draftID === data.draftID) {
-        router.push(`/arena/${data.arenaID}`);
-      }
-    });
-
-    let interval: any;
-    timerChannel.bind("update", (data: any) => {
-      if (router.query.draftID === data.draft_id) {
-        let countdown = data.timer;
-        setTimer(countdown);
-
-        if (data.isPauseTimer) {
-          clearInterval(interval);
-        } else {
-          interval = setInterval(() => {
-            countdown--;
-            setTimer(countdown);
-
-            if (state.user.role === "GM") {
-              timerUpdate.mutate({
-                timer: countdown,
-                draft_id: router.query.draftID,
-                isContinuingCooldown: true,
-                isPauseTimer: false,
-              });
-            }
-
-            if (countdown <= 0) {
-              clearInterval(interval);
-            }
-          }, 1000);
-        }
-      }
-    });
-
-    return () => {
-      arenaChannel.unbind();
-      draftChannel.unbind();
-      timerChannel.unbind();
-      pusherClient.unsubscribe(arenaChannel.name);
-      pusherClient.unsubscribe(draftChannel.name);
-      pusherClient.unsubscribe(timerChannel.name);
-      clearInterval(interval);
-    };
-  }, [router, state.user]);
 
   const draftDataQuery = useQuery({
     queryKey: ["draftData", router.query.draftID],
@@ -270,6 +263,154 @@ const Drafting: NextPage = () => {
     },
   });
 
+  const draftSequence = useMutation({
+    mutationFn: async (data: any) => {
+      let submitResponse = await api.post("/arena/draft/init", data);
+      return submitResponse.data;
+    },
+  });
+
+  const timerUpdate = useMutation({
+    mutationFn: async (data: TimerUpdateProps) => {
+      let submitResponse = await api.post("/arena/draft/timer", data);
+      return submitResponse.data;
+    },
+  });
+
+  useEffect(() => {
+    const timerChannel = pusherClient.subscribe("draft_timer");
+    let interval: NodeJS.Timeout;
+
+    timerChannel.bind(`timerDraft_${router.query.draftID}`, (data: any) => {
+      let countdown = data.timer;
+      setTimer(countdown);
+
+      if (data.isPauseTimer) {
+        clearInterval(interval);
+      } else {
+        interval = setInterval(() => {
+          countdown--;
+          setTimer(countdown);
+
+          if (state.user.role === "GM" && countdown >= 0) {
+            timerUpdate.mutate({
+              timer: countdown,
+              function: `timerDraft_${router.query.draftID}`,
+              draft_id: router.query.draftID,
+              isContinuingCooldown: true,
+              isPauseTimer: false,
+            });
+          }
+
+          if (countdown <= 0) {
+            clearInterval(interval);
+          }
+        }, 1000);
+      }
+    });
+
+    return () => {
+      timerChannel.unbind();
+      pusherClient.unsubscribe(timerChannel.name);
+    };
+  }, [router]);
+
+  useEffect(() => {
+    const arenaChannel = pusherClient.subscribe("arena-room"),
+      draftChannel = pusherClient.subscribe("drafting");
+
+    arenaChannel.bind("back-arena", (data: any) => {
+      if (router.query.draftID === data.draftID) {
+        router.push(`/arena/${data.arenaID}`);
+      }
+    });
+
+    draftChannel.bind(`initDraft_${router.query.draftID}`, (data: any) => {
+      setIsStartDraft(true);
+
+      let draftDrumRollBoss = new Howl({
+        src: ["/audio/randomroll.wav"],
+      });
+      draftDrumRollBoss.play();
+      setCurrentBossFlash(BossImageRandom);
+      setTimeout(() => {
+        let draftDrumRollBoss = new Howl({
+          src: ["/audio/bosspick.wav"],
+        });
+        draftDrumRollBoss.play();
+        setCurrentBossFlash(data.boss.picture_choose);
+        setBossInfo(data.boss);
+        setDraftSituation("initBoss");
+        if (state.user.role === "Drafter") {
+          setApplyBossModal(true);
+        }
+        if (state.user.role === "GM") {
+          timerUpdate.mutate({
+            timer: 10,
+            function: `timerDraft_${router.query.draftID}`,
+            draft_id: router.query.draftID,
+            isContinuingCooldown: false,
+            isPauseTimer: false,
+          });
+        }
+      }, 2500);
+    });
+
+    draftChannel.bind(
+      `characterDraft_${router.query.draftID}`,
+      (data: any) => {}
+    );
+
+    draftChannel.bind(`player_reroll_${router.query.draftID}`, (data: any) => {
+      if (data.player_position === "player1") {
+        setPlayer1Reroll(data.playerReroll);
+      } else {
+        setPlayer2Reroll(data.playerReroll);
+      }
+    });
+
+    return () => {
+      arenaChannel.unbind();
+      draftChannel.unbind();
+      pusherClient.unsubscribe(arenaChannel.name);
+      pusherClient.unsubscribe(draftChannel.name);
+    };
+  }, [router, state.user, timer]);
+
+  useEffect(() => {
+    if (timer === 0 && draftSituation == "initBoss") {
+      setApplyBossModal(false);
+
+      setTimeout(() => {
+        setPlayer1Reroll(null);
+        setPlayer2Reroll(null);
+        setCurrentBossFlash("");
+      }, 2500);
+    }
+  }, [timer, draftSituation]);
+
+  const onAcceptRerollBoss = (playerID: string, playerPosition: string) => {
+    draftSequence.mutate({
+      draft_id: router.query.draftID,
+      function: `player_reroll_${router.query.draftID}`,
+      type: "reroll_decisions",
+      playerID: playerID,
+      playerPosition: playerPosition,
+      playerReroll: true,
+    });
+  };
+
+  const onDeclineRerollBoss = (playerID: string, playerPosition: string) => {
+    draftSequence.mutate({
+      draft_id: router.query.draftID,
+      function: `player_reroll_${router.query.draftID}`,
+      type: "reroll_decisions",
+      playerID: playerID,
+      playerPosition: playerPosition,
+      playerReroll: false,
+    });
+  };
+
   const colorConvertVision = (vision: string) => {
     return convertVisionToColor(vision);
   };
@@ -295,8 +436,11 @@ const Drafting: NextPage = () => {
         onClose={onToggleBossRevealModal}
         onAccept={onAcceptRerollBoss}
         onDecline={onDeclineRerollBoss}
-        boss={"AeonBlight"}
-        timer={10}
+        boss={boss}
+        timer={timer}
+        user_state={state.user}
+        player1={player1}
+        player2={player2}
       />
 
       <ModalCharacterPickBlur
@@ -326,8 +470,8 @@ const Drafting: NextPage = () => {
             <VStack w="100%" h="100%" justifyContent="space-between">
               <DraftCountdown
                 timer={timer}
-                player1IsReroll=""
-                player2IsReroll=""
+                player1IsReroll={player1_reroll}
+                player2IsReroll={player2_reroll}
               />
               <Flex flex={1} w="100%" height="100%" alignItems="center">
                 <VStack
@@ -471,6 +615,7 @@ const Drafting: NextPage = () => {
                         // if (state.user.role === "GM") {
                         //   timerUpdate.mutate({
                         //     timer: 10,
+                        //      function: `timerDraft_${router.query.draftID}`,
                         //     draft_id: router.query.draftID,
                         //     isContinuingCooldown: false,
                         //     isPauseTimer: false,
@@ -478,6 +623,7 @@ const Drafting: NextPage = () => {
                         // } else {
                         //   timerUpdate.mutate({
                         //     timer: timer,
+                        //      function: `timerDraft_${router.query.draftID}`,
                         //     draft_id: router.query.draftID,
                         //     isContinuingCooldown: false,
                         //     isPauseTimer: true,
@@ -494,17 +640,51 @@ const Drafting: NextPage = () => {
                         w="100%"
                         height="100%"
                       >
-                        <Center w="100%" height="100%">
-                          <DraftButtonStart>
-                            <StartIcon />
-                            Start
-                          </DraftButtonStart>
-                        </Center>
-                        {/* <Image
-                          src="https://endgame.otakuhobbitoysph.com/cdn/characters/flash/Keqing.png"
-                          alt="placements-flash"
-                          width="100%"
-                        /> */}
+                        {state.user.role === "GM" && isStartDraft === false ? (
+                          <Center w="100%" height="100%">
+                            <DraftButtonStart
+                              onClick={() => {
+                                if (boss !== null) {
+                                  draftSequence.mutate({
+                                    draft_id: router.query.draftID,
+                                    function: `characterDraft_${router.query.draftID}`,
+                                    type: "character_draft",
+                                    sequence: sequence[0],
+                                  });
+                                } else {
+                                  draftSequence.mutate({
+                                    draft_id: router.query.draftID,
+                                    function: `initDraft_${router.query.draftID}`,
+                                    type: "boss_init",
+                                  });
+                                }
+                              }}
+                            >
+                              <StartIcon />
+                              Start
+                            </DraftButtonStart>
+                          </Center>
+                        ) : null}
+                        {currentCharacterFlash !== "" && (
+                          <Center w="100%" height="100%">
+                            <Image
+                              src={currentCharacterFlash}
+                              alt="placements-flash"
+                              width="100%"
+                              transform="scale(1)"
+                            />
+                          </Center>
+                        )}
+                        {currentBossFlash !== "" && (
+                          <Center w="100%" height="100%">
+                            <Image
+                              src={currentBossFlash}
+                              alt="placements-flash"
+                              width="100%"
+                              transform="scale(1)"
+                            />
+                          </Center>
+                        )}
                       </Box>
                     </Box>
                   </DraftBossCard>

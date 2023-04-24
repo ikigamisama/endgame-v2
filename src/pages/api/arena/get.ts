@@ -13,20 +13,28 @@ export default async function handler(
 
     if(req.method === "GET"){
         try{
-            const getArena = await prisma.arena.findFirst({
-                where: {
-                    host_id: session?.user?.id
-                },
-                orderBy: [
-                    {
-                        createdAt: 'desc'
-                    }
-                ]
-            })  
-            res.status(200).json({ 
-                success: true,
-                arena: getArena,
-            })
+            if(session){
+                const getArena = await prisma.arena.findFirst({
+                    where: {
+                        host_id: session?.user?.id
+                    },
+                    orderBy: [
+                        {
+                            createdAt: 'desc'
+                        }
+                    ]
+                })  
+                res.status(200).json({ 
+                    success: true,
+                    arena: getArena,
+                })
+            }
+            else{
+                res.status(401).json({ 
+                    success: false,
+                })
+            }
+            
         }
         catch(err) {
             res.status(200).json({ 
