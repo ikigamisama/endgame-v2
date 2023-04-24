@@ -194,6 +194,7 @@ const Arena: NextPage = () => {
     },
     onSuccess: (data) => {
       if (data.success) {
+        setLoadingSubmit(false);
         router.push(`/arena/${arena_id}/draft/${data.draft_id}`);
       }
     },
@@ -208,8 +209,10 @@ const Arena: NextPage = () => {
         player1: player1.user_id,
         player2: player2.user_id,
         boss_id: data.boss_id,
+        function: `arena-player-route_${router.query.arenaID}`,
       });
     } else {
+      setLoadingSubmit(false);
       toastPopup({
         position: "top-right",
         render: () => (
@@ -274,8 +277,9 @@ const Arena: NextPage = () => {
         setInstantRemoveArenaPlayer(data.arenaPlayerID);
       }
     });
-    draftChannel.bind("arena-player-route", (data: any) => {
-      if (data.arena_id === router.query.arenaID) {
+    draftChannel.bind(
+      `arena-player-route_${router.query.arenaID}`,
+      (data: any) => {
         if (data.player1 === state.user.id) {
           router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
         }
@@ -284,7 +288,7 @@ const Arena: NextPage = () => {
           router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
         }
       }
-    });
+    );
 
     return () => {
       arenaChannel.unbind();

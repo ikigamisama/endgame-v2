@@ -50,7 +50,10 @@ const Login: NextPage = () => {
       if (data.success) {
         setArenaID(data.arena.uid);
         setUserData(data.user);
-        safePush(`/arena/${data.arena.uid}`);
+
+        setTimeout(() => {
+          safePush(`/arena/${data.arena.uid}`);
+        }, 1000);
       }
     },
   });

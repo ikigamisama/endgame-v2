@@ -1,5 +1,3 @@
-import { CharacterDraftProps } from "@/libs/helpers/types";
-import { convertVisionToColor } from "@/libs/includes/color";
 import {
   AllElementVisionIcon,
   AnemoVisionIcon,
@@ -11,10 +9,6 @@ import {
   HydroVisionIcon,
   PyroVisionIcon,
 } from "@/libs/includes/icons";
-import { CharacterPickImg, StartIcon } from "@/libs/includes/image";
-import { api } from "@/libs/providers/api";
-import { useDraftStore } from "@/libs/store/draft";
-
 import {
   BossAvatarCircle,
   BossAvatarName,
@@ -56,12 +50,18 @@ import {
   Image,
   SimpleGrid,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { CharacterDraftProps } from "@/libs/helpers/types";
+import { convertVisionToColor } from "@/libs/includes/color";
+import { CharacterPickImg, StartIcon } from "@/libs/includes/image";
+import { useDraftStore } from "@/libs/store/draft";
 
 const CharacterDraft: React.FC<CharacterDraftProps> = ({
   statusCharacterModal,
   onCloseCharacterModal,
+  characterListQuery,
+  timer,
+  onCharacterPick,
 }) => {
   const [
     boss,
@@ -76,6 +76,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     setCurrentCharacterChoice,
     pickListCharacterDraft,
     banListCharacterDraft,
+    currentSequence,
   ] = useDraftStore((state) => [
     state.boss,
     state.characters,
@@ -89,20 +90,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     state.setCurrentCharacterChoice,
     state.pickListCharacterDraft,
     state.banListCharacterDraft,
+    state.currentSequence,
   ]);
-
-  const characterListQuery = useQuery({
-    queryFn: async () => {
-      const listResponse = await api.post("/characters/list", {
-        page: "Character List",
-      });
-      return listResponse.data.list;
-    },
-    queryKey: ["characterDraftList"],
-    onSuccess: (data) => {
-      setCharactersList(data);
-    },
-  });
 
   const colorConvertVision = (vision: string) => {
     return convertVisionToColor(vision);
@@ -230,7 +219,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
             justifyContent="flex-end"
           >
             <ModalCharacterTextHeader>
-              Seconds Remaining: 23
+              Seconds Remaining: {timer}
             </ModalCharacterTextHeader>
             <CharacterPickModalCloseButton onClick={onCloseCharacterModal}>
               <CloseModalCharacterPick />

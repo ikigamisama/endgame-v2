@@ -4,7 +4,6 @@ import prisma from '@/prisma/client'
 import { getServerSession } from 'next-auth'
 import { authentication } from '@/src/pages/api/auth/[...nextauth]'
 import { pusherServer } from '@/libs/providers/pusherServer'
-import { generateDraftSlot } from '@/libs/providers/draft'
 
 export default async function handler(
     req: NextApiRequest,
@@ -18,9 +17,49 @@ export default async function handler(
             try{
                 switch(req.body.type){
                     case "character_draft": {
+                        let sequenceIndex = 0,
+                        getCharacterInfo = null;
+                        if(req.body.isStartingDraft === true){
+                            sequenceIndex = req.body.isStartingDraft;
+                        }
+                        else{
+                            sequenceIndex = req.body.isStartingDraft.parseInt() + 1;
+                            const findCharacterDraft = await prisma.characterDraft.findFirst({
+                                where: {
+                                    draftID: req.body.draft_id,
+                                    index: req.body.sequence.index
+                                }
+                            })
+
+                            getCharacterInfo = await prisma.characters.findFirst({
+                                where:{id:req.body.characterID }
+                            })
+
+                            if(findCharacterDraft){
+                                await prisma.characterDraft.update({
+                                    where: {
+                                        uid: findCharacterDraft.uid
+                                    },
+                                    data:{
+                                        characterID: req.body.characterID
+                                    }
+                                })
+                            }
+                        }
+
+                       await prisma.draft.update({
+                            where: {uid: req.body.draft_id},
+                            data: {current_status_draft: req.body.sequence.index}
+                        })
+                       
+
                         pusherServer.trigger("drafting", req.body.function, {
                             draft_id: req.body.draft_id,
-                            
+                            sequence: req.body.sequence,
+                            sequenceIndex: sequenceIndex,
+                            isStartingDraft: req.body.isStartingDraft,
+                            characterID: req.body.isStartingDraft === true ? null : req.body.characterID,
+                            character: req.body.isStartingDraft === true ? null : getCharacterInfo
                         });
                         break;
                     }
@@ -45,7 +84,8 @@ export default async function handler(
                        
                         pusherServer.trigger("drafting", req.body.function, {
                             draft_id: req.body.draft_id,
-                            boss: bossList[bossIndex]
+                            boss: bossList[bossIndex],
+                            isReroll: req.body.isReroll
                         });
                         break;
                     }

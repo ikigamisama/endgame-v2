@@ -38,7 +38,7 @@ const DraftCountdown: React.FC<DraftCountdownProps> = ({
       </DraftCountdownCard>
       {player2IsReroll !== null && timer === 0 ? (
         <>
-          {player1IsReroll === true ? (
+          {player2IsReroll === true ? (
             <DraftRerollBanner bgColor="#61b162">Reroll</DraftRerollBanner>
           ) : (
             <DraftRerollBanner bgColor="#95292d">No Reroll</DraftRerollBanner>

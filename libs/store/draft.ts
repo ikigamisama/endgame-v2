@@ -6,7 +6,6 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 const initialState: DraftStateProps = {
     init: "",
     characters: [],
-    mode: "3v3",
     characterFilterElement: "all",
     searchCharacter: '',
     applyCharacterModal: false,
@@ -70,7 +69,7 @@ const initialState: DraftStateProps = {
     banListCharacterDraft: {player1: [], player2: []},
     banWidthSize: 0,
     sequence: [],
-    turn: 0,
+    sequenceIndex: 0,
     currentSequence: {
         audio: '',
         player: '',
@@ -81,7 +80,8 @@ const initialState: DraftStateProps = {
     currentBossFlash: "",
     player1_reroll: null,
     player2_reroll: null,
-    draftSituation: ''
+    draftSituation: '',
+    isReroll: false
 }
 
 export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get) => ({ 
@@ -174,6 +174,12 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     },
     setDraftSituation: (situation: string) => {
         set({ draftSituation: situation })
+    },
+    setIsReroll: (reroll: boolean) => {
+        set({ isReroll: reroll })
+    },
+    setSequenceIndex: (index: number) => {
+        set({sequenceIndex: index})
     }
 }))
 

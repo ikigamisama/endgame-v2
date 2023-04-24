@@ -91,6 +91,9 @@ export declare interface CharacterDraftProps{
     banWidth?: number
     boss?: BossInfoProps | undefined
     colorConvertVision?: ((vision: string) => void) | undefined
+    characterListQuery?: any
+    timer?:number
+    onCharacterPick?: any
 }
 
 export declare interface ProfileChanges{
@@ -304,7 +307,6 @@ export type DraftSequence = {
 export type DraftStateProps = {
     init: string
     characters: CharacterInfoProps[]
-    mode: string
     characterFilterElement: string
     searchCharacter: string
     applyCharacterModal: boolean
@@ -324,13 +326,14 @@ export type DraftStateProps = {
     banListCharacterDraft: DraftCharacterList
     banWidthSize: number
     sequence: DraftSequence[]
-    turn: number,
+    sequenceIndex: number,
     currentSequence: DraftSequence
     currentCharacterFlash: string
     currentBossFlash: string,
     player1_reroll: boolean | null
     player2_reroll: boolean | null
     draftSituation: string
+    isReroll: boolean
 }
 
 export type DraftFunctions = {
@@ -357,6 +360,8 @@ export type DraftFunctions = {
     setPlayer1Reroll: (roll: boolean | null) => void
     setPlayer2Reroll: (roll: boolean | null) => void
     setDraftSituation: (situation: string) => void
+    setIsReroll: (reroll: boolean) => void
+    setSequenceIndex: (index: number) => void
 }
 
 export declare interface CharacterDraftPayloadProps {
@@ -390,3 +395,4 @@ export type TimerUpdateProps = {
     isPauseTimer: boolean
     function: string
 } 
+
