@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { BossInfoProps, CharacterInfoProps, DraftFunctions, DraftInfoProps, DraftSequence, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
-import { arrangeDraftCharacterlistModal, createSequence, draftLayoutBan, draftLayoutPick, getBanWidth, getSequenceByIndex } from '../providers/draft'
+import { BossInfoProps, CharacterDraftPayloadProps, CharacterInfoProps, DraftFunctions, DraftInfoProps, DraftSequence, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
+import { arrangeDraftCharacterlistModal, draftLayoutBan, draftLayoutPick, getBanWidth, updateCharacters, updateCharactersAfterDraft } from '../providers/draft'
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 const initialState: DraftStateProps = {
@@ -81,7 +81,8 @@ const initialState: DraftStateProps = {
     player1_reroll: null,
     player2_reroll: null,
     draftSituation: '',
-    isReroll: false
+    isReroll: false,
+    characterDraft: []
 }
 
 export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get) => ({ 
@@ -180,6 +181,15 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     },
     setSequenceIndex: (index: number) => {
         set({sequenceIndex: index})
+    },
+    setCharacterDraftList: (characterDraftList: CharacterDraftPayloadProps[]) => {
+        set({characterDraft: characterDraftList})
+    },
+    setCharacterDraftListUpdate: (characterDraftList: CharacterDraftPayloadProps[], characters: CharacterInfoProps[]) => {
+        set({characters: updateCharacters(characters, characterDraftList)})
+    },
+    setCharacterListAfterUpdate: (characterID: string, characters: CharacterInfoProps[]) => {
+        set({characters: updateCharactersAfterDraft(characterID, characters)})
     }
 }))
 

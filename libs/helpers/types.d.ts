@@ -78,6 +78,7 @@ export declare interface CharacterDraftDesignProps{
     colorpickedcharacter?: string
     drafttype?: 'pick' | 'ban' | string
     currentdraft? : 'true' | 'false' | string
+    ispickedcharacter?: string | undefined
 }
 
 export declare interface CharacterDraftProps{
@@ -130,6 +131,7 @@ export declare interface CharacterInfoProps{
     pick_audio:  string
     is_visible: any
     nation?: string
+    isPicked?: boolean | undefined
 }
 
 
@@ -280,6 +282,7 @@ export type DraftInfoProps = {
     wrapperWidthSize?: string
     imageWidthSize?: string
     indexCharacter?: string
+    playerID?: string
 }
 
 export type DraftBanFormat = {
@@ -335,6 +338,7 @@ export type DraftStateProps = {
     player2_reroll: boolean | null
     draftSituation: string
     isReroll: boolean
+    characterDraft: CharacterDraftPayloadProps[]
 }
 
 export type DraftFunctions = {
@@ -363,13 +367,17 @@ export type DraftFunctions = {
     setDraftSituation: (situation: string) => void
     setIsReroll: (reroll: boolean) => void
     setSequenceIndex: (index: number) => void
+    setCharacterDraftList: (characterDraftList: CharacterDraftPayloadProps[]) => void
+    setCharacterDraftListUpdate: (characterDraftList: CharacterDraftPayloadProps[], characters: CharacterInfoProps[] ) => void
+    setCharacterListAfterUpdate: (characterID: string, characters: CharacterInfoProps[]) => void
 }
 
 export declare interface CharacterDraftPayloadProps {
     draftID: string
     index: string
-    playerID: string
+    playerID: string 
     status: string
+    characterID?: string | null
 }
 
 export type BackToArenaProps = {

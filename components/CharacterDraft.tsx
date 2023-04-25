@@ -270,8 +270,11 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                     <CharacterPickCard
                       onClick={(e) => {
                         e.preventDefault();
-                        setCurrentCharacterChoice(charData);
+                        if (charData?.isPicked === false) {
+                          setCurrentCharacterChoice(charData);
+                        }
                       }}
+                      ispickedcharacter={charData?.isPicked?.toString()}
                     >
                       <CharacterPickCardImg rarity={charData.rarity}>
                         <Image
@@ -425,6 +428,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 {inArray(currentSequence.index, pickIndexListPlayer1) &&
                 state?.user.id === player1.id &&
                 currentSequence.player == "player1" &&
+                currentCharacterChoose.id !== "" &&
                 timer !== 0 ? (
                   <CharacterDraftButton drafttype="pick">
                     Pick {currentCharacterChoose.name}
@@ -434,6 +438,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 {inArray(currentSequence.index, pickIndexListPlayer2) &&
                 state?.user.id === player2.id &&
                 currentSequence.player == "player2" &&
+                currentCharacterChoose.id !== "" &&
                 timer !== 0 ? (
                   <CharacterDraftButton drafttype="pick">
                     Pick {currentCharacterChoose.name}
@@ -443,6 +448,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 {inArray(currentSequence.index, banIndexListPlayer1) &&
                 state?.user.id === player1.id &&
                 currentSequence.player == "player1" &&
+                currentCharacterChoose.id !== "" &&
                 timer !== 0 ? (
                   <CharacterDraftButton drafttype="ban">
                     Ban {currentCharacterChoose.name}
@@ -452,6 +458,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 {inArray(currentSequence.index, banIndexListPlayer2) &&
                 state?.user.id === player2.id &&
                 currentSequence.player == "player2" &&
+                currentCharacterChoose.id !== "" &&
                 timer !== 0 ? (
                   <CharacterDraftButton drafttype="ban">
                     Ban {currentCharacterChoose.name}

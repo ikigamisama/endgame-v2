@@ -114,13 +114,14 @@ export const CharacterListWrapper = styled(Box)`
     }
 ` 
 
-export const CharacterPickCard = styled(Box)`
+export const CharacterPickCard = styled(Box)<CharacterDraftDesignProps>`
     width: 100%;
     height: 135px;
     background-color: #e9e5dc;
     border-radius: 5px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.8);
-    cursor: pointer;
+    
+    ${(props) => (props.ispickedcharacter === 'true' ? `cursor: not-allowed;` : `cursor: pointer;`)};
     overflow: hidden;
     transition: 0.25s all;
 
@@ -128,6 +129,10 @@ export const CharacterPickCard = styled(Box)`
     &:hover{
         box-shadow: 0px 0px 12px 0px rgb(253, 245, 231);
         transition: 0.25s all;
+    }
+
+    & > div{
+        ${(props) => (props.ispickedcharacter === 'true' ? `filter: grayscale(100%);` : ` filter: grayscale(0%);`)};
     }
 `
 
@@ -150,6 +155,8 @@ export const CharacterPickCardImg = styled(Box)<CharacterDraftDesignProps>`
     justify-content: center;
     overflow: hidden;
     z-index: 575;
+    
+
 
     & > img{
         width: 100%;

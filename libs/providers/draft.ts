@@ -1,4 +1,4 @@
-import { CharacterDraftPayloadProps, DraftBanFormat, DraftBanLayout, DraftCharacterList, DraftInfoProps, DraftSequence, SequenceDraft } from "../helpers/types";
+import { CharacterDraftPayloadProps, CharacterInfoProps, DraftBanFormat, DraftBanLayout, DraftCharacterList, DraftInfoProps, DraftSequence, SequenceDraft } from "../helpers/types";
 
 
 export  const pickIndexListPlayer1 = [
@@ -525,3 +525,22 @@ export function inArray (needle: string, haystack: any):boolean{
     return false;
 };
 
+export function updateCharacters (characters:CharacterInfoProps[] , characterDrafts: CharacterDraftPayloadProps[]) : CharacterInfoProps[]  {
+    for (const characterDraft of characterDrafts) {
+        const character = characters.find((character) => character.id === characterDraft.characterID);
+        if (character) {
+          character.isPicked = true;
+        }
+    }
+
+    return characters;
+}
+
+export function updateCharactersAfterDraft (characterID: string, characters:CharacterInfoProps[] ) : CharacterInfoProps[] {
+    const character = characters.find((character) => character.id === characterID);
+    if (character) {
+      character.isPicked = true;
+    }
+
+    return characters;
+}

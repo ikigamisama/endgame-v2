@@ -83,6 +83,7 @@ export const UserProvider = ({ children }: any) => {
 
   const getSettings = useQuery({
     queryKey: ["settingsFeat"],
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const listResponse = await api.get("/account/settings/get");
       return listResponse.data;
@@ -91,6 +92,7 @@ export const UserProvider = ({ children }: any) => {
 
   const arenaQuery = useQuery({
     queryKey: ["arenaData"],
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const listResponse = await api.get("/arena/get");
       return listResponse.data;

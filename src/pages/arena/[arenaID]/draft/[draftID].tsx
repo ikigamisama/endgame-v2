@@ -19,6 +19,8 @@ import { useDraftStore } from "@/libs/store/draft";
 import { ModalCharacterPickBlur } from "@/src/styles/CharacterPick";
 import { EndgameModalContent, EndgameModalWrapper } from "@/src/styles/Modal";
 import {
+  CharacterDraftPayloadProps,
+  CharacterInfoProps,
   DraftInfoProps,
   ModalBoss,
   TimerUpdateProps,
@@ -63,7 +65,7 @@ import {
   SimpleGrid,
   VStack,
 } from "@chakra-ui/react";
-import { getSequenceByIndex } from "@/libs/providers/draft";
+import { getSequenceByIndex, updateCharacters } from "@/libs/providers/draft";
 
 const ModalBoss = ({
   isOpen,
@@ -188,9 +190,13 @@ const Drafting: NextPage = () => {
     setPlayer2Reroll,
     isReroll,
     setIsReroll,
-    setCharactersList,
     sequenceIndex,
     setSequenceIndex,
+    characterDraft,
+    characters,
+    setCharacterDraftList,
+    setCharacterDraftListUpdate,
+    setCharacterListAfterUpdate,
   ] = useDraftStore((state) => [
     state.applyCharacterModal,
     state.setApplyCharacterModal,
@@ -227,9 +233,13 @@ const Drafting: NextPage = () => {
     state.setPlayer2Reroll,
     state.isReroll,
     state.setIsReroll,
-    state.setCharactersList,
     state.sequenceIndex,
     state.setSequenceIndex,
+    state.characterDraft,
+    state.characters,
+    state.setCharacterDraftList,
+    state.setCharacterDraftListUpdate,
+    state.setCharacterListAfterUpdate,
   ]);
 
   const onToggleCharacterPickModal = () => {
@@ -248,6 +258,7 @@ const Drafting: NextPage = () => {
       });
       return listResponse.data;
     },
+    refetchOnWindowFocus: false,
     onSuccess: (data) => {
       setTimer(data.result.timer);
       setPlayer1Info({
@@ -264,7 +275,8 @@ const Drafting: NextPage = () => {
       setIsStartDraft(data.result.current_status_draft === null ? false : true);
 
       let pickList: DraftInfoProps[] = [],
-        banList: DraftInfoProps[] = [];
+        banList: DraftInfoProps[] = [],
+        characterDraft: CharacterDraftPayloadProps[] = [];
 
       data.result.CharacterDraft.map((i: DraftInfoProps) => {
         if (i.status === "pick") {
@@ -272,8 +284,17 @@ const Drafting: NextPage = () => {
         } else {
           banList.push(i);
         }
-      });
+        const characterDraftInfo: CharacterDraftPayloadProps = {
+          draftID: i.draftID,
+          index: i.index,
+          playerID: i.playerID || "",
+          status: i.status,
+          characterID: i.characterID || "",
+        };
 
+        characterDraft.push(characterDraftInfo);
+      });
+      setCharacterDraftList(characterDraft);
       setPickList(pickList, data.result.arena.mode);
       setBanList(banList, data.result.arena.mode);
       setSequenceList(JSON.parse(data.result.sequence));
@@ -303,9 +324,13 @@ const Drafting: NextPage = () => {
       return listResponse.data.list;
     },
     queryKey: ["characterDraftList", router.query.draftID],
+    refetchOnWindowFocus: false,
     onSuccess: (data) => {
       if (state.user.role === "Drafter") {
-        setCharactersList(data);
+        for (const character of data) {
+          character.isPicked = false;
+        }
+        setCharacterDraftListUpdate(characterDraft, data);
       }
     },
   });
@@ -422,6 +447,8 @@ const Drafting: NextPage = () => {
 
       if (data.isStartingDraft === false) {
         queryclient.invalidateQueries(["draftData", data.draft_id]);
+        setCharacterListAfterUpdate(data.characterID, characters);
+        setCurrentCharacterFlash(data.character.flash_picture);
       } else {
         setIsStartDraft(true);
       }
@@ -524,6 +551,7 @@ const Drafting: NextPage = () => {
     return convertVisionToColor(vision);
   };
 
+  console.log(characters);
   return (
     <>
       <Head>
