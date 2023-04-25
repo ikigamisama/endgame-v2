@@ -94,6 +94,7 @@ export declare interface CharacterDraftProps{
     characterListQuery?: any
     timer?:number
     onCharacterPick?: any
+    currentSequence? : DraftSequence | undefined
 }
 
 export declare interface ProfileChanges{
@@ -301,7 +302,7 @@ export type DraftCharacterList = {
 export type DraftSequence = {
     audio: string,
     player: string,
-    index: string
+    index: string 
 }
 
 export type DraftStateProps = {
@@ -352,7 +353,7 @@ export type DraftFunctions = {
     setPickList: (pickList: DraftInfoProps[], mode : string) => void
     setBanList: (banList: DraftInfoProps[], mode : string) => void
     setTimer: (timer: number) => void
-    setSequenceList: (mode: string) => void
+    setSequenceList: (mode: DraftSequence[]) => void
     setCurrentSequence: (currentSequence: DraftSequence) => void
     setCurrentAudioPlay: (audio: string) => void
     setCurrentCharacterFlash: (img: string) => void

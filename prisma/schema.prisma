@@ -96,6 +96,7 @@ model Draft {
   timer                Int              @default(30)
   pause_timer          Int              @default(3)
   current_status_draft String?
+  sequence             String           @db.LongText
   player1_id           String?
   player2_id           String?
   winner_user_id       String?

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { BossInfoProps, CharacterInfoProps, DraftFunctions, DraftInfoProps, DraftSequence, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
-import { arrangeDraftCharacterlistModal, createSequence, draftLayoutBan, draftLayoutPick, getBanWidth } from '../providers/draft'
+import { arrangeDraftCharacterlistModal, createSequence, draftLayoutBan, draftLayoutPick, getBanWidth, getSequenceByIndex } from '../providers/draft'
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 const initialState: DraftStateProps = {
@@ -151,8 +151,8 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     setTimer: (timer: number) => {
         set({ timer: timer })
     },
-    setSequenceList: (mode: string) => {
-        set({ sequence: createSequence(mode) })
+    setSequenceList: (sequence: DraftSequence[] ) => {
+        set({ sequence: sequence })
     },
     setCurrentSequence: (currentSequence: DraftSequence) => {
         set({ currentSequence: currentSequence })

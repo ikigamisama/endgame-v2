@@ -4,7 +4,7 @@ import prisma from '@/prisma/client'
 import { getServerSession } from 'next-auth'
 import { authentication } from '@/src/pages/api/auth/[...nextauth]'
 import { pusherServer } from '@/libs/providers/pusherServer'
-import { generateDraftSlot } from '@/libs/providers/draft'
+import { createSequence, generateDraftSlot } from '@/libs/providers/draft'
 
 export default async function handler(
     req: NextApiRequest,
@@ -16,6 +16,7 @@ export default async function handler(
 
         if(session){
             try{
+                let getSequenceList = createSequence(req.body.mode)
                 const updateArena = await prisma.arena.update({
                     where:{
                         uid: req.body.arenaID,
@@ -31,6 +32,7 @@ export default async function handler(
                         bossID: req.body.boss_id,
                         player1_id: req.body.player1,
                         player2_id: req.body.player2,
+                        sequence: getSequenceList
                     }
                 })
 

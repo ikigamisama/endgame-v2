@@ -55,6 +55,13 @@ import { CharacterDraftProps } from "@/libs/helpers/types";
 import { convertVisionToColor } from "@/libs/includes/color";
 import { CharacterPickImg, StartIcon } from "@/libs/includes/image";
 import { useDraftStore } from "@/libs/store/draft";
+import {
+  banIndexListPlayer1,
+  banIndexListPlayer2,
+  inArray,
+  pickIndexListPlayer1,
+  pickIndexListPlayer2,
+} from "@/libs/providers/draft";
 
 const CharacterDraft: React.FC<CharacterDraftProps> = ({
   statusCharacterModal,
@@ -62,6 +69,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
   characterListQuery,
   timer,
   onCharacterPick,
+  state,
 }) => {
   const [
     boss,
@@ -77,6 +85,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     pickListCharacterDraft,
     banListCharacterDraft,
     currentSequence,
+    player1,
+    player2,
   ] = useDraftStore((state) => [
     state.boss,
     state.characters,
@@ -91,12 +101,15 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     state.pickListCharacterDraft,
     state.banListCharacterDraft,
     state.currentSequence,
+    state.player1,
+    state.player2,
   ]);
 
   const colorConvertVision = (vision: string) => {
     return convertVisionToColor(vision);
   };
 
+  let createEmptyBox = Array(4 - banListCharacterDraft.player2.length).fill("");
   return statusCharacterModal === true ? (
     <ModalCharacterPickWrapper>
       <ModalCharacterPickheader as="nav">
@@ -397,7 +410,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                   </GridItem>
                   <GridItem>
                     <CharacterPickInfoCardDetailsText>
-                      Element:{" "}
+                      Element:
                       {currentCharacterChoose.vision.charAt(0).toUpperCase() +
                         currentCharacterChoose.vision.slice(1)}
                     </CharacterPickInfoCardDetailsText>
@@ -409,9 +422,41 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                   </GridItem>
                 </Grid>
 
-                <CharacterDraftButton drafttype="pick">
-                  Pick {currentCharacterChoose.name}
-                </CharacterDraftButton>
+                {inArray(currentSequence.index, pickIndexListPlayer1) &&
+                state?.user.id === player1.id &&
+                currentSequence.player == "player1" &&
+                timer !== 0 ? (
+                  <CharacterDraftButton drafttype="pick">
+                    Pick {currentCharacterChoose.name}
+                  </CharacterDraftButton>
+                ) : null}
+
+                {inArray(currentSequence.index, pickIndexListPlayer2) &&
+                state?.user.id === player2.id &&
+                currentSequence.player == "player2" &&
+                timer !== 0 ? (
+                  <CharacterDraftButton drafttype="pick">
+                    Pick {currentCharacterChoose.name}
+                  </CharacterDraftButton>
+                ) : null}
+
+                {inArray(currentSequence.index, banIndexListPlayer1) &&
+                state?.user.id === player1.id &&
+                currentSequence.player == "player1" &&
+                timer !== 0 ? (
+                  <CharacterDraftButton drafttype="ban">
+                    Ban {currentCharacterChoose.name}
+                  </CharacterDraftButton>
+                ) : null}
+
+                {inArray(currentSequence.index, banIndexListPlayer2) &&
+                state?.user.id === player2.id &&
+                currentSequence.player == "player2" &&
+                timer !== 0 ? (
+                  <CharacterDraftButton drafttype="ban">
+                    Ban {currentCharacterChoose.name}
+                  </CharacterDraftButton>
+                ) : null}
               </CharacterPickInfoCardDetails>
             </CharacterPickInfoCard>
             <Box position="relative" my={4}>
@@ -436,7 +481,14 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                     {banListCharacterDraft.player1.map((draft, keyDraft) => (
                       <GridItem key={keyDraft}>
                         <CharacterDraftPlayerWrapper
-                          currentdraft="false"
+                          currentdraft={
+                            inArray(
+                              currentSequence.index,
+                              banIndexListPlayer1
+                            ) && currentSequence.index === draft.index
+                              ? "true"
+                              : "false"
+                          }
                           drafttype="ban"
                         >
                           {draft.characterID !== null && (
@@ -451,10 +503,21 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                     ))}
                   </Grid>
                   <Grid templateColumns="repeat(4, 1fr)" gap={2}>
+                    {createEmptyBox.map((_, keyDraft) => (
+                      <Box key={keyDraft}></Box>
+                    ))}
+
                     {banListCharacterDraft.player2.map((draft, keyDraft) => (
                       <GridItem key={keyDraft}>
                         <CharacterDraftPlayerWrapper
-                          currentdraft="false"
+                          currentdraft={
+                            inArray(
+                              currentSequence.index,
+                              banIndexListPlayer2
+                            ) && currentSequence.index === draft.index
+                              ? "true"
+                              : "false"
+                          }
                           drafttype="ban"
                         >
                           {draft.characterID !== null && (
@@ -477,11 +540,18 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               </CharacterPickInfoCardHeader>
               <CharacterPickInfoCardBody>
                 <SimpleGrid columns={2} spacing={16} w="100%">
-                  <Grid templateColumns="repeat(4, 1fr)" gap={2}>
+                  <Grid templateColumns={`repeat(4, 1fr)`} gap={2}>
                     {pickListCharacterDraft.player1.map((draft, keyDraft) => (
                       <GridItem key={keyDraft}>
                         <CharacterDraftPlayerWrapper
-                          currentdraft="false"
+                          currentdraft={
+                            inArray(
+                              currentSequence.index,
+                              pickIndexListPlayer1
+                            ) && currentSequence.index === draft.index
+                              ? "true"
+                              : "false"
+                          }
                           drafttype="pick"
                         >
                           {draft.characterID !== null && (
@@ -495,11 +565,22 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                       </GridItem>
                     ))}
                   </Grid>
-                  <Grid templateColumns="repeat(4, 1fr)" gap={2}>
+                  <Grid templateColumns={`repeat(4, 1fr)`} gap={2}>
+                    {createEmptyBox.map((_, keyDraft) => (
+                      <Box key={keyDraft}></Box>
+                    ))}
+
                     {pickListCharacterDraft.player2.map((draft, keyDraft) => (
                       <GridItem key={keyDraft}>
                         <CharacterDraftPlayerWrapper
-                          currentdraft="false"
+                          currentdraft={
+                            inArray(
+                              currentSequence.index,
+                              pickIndexListPlayer2
+                            ) && currentSequence.index === draft.index
+                              ? "true"
+                              : "false"
+                          }
                           drafttype="pick"
                         >
                           {draft.characterID !== null && (

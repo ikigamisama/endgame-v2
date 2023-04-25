@@ -1,4 +1,33 @@
-import { CharacterDraftPayloadProps, DraftBanFormat, DraftBanLayout, DraftCharacterList, DraftInfoProps, SequenceDraft } from "../helpers/types";
+import { CharacterDraftPayloadProps, DraftBanFormat, DraftBanLayout, DraftCharacterList, DraftInfoProps, DraftSequence, SequenceDraft } from "../helpers/types";
+
+
+export  const pickIndexListPlayer1 = [
+    "player-1-pick-1",
+    "player-1-pick-2",
+    "player-1-pick-3",
+    "player-1-pick-4",
+  ];
+
+export const pickIndexListPlayer2 = [
+    "player-2-pick-1",
+    "player-2-pick-2",
+    "player-2-pick-3",
+    "player-2-pick-4",
+  ];
+
+export const banIndexListPlayer1 = [
+    "player-1-ban-1",
+    "player-1-ban-2",
+    "player-1-ban-3",
+    "player-1-ban-4",
+  ];
+
+export const banIndexListPlayer2 = [
+    "player-2-ban-1",
+    "player-2-ban-2",
+    "player-2-ban-3",
+    "player-2-ban-4",
+  ];
 
 function getLengthByMode (mode: string): number {
     let length = 0;
@@ -244,7 +273,7 @@ export function arrangeDraftCharacterlistModal(list: DraftInfoProps[]):  DraftCh
 
 
 
-export function createSequence (mode: string): SequenceDraft[] {
+export function createSequence (mode: string): string {
     let sequenceList:SequenceDraft[] = [];
     switch(mode){
         case "1v1": {
@@ -470,5 +499,29 @@ export function createSequence (mode: string): SequenceDraft[] {
             break;
         }
     }
-    return sequenceList;
+    return JSON.stringify(sequenceList);
 }
+
+
+export function getSequenceByIndex(index: string, sequenceList:DraftSequence[]) :DraftSequence {
+    let sequenceCurrent: DraftSequence = {audio: "", index: "", player: ""}
+    sequenceList.map((sequence) => {
+        if(index === sequence.index){
+            sequenceCurrent.audio = sequence.audio
+            sequenceCurrent.index = sequence.index
+            sequenceCurrent.player = sequence.player
+        }   
+    })
+
+
+    return sequenceCurrent;
+}
+
+export function inArray (needle: string, haystack: any):boolean{
+    let length = haystack.length;
+    for (var i = 0; i < length; i++) {
+      if (haystack[i] == needle) return true;
+    }
+    return false;
+};
+

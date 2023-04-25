@@ -63,6 +63,7 @@ import {
   SimpleGrid,
   VStack,
 } from "@chakra-ui/react";
+import { getSequenceByIndex } from "@/libs/providers/draft";
 
 const ModalBoss = ({
   isOpen,
@@ -173,6 +174,7 @@ const Drafting: NextPage = () => {
     setTimer,
     sequence,
     setSequenceList,
+    currentSequence,
     setCurrentSequence,
     currentCharacterFlash,
     setCurrentCharacterFlash,
@@ -211,6 +213,7 @@ const Drafting: NextPage = () => {
     state.setTimer,
     state.sequence,
     state.setSequenceList,
+    state.currentSequence,
     state.setCurrentSequence,
     state.currentCharacterFlash,
     state.setCurrentCharacterFlash,
@@ -258,6 +261,8 @@ const Drafting: NextPage = () => {
         username: data.result.player2.username,
       });
 
+      setIsStartDraft(data.result.current_status_draft === null ? false : true);
+
       let pickList: DraftInfoProps[] = [],
         banList: DraftInfoProps[] = [];
 
@@ -268,13 +273,25 @@ const Drafting: NextPage = () => {
           banList.push(i);
         }
       });
+
+      setPickList(pickList, data.result.arena.mode);
+      setBanList(banList, data.result.arena.mode);
+      setSequenceList(JSON.parse(data.result.sequence));
+
       if (data.result.bossID !== "" || data.result.bossID !== null) {
         setBossInfo(data.result.boss);
       }
-      setPickList(pickList, data.result.arena.mode);
-      setBanList(banList, data.result.arena.mode);
-      setSequenceList(data.result.arena.mode);
-      setIsStartDraft(data.result.current_status_draft === null ? false : true);
+
+      if (
+        data.result.current_status_draft !== null ||
+        data.result.current_status_draft !== "init"
+      ) {
+        let credatedSequence = getSequenceByIndex(
+          data.result.current_status_draft,
+          JSON.parse(data.result.sequence)
+        );
+        setCurrentSequence(credatedSequence);
+      }
     },
   });
 
@@ -287,7 +304,9 @@ const Drafting: NextPage = () => {
     },
     queryKey: ["characterDraftList", router.query.draftID],
     onSuccess: (data) => {
-      setCharactersList(data);
+      if (state.user.role === "Drafter") {
+        setCharactersList(data);
+      }
     },
   });
 
@@ -521,6 +540,7 @@ const Drafting: NextPage = () => {
           characterListQuery={characterListQuery}
           timer={timer}
           onCharacterPick={onCharacterDraftChoose}
+          state={state}
         />
       )}
 
@@ -556,6 +576,7 @@ const Drafting: NextPage = () => {
           ban={ban}
           banWidth={banWidthSize}
           boss={boss}
+          currentSequence={currentSequence}
         />
 
         {draftDataQuery.isLoading !== true && (
@@ -577,8 +598,15 @@ const Drafting: NextPage = () => {
                 >
                   {pick?.map((pickData: DraftInfoProps[], i: number) => (
                     <DraftPickBanner
-                      aligndraft="left"
-                      currentpickdraft="false"
+                      aligndraft={
+                        currentSequence.player === "player1" ? "left" : "right"
+                      }
+                      currentpickdraft={
+                        currentSequence.index === `player-1-pick-${i + 1}` ||
+                        currentSequence.index === `player-2-pick-${i + 1}`
+                          ? "true"
+                          : "false"
+                      }
                       key={i}
                     >
                       <DraftPickBannerWrapper>

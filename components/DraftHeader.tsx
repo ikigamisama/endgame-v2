@@ -4,7 +4,6 @@ import {
   RestartIcon,
   SwapIcon,
 } from "@/libs/includes/icons";
-
 import {
   BanCharacterWrapper,
   BanCharactersListContainer,
@@ -13,7 +12,6 @@ import {
   BossDraftWrapper,
   BossNameWrapper,
 } from "@/src/styles/Draft";
-
 import {
   Box,
   Flex,
@@ -31,10 +29,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@chakra-ui/react";
-import { ButtonPopUpNav, FontHeaderPopup } from "@/src/styles";
-import { FormLabelText, FormSelect } from "@/src/styles/login";
-import { SettingsIcon } from "@chakra-ui/icons";
-import { useState } from "react";
 import {
   BackToArenaProps,
   CharacterDraftProps,
@@ -47,6 +41,16 @@ import {
   ModalEndgameButton,
   ModalTextEndgame,
 } from "@/src/styles/Modal";
+
+import {
+  banIndexListPlayer1,
+  banIndexListPlayer2,
+  inArray,
+} from "@/libs/providers/draft";
+import { ButtonPopUpNav, FontHeaderPopup } from "@/src/styles";
+import { FormLabelText, FormSelect } from "@/src/styles/login";
+import { SettingsIcon } from "@chakra-ui/icons";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/libs/providers/api";
 
@@ -97,6 +101,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   banWidth,
   boss,
   colorConvertVision,
+  currentSequence,
 }) => {
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
@@ -162,7 +167,13 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
               <BanCharactersListContainer
                 width={`${(banWidth !== undefined ? banWidth : 0) + 25}px`}
                 aligndraft="left"
-                statusdraft="none"
+                statusdraft={
+                  currentSequence &&
+                  inArray(currentSequence.index, banIndexListPlayer1) &&
+                  currentSequence.player === "player1"
+                    ? "true"
+                    : "none"
+                }
               >
                 <BanCharactersListWrapper width={`${banWidth}px`}>
                   {ban?.player1?.map((banData: DraftInfoProps, pi: number) => (
@@ -206,7 +217,13 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
               <BanCharactersListContainer
                 width={`${(banWidth !== undefined ? banWidth : 0) + 25}px`}
                 aligndraft="right"
-                statusdraft="none"
+                statusdraft={
+                  currentSequence &&
+                  inArray(currentSequence.index, banIndexListPlayer2) &&
+                  currentSequence.player === "player2"
+                    ? "true"
+                    : "none"
+                }
               >
                 <BanCharactersListWrapper width={`${banWidth}px`}>
                   {ban?.player2?.map((banData: DraftInfoProps, pi: number) => (
