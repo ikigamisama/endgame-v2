@@ -232,7 +232,8 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                       widthcharacter={banData.wrapperWidthSize}
                       colorcharacter={
                         banData.characterID !== null
-                          ? banData.character.vision
+                          ? colorConvertVision &&
+                            colorConvertVision(banData.character.vision)
                           : ""
                       }
                       indexcharacter={banData.indexCharacter}

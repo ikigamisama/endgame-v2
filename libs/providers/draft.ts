@@ -1,7 +1,7 @@
 import { CharacterDraftPayloadProps, CharacterInfoProps, DraftBanFormat, DraftBanLayout, DraftCharacterList, DraftInfoProps, DraftSequence, SequenceDraft } from "../helpers/types";
 
 
-export  const pickIndexListPlayer1 = [
+export const pickIndexListPlayer1 = [
     "player-1-pick-1",
     "player-1-pick-2",
     "player-1-pick-3",
@@ -232,7 +232,7 @@ export function draftLayoutPick(mode: string, pick: DraftInfoProps[]) : DraftInf
     return newPickDraftFormat;
 }
 
-export function arrangeDraftCharacterlistModal(list: DraftInfoProps[]):  DraftCharacterList{
+export function arrangeDraftCharacterlistModal(list: DraftInfoProps[]):  DraftCharacterList {
     let player1: DraftInfoProps[] = [],
         player2: DraftInfoProps[] = [];
 
@@ -543,4 +543,44 @@ export function updateCharactersAfterDraft (characterID: string, characters:Char
     }
 
     return characters;
+}
+
+export function findCharacterByCharacterID (characterID: string, characters:CharacterInfoProps[]) : CharacterInfoProps | undefined {
+    const character = characters.find((character) => character.id === characterID);
+    return character;
+}
+
+
+export function updatePickListDraftCharacters(characterID: string, index: string, characterInfo: CharacterInfoProps, pick: DraftInfoProps[][]) :DraftInfoProps[][] {
+    const [playerIndex, playWorld, pickIndex] = index.split('-').slice(-3);
+    let draftInfo = pick[parseInt(playerIndex) - 1].find((draft) => draft.index === index);
+    if(draftInfo){
+        draftInfo.characterID = characterID
+        draftInfo.character = characterInfo
+    }
+    return pick;
+}
+
+export function updateBanListDraftCharacters(characterID: string, index: string, characterInfo: CharacterInfoProps, ban: DraftBanFormat) : DraftBanFormat  {
+    for (let playerBans of Object.values(ban)) {
+        let banObject = playerBans.find(ban => ban.index === index);
+        if (banObject) {
+          banObject.characterID = characterID;
+          banObject.character = characterInfo;
+          return ban;
+        }
+    }
+    return ban;
+}
+
+export function updateCharactersDraftList(characterID: string, index: string, characterInfo: CharacterInfoProps, list: DraftCharacterList ) :  DraftCharacterList {
+    for (let draftList of Object.values(list)) {
+        let draftObject = draftList.find(ban => ban.index === index);
+        if (draftObject) {
+            draftObject.characterID = characterID;
+            draftObject.character = characterInfo;
+            return list;
+        }
+    }
+    return list;
 }

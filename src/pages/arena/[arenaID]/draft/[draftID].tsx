@@ -65,7 +65,14 @@ import {
   SimpleGrid,
   VStack,
 } from "@chakra-ui/react";
-import { getSequenceByIndex, updateCharacters } from "@/libs/providers/draft";
+import {
+  banIndexListPlayer1,
+  banIndexListPlayer2,
+  findCharacterByCharacterID,
+  getSequenceByIndex,
+  inArray,
+  updateCharacters,
+} from "@/libs/providers/draft";
 
 const ModalBoss = ({
   isOpen,
@@ -152,7 +159,6 @@ const ModalBoss = ({
 const Drafting: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
   const router = useRouter();
-  const queryclient = useQueryClient();
 
   const [
     applyCharacterModal,
@@ -197,6 +203,13 @@ const Drafting: NextPage = () => {
     setCharacterDraftList,
     setCharacterDraftListUpdate,
     setCharacterListAfterUpdate,
+    currentCharacterChoose,
+    setIsDoneChooseCharacter,
+    setCurrentCharacterChoice,
+    banListCharacterDraft,
+    pickListCharacterDraft,
+    updateBanDraftCharacters,
+    updatePickDraftCharacters,
   ] = useDraftStore((state) => [
     state.applyCharacterModal,
     state.setApplyCharacterModal,
@@ -240,6 +253,13 @@ const Drafting: NextPage = () => {
     state.setCharacterDraftList,
     state.setCharacterDraftListUpdate,
     state.setCharacterListAfterUpdate,
+    state.currentCharacterChoose,
+    state.setIsDoneChooseCharacter,
+    state.setCurrentCharacterChoice,
+    state.banListCharacterDraft,
+    state.pickListCharacterDraft,
+    state.updateBanDraftCharacters,
+    state.updatePickDraftCharacters,
   ]);
 
   const onToggleCharacterPickModal = () => {
@@ -326,12 +346,10 @@ const Drafting: NextPage = () => {
     queryKey: ["characterDraftList", router.query.draftID],
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
-      if (state.user.role === "Drafter") {
-        for (const character of data) {
-          character.isPicked = false;
-        }
-        setCharacterDraftListUpdate(characterDraft, data);
+      for (const character of data) {
+        character.isPicked = false;
       }
+      setCharacterDraftListUpdate(characterDraft, data);
     },
   });
 
@@ -371,11 +389,29 @@ const Drafting: NextPage = () => {
               draft_id: router.query.draftID,
               isContinuingCooldown: true,
               isPauseTimer: false,
+              draftSituation: data.draftSituation,
             });
           }
 
           if (countdown <= 0) {
             clearInterval(interval);
+            if (
+              data.draftSituation === "characterDraft" &&
+              state.user.role === "GM" &&
+              countdown <= 0
+            ) {
+              setTimeout(() => {
+                draftSequence.mutate({
+                  draft_id: router.query.draftID,
+                  function: `characterDraft_${router.query.draftID}`,
+                  type: "character_draft",
+                  sequence: sequenceIndex === 0 ? sequence[0] : currentSequence,
+                  sequenceIndex: sequenceIndex + 1,
+                  isStartingDraft: false,
+                  characterID: "",
+                });
+              }, 1000);
+            }
           }
         }, 1000);
       }
@@ -385,7 +421,7 @@ const Drafting: NextPage = () => {
       timerChannel.unbind();
       pusherClient.unsubscribe(timerChannel.name);
     };
-  }, [router]);
+  }, [router, state.user, currentSequence, sequence]);
 
   useEffect(() => {
     const arenaChannel = pusherClient.subscribe("arena-room"),
@@ -423,6 +459,7 @@ const Drafting: NextPage = () => {
             draft_id: router.query.draftID,
             isContinuingCooldown: false,
             isPauseTimer: false,
+            draftSituation: "initBoss",
           });
         }
       }, 2500);
@@ -437,19 +474,103 @@ const Drafting: NextPage = () => {
     });
 
     draftChannel.bind(`characterDraft_${router.query.draftID}`, (data: any) => {
-      setCurrentSequence(data.sequence);
-      setSequenceIndex(data.sequenceIndex);
+      setDraftSituation("characterDraft");
+      if (data.sequence !== null) {
+        setCurrentSequence(data.sequence);
+        setSequenceIndex(data.sequenceIndex);
+      }
 
-      let characterAnnounce = new Howl({
-        src: [`/audio/${data.sequence.audio}.wav`],
+      setCurrentCharacterChoice({
+        id: "",
+        name: "",
+        display_name: "",
+        rarity: "",
+        vision: "",
+        weapon: "",
+        draft_picture: "",
+        pick_picture: "",
+        flash_picture: "",
+        ban_picture: "",
+        ban_audio: "",
+        pick_audio: "",
+        is_visible: true,
+        nation: "",
       });
-      characterAnnounce.play();
 
       if (data.isStartingDraft === false) {
-        queryclient.invalidateQueries(["draftData", data.draft_id]);
-        setCharacterListAfterUpdate(data.characterID, characters);
-        setCurrentCharacterFlash(data.character.flash_picture);
+        if (data.characterID !== "") {
+          setCharacterListAfterUpdate(data.characterID, characters);
+
+          let characterInfo = findCharacterByCharacterID(
+            data.characterID,
+            characters
+          );
+          if (characterInfo) {
+            setCurrentCharacterFlash(characterInfo.flash_picture);
+
+            let characterChooseAudio = null;
+            if (data.sequence !== null) {
+              if (
+                inArray(data.sequence.index, banIndexListPlayer1) ||
+                inArray(data.sequence.index, banIndexListPlayer2)
+              ) {
+                // updateBanDraftCharacters(
+                //   data.characterID,
+                //   sequenceIndex === 0
+                //     ? sequence[sequenceIndex].index
+                //     : sequence[sequenceIndex - 1].index,
+                //   characterInfo,
+                //   ban,
+                //   banListCharacterDraft
+                // );
+                characterChooseAudio = new Howl({
+                  src: [characterInfo.ban_audio],
+                });
+              } else {
+                // updatePickDraftCharacters(
+                //   data.characterID,
+                //   sequenceIndex === 0
+                //     ? sequence[sequenceIndex].index
+                //     : sequence[sequenceIndex - 1].index,
+                //   characterInfo,
+                //   pick,
+                //   pickListCharacterDraft
+                // );
+                characterChooseAudio = new Howl({
+                  src: [characterInfo.pick_audio],
+                });
+              }
+              characterChooseAudio.play();
+            }
+          }
+        }
+        setTimeout(() => {
+          setCurrentCharacterFlash("");
+          if (data.sequence !== null) {
+            let characterAnnounce = new Howl({
+              src: [`/audio/${data.sequence.audio}.wav`],
+            });
+            characterAnnounce.play();
+
+            if (state.user.role === "GM") {
+              timerUpdate.mutate({
+                timer: 30,
+                function: `timerDraft_${router.query.draftID}`,
+                draft_id: router.query.draftID,
+                isContinuingCooldown: false,
+                isPauseTimer: false,
+                draftSituation: draftSituation,
+              });
+            }
+          }
+
+          setIsDoneChooseCharacter(false);
+        }, 2500);
       } else {
+        let characterAnnounce = new Howl({
+          src: [`/audio/${data.sequence.audio}.wav`],
+        });
+        characterAnnounce.play();
         setIsStartDraft(true);
       }
     });
@@ -471,7 +592,7 @@ const Drafting: NextPage = () => {
           setPlayer1Reroll(null);
           setPlayer2Reroll(null);
           setCurrentBossFlash("");
-          setDraftSituation("characterDraft");
+
           if (state.user.role === "GM") {
             draftSequence.mutate({
               draft_id: router.query.draftID,
@@ -481,8 +602,18 @@ const Drafting: NextPage = () => {
               sequenceIndex: 0,
               isStartingDraft: true,
             });
+            setDraftSituation("characterDraft");
+
+            timerUpdate.mutate({
+              timer: 30,
+              function: `timerDraft_${router.query.draftID}`,
+              draft_id: router.query.draftID,
+              isContinuingCooldown: false,
+              isPauseTimer: false,
+              draftSituation: draftSituation,
+            });
           }
-        }, 5000);
+        }, 4000);
       } else {
         if (player1_reroll === true && player2_reroll === true) {
           if (state.user.role === "GM") {
@@ -498,7 +629,6 @@ const Drafting: NextPage = () => {
             setPlayer1Reroll(null);
             setPlayer2Reroll(null);
             setCurrentBossFlash("");
-            setDraftSituation("characterDraft");
 
             if (state.user.role === "GM") {
               draftSequence.mutate({
@@ -508,6 +638,17 @@ const Drafting: NextPage = () => {
                 sequence: sequence[sequenceIndex],
                 sequenceIndex: 0,
                 isStartingDraft: true,
+              });
+
+              setDraftSituation("characterDraft");
+
+              timerUpdate.mutate({
+                timer: 30,
+                function: `timerDraft_${router.query.draftID}`,
+                draft_id: router.query.draftID,
+                isContinuingCooldown: false,
+                isPauseTimer: false,
+                draftSituation: draftSituation,
               });
             }
           }, 3000);
@@ -545,13 +686,31 @@ const Drafting: NextPage = () => {
     });
   };
 
-  const onCharacterDraftChoose = () => {};
+  const onCharacterDraftChoose = () => {
+    timerUpdate.mutate({
+      timer: timer,
+      function: `timerDraft_${router.query.draftID}`,
+      draft_id: router.query.draftID,
+      isContinuingCooldown: false,
+      isPauseTimer: true,
+      draftSituation: draftSituation,
+    });
+
+    draftSequence.mutate({
+      draft_id: router.query.draftID,
+      function: `characterDraft_${router.query.draftID}`,
+      type: "character_draft",
+      sequence: currentSequence,
+      sequenceIndex: sequenceIndex + 1,
+      isStartingDraft: false,
+      characterID: currentCharacterChoose.id,
+    });
+  };
 
   const colorConvertVision = (vision: string) => {
     return convertVisionToColor(vision);
   };
 
-  console.log(characters);
   return (
     <>
       <Head>
@@ -782,6 +941,14 @@ const Drafting: NextPage = () => {
                                     sequence: sequence[sequenceIndex],
                                     sequenceIndex: 0,
                                     isStartingDraft: true,
+                                  });
+                                  timerUpdate.mutate({
+                                    timer: 30,
+                                    function: `timerDraft_${router.query.draftID}`,
+                                    draft_id: router.query.draftID,
+                                    isContinuingCooldown: false,
+                                    isPauseTimer: false,
+                                    draftSituation: "characterDraft",
                                   });
                                 } else {
                                   draftSequence.mutate({

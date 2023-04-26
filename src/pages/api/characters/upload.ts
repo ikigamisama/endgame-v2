@@ -11,7 +11,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   form.parse(req, async (err: any, fields: any, files: { file: any; }) => {
     if (err) {
-      console.log(err);
       return res.status(500).json({ error: 'Failed to process form data' });
     }
 
@@ -31,7 +30,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       return res.status(200).json({ success: true, fileName });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ error: 'Failed to save file' });
     }
   });

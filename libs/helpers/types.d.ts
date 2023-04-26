@@ -338,7 +338,8 @@ export type DraftStateProps = {
     player2_reroll: boolean | null
     draftSituation: string
     isReroll: boolean
-    characterDraft: CharacterDraftPayloadProps[]
+    characterDraft: CharacterDraftPayloadProps[],
+    isDoneChooseCharacter: boolean
 }
 
 export type DraftFunctions = {
@@ -370,6 +371,9 @@ export type DraftFunctions = {
     setCharacterDraftList: (characterDraftList: CharacterDraftPayloadProps[]) => void
     setCharacterDraftListUpdate: (characterDraftList: CharacterDraftPayloadProps[], characters: CharacterInfoProps[] ) => void
     setCharacterListAfterUpdate: (characterID: string, characters: CharacterInfoProps[]) => void
+    setIsDoneChooseCharacter: (isDone: boolean) => void
+    updateBanDraftCharacters: (characterID: string, index: string, ban: DraftBanFormat, banArrangeList: DraftCharacterList) => void
+    updatePickDraftCharacters: (characterID: string, index: string, pick: DraftInfoProps[][], pickArrangeList: DraftCharacterList) => void
 }
 
 export declare interface CharacterDraftPayloadProps {
@@ -403,5 +407,6 @@ export type TimerUpdateProps = {
     isContinuingCooldown: boolean
     isPauseTimer: boolean
     function: string
+    draftSituation: string
 } 
 

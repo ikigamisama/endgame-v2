@@ -17,25 +17,20 @@ export default async function handler(
             try{
                 switch(req.body.type){
                     case "character_draft": {
-                        let sequenceIndex = 0,
-                        getCharacterInfo = null;
-                        if(req.body.isStartingDraft === true){
-                            sequenceIndex = req.body.isStartingDraft;
-                        }
-                        else{
-                            sequenceIndex = req.body.isStartingDraft.parseInt() + 1;
-                            const findCharacterDraft = await prisma.characterDraft.findFirst({
-                                where: {
-                                    draftID: req.body.draft_id,
-                                    index: req.body.sequence.index
-                                }
-                            })
+                        const findCharacterDraft = await prisma.characterDraft.findFirst({
+                            where: {
+                                draftID: req.body.draft_id,
+                                index: req.body.sequence.index
+                            }
+                        })
 
-                            getCharacterInfo = await prisma.characters.findFirst({
-                                where:{id:req.body.characterID }
-                            })
-
-                            if(findCharacterDraft){
+                        const findCurrentDraft = await prisma.draft.findFirst({
+                            where: {uid: req.body.draft_id}
+                        })
+                        
+                        if(findCharacterDraft && findCurrentDraft){
+                            let getSequenceDraft = JSON.parse(findCurrentDraft.sequence);
+                            if(req.body.characterID !== ""){
                                 await prisma.characterDraft.update({
                                     where: {
                                         uid: findCharacterDraft.uid
@@ -45,22 +40,33 @@ export default async function handler(
                                     }
                                 })
                             }
+                           
+                            await prisma.draft.update({
+                                where: {uid: req.body.draft_id},
+                                data: {current_status_draft: req.body.sequence.index}
+                            })
+
+                            if((getSequenceDraft.length + 1)  !== req.body.sequenceIndex){
+                                pusherServer.trigger("drafting", req.body.function, {
+                                    draft_id: req.body.draft_id,
+                                    sequence: getSequenceDraft.length !== req.body.sequenceIndex ? getSequenceDraft[req.body.sequenceIndex] : null,
+                                    sequenceIndex: req.body.sequenceIndex,
+                                    isStartingDraft: req.body.isStartingDraft,
+                                    characterID: req.body.isStartingDraft === true ? null : req.body.characterID,
+                                });
+                            }
+                            else{
+                                pusherServer.trigger("drafting", req.body.function, {
+                                    draft_id: req.body.draft_id,
+                                    sequence: null,
+                                    sequenceIndex: null,
+                                    isStartingDraft: null,
+                                    characterID: null,
+                                });
+                            }
+        
+                           
                         }
-
-                       await prisma.draft.update({
-                            where: {uid: req.body.draft_id},
-                            data: {current_status_draft: req.body.sequence.index}
-                        })
-                       
-
-                        pusherServer.trigger("drafting", req.body.function, {
-                            draft_id: req.body.draft_id,
-                            sequence: req.body.sequence,
-                            sequenceIndex: sequenceIndex,
-                            isStartingDraft: req.body.isStartingDraft,
-                            characterID: req.body.isStartingDraft === true ? null : req.body.characterID,
-                            character: req.body.isStartingDraft === true ? null : getCharacterInfo
-                        });
                         break;
                     }
                     case "boss_init": {
@@ -103,18 +109,18 @@ export default async function handler(
                             },
                             data: payload
                         })
-
+    
                         pusherServer.trigger("drafting", req.body.function, {
                             draft_id: req.body.draft_id,
                             player_position: req.body.playerPosition,
                             playerReroll: req.body.playerReroll
                         });
-
+    
                         break;
                     }
                 }
                 
-
+    
                 res.status(200).json({ 
                     success: true
                 })

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { BossInfoProps, CharacterDraftPayloadProps, CharacterInfoProps, DraftFunctions, DraftInfoProps, DraftSequence, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
-import { arrangeDraftCharacterlistModal, draftLayoutBan, draftLayoutPick, getBanWidth, updateCharacters, updateCharactersAfterDraft } from '../providers/draft'
+import { BossInfoProps, CharacterDraftPayloadProps, CharacterInfoProps, DraftBanFormat, DraftCharacterList, DraftFunctions, DraftInfoProps, DraftSequence, DraftStateProps, PlayerDraftInfo } from '../helpers/types'
+import { arrangeDraftCharacterlistModal, draftLayoutBan, draftLayoutPick, getBanWidth, updateBanListDraftCharacters, updateCharacters, updateCharactersAfterDraft, updateCharactersDraftList, updatePickListDraftCharacters } from '../providers/draft'
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 const initialState: DraftStateProps = {
@@ -82,7 +82,8 @@ const initialState: DraftStateProps = {
     player2_reroll: null,
     draftSituation: '',
     isReroll: false,
-    characterDraft: []
+    characterDraft: [],
+    isDoneChooseCharacter: false,
 }
 
 export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get) => ({ 
@@ -190,6 +191,17 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     },
     setCharacterListAfterUpdate: (characterID: string, characters: CharacterInfoProps[]) => {
         set({characters: updateCharactersAfterDraft(characterID, characters)})
+    },
+    setIsDoneChooseCharacter: (isDone: boolean) => {
+        set({isDoneChooseCharacter: isDone})
+    },
+    updateBanDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, ban: DraftBanFormat, banArrangeList: DraftCharacterList) => {
+        set({ banListCharacterDraft: updateCharactersDraftList(characterID, index, characterInfo, banArrangeList)})
+        set({ ban: updateBanListDraftCharacters(characterID, index, characterInfo, ban) });
+    },
+    updatePickDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps,  pick: DraftInfoProps[][], pickArrangeList: DraftCharacterList) => {
+        set({ pickListCharacterDraft: updateCharactersDraftList(characterID, index, characterInfo, pickArrangeList)})
+        set({ pick: updatePickListDraftCharacters(characterID, index, characterInfo, pick) });
     }
 }))
 

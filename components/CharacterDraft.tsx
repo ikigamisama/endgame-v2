@@ -87,6 +87,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     currentSequence,
     player1,
     player2,
+    isDoneChooseCharacter,
+    setIsDoneChooseCharacter,
   ] = useDraftStore((state) => [
     state.boss,
     state.characters,
@@ -103,6 +105,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     state.currentSequence,
     state.player1,
     state.player2,
+    state.isDoneChooseCharacter,
+    state.setIsDoneChooseCharacter,
   ]);
 
   const colorConvertVision = (vision: string) => {
@@ -429,8 +433,15 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 state?.user.id === player1.id &&
                 currentSequence.player == "player1" &&
                 currentCharacterChoose.id !== "" &&
-                timer !== 0 ? (
-                  <CharacterDraftButton drafttype="pick">
+                timer !== 0 &&
+                isDoneChooseCharacter === false ? (
+                  <CharacterDraftButton
+                    drafttype="pick"
+                    onClick={() => {
+                      onCharacterPick();
+                      setIsDoneChooseCharacter(true);
+                    }}
+                  >
                     Pick {currentCharacterChoose.name}
                   </CharacterDraftButton>
                 ) : null}
@@ -439,8 +450,15 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 state?.user.id === player2.id &&
                 currentSequence.player == "player2" &&
                 currentCharacterChoose.id !== "" &&
-                timer !== 0 ? (
-                  <CharacterDraftButton drafttype="pick">
+                timer !== 0 &&
+                isDoneChooseCharacter === false ? (
+                  <CharacterDraftButton
+                    drafttype="pick"
+                    onClick={() => {
+                      onCharacterPick();
+                      setIsDoneChooseCharacter(true);
+                    }}
+                  >
                     Pick {currentCharacterChoose.name}
                   </CharacterDraftButton>
                 ) : null}
@@ -449,8 +467,15 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 state?.user.id === player1.id &&
                 currentSequence.player == "player1" &&
                 currentCharacterChoose.id !== "" &&
-                timer !== 0 ? (
-                  <CharacterDraftButton drafttype="ban">
+                timer !== 0 &&
+                isDoneChooseCharacter === false ? (
+                  <CharacterDraftButton
+                    drafttype="ban"
+                    onClick={() => {
+                      onCharacterPick();
+                      setIsDoneChooseCharacter(true);
+                    }}
+                  >
                     Ban {currentCharacterChoose.name}
                   </CharacterDraftButton>
                 ) : null}
@@ -459,8 +484,15 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 state?.user.id === player2.id &&
                 currentSequence.player == "player2" &&
                 currentCharacterChoose.id !== "" &&
-                timer !== 0 ? (
-                  <CharacterDraftButton drafttype="ban">
+                timer !== 0 &&
+                isDoneChooseCharacter === false ? (
+                  <CharacterDraftButton
+                    drafttype="ban"
+                    onClick={() => {
+                      onCharacterPick();
+                      setIsDoneChooseCharacter(true);
+                    }}
+                  >
                     Ban {currentCharacterChoose.name}
                   </CharacterDraftButton>
                 ) : null}
@@ -498,7 +530,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                           }
                           drafttype="ban"
                         >
-                          {draft.characterID !== null && (
+                          {draft.character !== null && (
                             <CharacterDraftPlayerImg
                               rarity={draft.character.rarity}
                             >
@@ -527,7 +559,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                           }
                           drafttype="ban"
                         >
-                          {draft.characterID !== null && (
+                          {draft.character !== null && (
                             <CharacterDraftPlayerImg
                               rarity={draft.character.rarity}
                             >
@@ -561,7 +593,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                           }
                           drafttype="pick"
                         >
-                          {draft.characterID !== null && (
+                          {draft.character !== null && (
                             <CharacterDraftPlayerImg
                               rarity={draft.character.rarity}
                             >
@@ -590,7 +622,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                           }
                           drafttype="pick"
                         >
-                          {draft.characterID !== null && (
+                          {draft.character !== null && (
                             <CharacterDraftPlayerImg
                               rarity={draft.character.rarity}
                             >
