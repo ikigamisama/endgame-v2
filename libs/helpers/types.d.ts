@@ -3,32 +3,32 @@ import { NextRouter } from "next/router";
 export declare interface UserFeatureAction {
     type: USER_FEATURE;
     payload: any;
-} 
+}
 
 export declare interface GMLoginProps {
-    gm_name: string | number 
-    secret_key: string | number 
+    gm_name: string | number
+    secret_key: string | number
     role: string | ""
-    game_type: string | number 
+    game_type: string | number
 }
 
 
-export declare interface PlayerLoginProps{
-    team_name: string | number 
+export declare interface PlayerLoginProps {
+    team_name: string | number
     avatar: string
     role: string
     arenaID?: any
 }
 
-export declare interface AvatarProps{
+export declare interface AvatarProps {
     name: string
     src: string
 }
 
-export declare interface ArenaDraftProps{
+export declare interface ArenaDraftProps {
     user_gm_id: string
     mode: "1v1" | "2v2" | "3v3" | "4v4" | string,
-    is_manual_select_boss: any 
+    is_manual_select_boss: any
     boss_id?: string
 }
 
@@ -37,7 +37,7 @@ export type GetRandomNumberOptions = {
 };
 
 
-export declare interface DraftPositionProps{
+export declare interface DraftPositionProps {
     aligndraft: 'left' | 'right' | string
     widthcharacter?: string
     colorcharacter?: any
@@ -46,12 +46,12 @@ export declare interface DraftPositionProps{
     currentpickdraft?: 'true' | 'false'
 }
 
-export declare interface IconSizeSVGProps{
+export declare interface IconSizeSVGProps {
     width: string
     height: string
 }
 
-export declare interface ModalFeatures{
+export declare interface ModalFeatures {
     isOpen: boolean
     onClose: () => void
     title: string,
@@ -59,7 +59,7 @@ export declare interface ModalFeatures{
     onCloseButton?: () => void
 }
 
-export declare interface ModalBoss{
+export declare interface ModalBoss {
     isOpen: boolean
     onClose: () => void
     onAccept: (playerID: string, playerPosition: string) => void
@@ -71,17 +71,17 @@ export declare interface ModalBoss{
     player2: PlayerDraftInfo
 }
 
-export declare interface CharacterDraftDesignProps{
+export declare interface CharacterDraftDesignProps {
     ischaractermodalactive?: 'true' | 'false' | string
-    isselectedeleemnt? : 'true' | 'false' | string
+    isselectedeleemnt?: 'true' | 'false' | string
     rarity?: '4' | '5' | string,
     colorpickedcharacter?: string
     drafttype?: 'pick' | 'ban' | string
-    currentdraft? : 'true' | 'false' | string
+    currentdraft?: 'true' | 'false' | string
     ispickedcharacter?: string | undefined
 }
 
-export declare interface CharacterDraftProps{
+export declare interface CharacterDraftProps {
     statusCharacterModal: boolean
     onCloseCharacterModal?: () => void
     onOpenCharacterModal?: () => void
@@ -93,21 +93,21 @@ export declare interface CharacterDraftProps{
     boss?: BossInfoProps | undefined
     colorConvertVision?: ((vision: string) => void) | undefined
     characterListQuery?: any
-    timer?:number
+    timer?: number
     onCharacterPick?: any
-    currentSequence? : DraftSequence | undefined
+    currentSequence?: DraftSequence | undefined
 }
 
-export declare interface ProfileChanges{
+export declare interface ProfileChanges {
     id?: string,
     username: string | undefined
     role: string | undefined
-    avatar: string | undefined 
+    avatar: string | undefined
     password?: string
     confirm_password?: string
 }
 
-export declare interface BossInfoProps{
+export declare interface BossInfoProps {
     id?: string
     name: string
     picture: string
@@ -116,7 +116,7 @@ export declare interface BossInfoProps{
     is_visible: any
 }
 
-export declare interface CharacterInfoProps{
+export declare interface CharacterInfoProps {
     id?: string,
     name: string
     display_name: string
@@ -128,7 +128,7 @@ export declare interface CharacterInfoProps{
     flash_picture: string
     ban_picture: string
     ban_audio: string
-    pick_audio:  string
+    pick_audio: string
     is_visible: any
     nation?: string
     isPicked?: boolean | undefined
@@ -141,19 +141,19 @@ export declare interface VideoProerties {
 
 
 export type SettingState = {
-   isGeneratePassword: boolean;
-   userList: ProfileChanges[]
-   bossList: BossInfoProps[]
-   characterList: CharacterInfoProps[]
-   searchUser: string
-   searchCharacter: string
-   userInfo:  ProfileChanges
-   bossInfo:  BossInfoProps
-   characterInfo:  CharacterInfoProps,
+    isGeneratePassword: boolean;
+    userList: ProfileChanges[]
+    bossList: BossInfoProps[]
+    characterList: CharacterInfoProps[]
+    searchUser: string
+    searchCharacter: string
+    userInfo: ProfileChanges
+    bossInfo: BossInfoProps
+    characterInfo: CharacterInfoProps,
 }
 
 export type SettingActions = {
-    applyGeneratePassword: (isGonnaGeneratePassword: boolean) => void 
+    applyGeneratePassword: (isGonnaGeneratePassword: boolean) => void
     setUserList: (users: ProfileChanges[]) => void
     setUserInfo: (boss: ProfileChanges) => void
     setSearchUser: (search: string) => void
@@ -173,13 +173,13 @@ export type VideoPropsSettings = {
 };
 
 export type UserDataProp = {
-    id:string | number
+    id: string | number
     username: string
     role: string
     avatar?: string
     arenaID?: string | string[] | undefined
 };
-  
+
 export type UserSettingsProp = {
     video_bg: VideoPropsSettings;
 };
@@ -192,15 +192,15 @@ export declare interface UserDataPropState {
 }
 
 export type UserFeatureSettingProps = {
-    setBackgroundBG : (vidSrc: VideoPropsSettings) => void
-    setUserData: (userData: UserDataProp) => void 
+    setBackgroundBG: (vidSrc: VideoPropsSettings) => void
+    setUserData: (userData: UserDataProp) => void
     setArenaID: (arena: string | string[] | undefined) => void
     setLoadingSubmit: (loading: boolean) => void
 }
 
 export type ArenaPlayers = {
     id: string,
-    arena_id:string
+    arena_id: string
     user_id: string
     isActive?: boolean
     joinedDate?: string,
@@ -258,8 +258,8 @@ export type DraftPlayerCharacterInfo = {
 }
 
 export type DraftSketchProps = {
-   player1: DraftInfoProps[],
-   player2: DraftInfoProps[]
+    player1: DraftInfoProps[],
+    player2: DraftInfoProps[]
 }
 
 export type PlayerDraftInfo = {
@@ -305,7 +305,7 @@ export type DraftCharacterList = {
 export type DraftSequence = {
     audio: string,
     player: string,
-    index: string 
+    index: string
 }
 
 export type DraftStateProps = {
@@ -315,7 +315,7 @@ export type DraftStateProps = {
     searchCharacter: string
     applyCharacterModal: boolean
     applyBossModal: boolean
-    isStartDraft : boolean
+    isStartDraft: boolean
     currentPlayerDraft: string
     currentAudioPlay: string
     timer: number
@@ -351,12 +351,12 @@ export type DraftFunctions = {
     setSearchCharacter: (char: string) => void
     searchCharacterList: (name: string, vision: string) => void
     setCharacterFilterVision: (vision: string) => void
-    setCurrentCharacterChoice: (characterInfo:  CharacterInfoProps) => void
+    setCurrentCharacterChoice: (characterInfo: CharacterInfoProps) => void
     setPlayer1Info: (player: PlayerDraftInfo) => void
     setPlayer2Info: (player: PlayerDraftInfo) => void
     setBossInfo: (bossInfo: BossInfoProps) => void
-    setPickList: (pickList: DraftInfoProps[], mode : string) => void
-    setBanList: (banList: DraftInfoProps[], mode : string) => void
+    setPickList: (pickList: DraftInfoProps[], mode: string) => void
+    setBanList: (banList: DraftInfoProps[], mode: string) => void
     setTimer: (timer: number) => void
     setSequenceList: (mode: DraftSequence[]) => void
     setCurrentSequence: (currentSequence: DraftSequence) => void
@@ -369,24 +369,24 @@ export type DraftFunctions = {
     setIsReroll: (reroll: boolean) => void
     setSequenceIndex: (index: number) => void
     setCharacterDraftList: (characterDraftList: CharacterDraftPayloadProps[]) => void
-    setCharacterDraftListUpdate: (characterDraftList: CharacterDraftPayloadProps[], characters: CharacterInfoProps[] ) => void
+    setCharacterDraftListUpdate: (characterDraftList: CharacterDraftPayloadProps[], characters: CharacterInfoProps[]) => void
     setCharacterListAfterUpdate: (characterID: string, characters: CharacterInfoProps[]) => void
     setIsDoneChooseCharacter: (isDone: boolean) => void
-    updateBanDraftCharacters: (characterID: string, index: string, ban: DraftBanFormat, banArrangeList: DraftCharacterList) => void
-    updatePickDraftCharacters: (characterID: string, index: string, pick: DraftInfoProps[][], pickArrangeList: DraftCharacterList) => void
+    updateBanDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, ban: DraftBanFormat, banArrangeList: DraftCharacterList) => void
+    updatePickDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, pick: DraftInfoProps[][], pickArrangeList: DraftCharacterList) => void
 }
 
 export declare interface CharacterDraftPayloadProps {
     draftID: string
     index: string
-    playerID: string 
+    playerID: string
     status: string
     characterID?: string | null
 }
 
 export type BackToArenaProps = {
-   draft_id: string | string[] | undefined
-   arena_id: string | string[] | undefined
+    draft_id: string | string[] | undefined
+    arena_id: string | string[] | undefined
 }
 
 export declare interface PlayerNameDraft {
@@ -408,5 +408,5 @@ export type TimerUpdateProps = {
     isPauseTimer: boolean
     function: string
     draftSituation: string
-} 
+}
 
