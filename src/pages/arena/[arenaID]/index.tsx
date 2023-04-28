@@ -210,6 +210,7 @@ const Arena: NextPage = () => {
         player2: player2.user_id,
         boss_id: data.boss_id,
         function: `arena-player-route_${router.query.arenaID}`,
+        type: "start_drafting",
       });
     } else {
       setLoadingSubmit(false);
@@ -376,8 +377,8 @@ const Arena: NextPage = () => {
 
       {state.user.id !== "" && (
         <BackgroundVid
-          mp4={state.settings.video_bg.mp4}
-          webm={state.settings.video_bg.webm}
+          mp4={state?.settings?.video_bg?.mp4}
+          webm={state?.settings?.video_bg?.webm}
         />
       )}
 
@@ -446,7 +447,7 @@ const Arena: NextPage = () => {
                 </ButtonPopUpNav>
               </MenuButton>
               <MenuList bgColor="#1e223f">
-                {state.user.role === "GM" && (
+                {state?.user?.role === "GM" && (
                   <MenuItem
                     bgColor="#1e223f"
                     _hover={{

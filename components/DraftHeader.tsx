@@ -54,7 +54,12 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/libs/providers/api";
 
-const ModalFeatureDraft = ({ isOpen, onClose, title }: ModalFeatures) => {
+const ModalFeatureDraft = ({
+  isOpen,
+  onClose,
+  title,
+  onAcceptButton,
+}: ModalFeatures) => {
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay />
@@ -68,6 +73,12 @@ const ModalFeatureDraft = ({ isOpen, onClose, title }: ModalFeatures) => {
           <ModalFooter>
             <ModalEndgameButton
               bgColor="#61B162"
+              onClick={() => {
+                if (onAcceptButton !== undefined) {
+                  onAcceptButton();
+                  onClose();
+                }
+              }}
               _hover={{
                 bgColor: "#61B162",
                 boxShadow: "0px 0px 16px 4px rgba(103, 228, 100, 1)",
@@ -102,6 +113,8 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   boss,
   colorConvertVision,
   currentSequence,
+  onAcceptRestartDraft,
+  onAcceptSwitchPlayersDraft,
 }) => {
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
@@ -126,12 +139,14 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
       <ModalFeatureDraft
         isOpen={modalRestartDraft}
         onClose={onCloseModalRestartDraft}
+        onAcceptButton={onAcceptRestartDraft}
         title="Are you sure to restart the draft"
       />
 
       <ModalFeatureDraft
         isOpen={modalSwitchDraft}
         onClose={onCloseModalSwitchDraft}
+        onAcceptButton={onAcceptSwitchPlayersDraft}
         title="Are you sure to switch the players"
       />
 

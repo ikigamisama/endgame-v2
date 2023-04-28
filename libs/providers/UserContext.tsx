@@ -83,7 +83,7 @@ export const UserProvider = ({ children }: any) => {
 
   const getSettings = useQuery({
     queryKey: ["settingsFeat"],
-    refetchOnWindowFocus: false,
+    //refetchOnWindowFocus: false,
     queryFn: async () => {
       const listResponse = await api.get("/account/settings/get");
       return listResponse.data;
@@ -136,16 +136,18 @@ export const UserProvider = ({ children }: any) => {
   useEffect(() => {
     if (status === "authenticated") {
       if (!getSettings.isLoading) {
-        setBackgroundBG(getSettings.data.settings);
-        setUserData(getSettings.data.user);
+        setTimeout(() => {
+          setBackgroundBG(getSettings?.data?.settings);
+          setUserData(getSettings?.data?.user);
 
-        if (session?.user?.role === "GM") {
-          setArenaID(getSettings.data.arena.id);
-        } else {
-          if (router.query.arenaID !== undefined) {
-            setArenaID(router.query.arenaID);
+          if (session?.user?.role === "GM") {
+            setArenaID(getSettings?.data?.arena.id);
+          } else {
+            if (router.query.arenaID !== undefined) {
+              setArenaID(router.query.arenaID);
+            }
           }
-        }
+        }, 1000);
       }
     }
   }, [status, router.query, getSettings.data, getSettings.isLoading]);

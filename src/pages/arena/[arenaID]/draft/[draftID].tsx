@@ -73,6 +73,7 @@ import {
   inArray,
   updateCharacters,
 } from "@/libs/providers/draft";
+import { timerStore } from "@/libs/store/timer";
 
 const ModalBoss = ({
   isOpen,
@@ -178,8 +179,6 @@ const Drafting: NextPage = () => {
     banWidthSize,
     boss,
     setBossInfo,
-    timer,
-    setTimer,
     sequence,
     setSequenceList,
     currentSequence,
@@ -210,6 +209,8 @@ const Drafting: NextPage = () => {
     pickListCharacterDraft,
     updateBanDraftCharacters,
     updatePickDraftCharacters,
+    mode,
+    setMode,
   ] = useDraftStore((state) => [
     state.applyCharacterModal,
     state.setApplyCharacterModal,
@@ -228,8 +229,6 @@ const Drafting: NextPage = () => {
     state.banWidthSize,
     state.boss,
     state.setBossInfo,
-    state.timer,
-    state.setTimer,
     state.sequence,
     state.setSequenceList,
     state.currentSequence,
@@ -260,6 +259,15 @@ const Drafting: NextPage = () => {
     state.pickListCharacterDraft,
     state.updateBanDraftCharacters,
     state.updatePickDraftCharacters,
+    state.mode,
+    state.setMode,
+  ]);
+
+  const [timer, setTimer, isPauseTimer, setIsPause] = timerStore((state) => [
+    state.timer,
+    state.setTimer,
+    state.isPauseTimer,
+    state.setIsPause,
   ]);
 
   const onToggleCharacterPickModal = () => {
@@ -274,7 +282,7 @@ const Drafting: NextPage = () => {
     queryKey: ["draftData", router.query.draftID],
     queryFn: async () => {
       const listResponse = await api.post("/arena/draft/get", {
-        arena_id: router.query.draftID,
+        draft_id: router.query.draftID,
       });
       return listResponse.data;
     },
@@ -318,6 +326,7 @@ const Drafting: NextPage = () => {
       setPickList(pickList, data.result.arena.mode);
       setBanList(banList, data.result.arena.mode);
       setSequenceList(JSON.parse(data.result.sequence));
+      setMode(data.result.arena.mode);
 
       if (data.result.bossID !== "" || data.result.bossID !== null) {
         setBossInfo(data.result.boss);
@@ -367,52 +376,41 @@ const Drafting: NextPage = () => {
     },
   });
 
+  const startDraft = useMutation({
+    mutationFn: async (data: any) => {
+      let submitResponse = await api.post("/arena/draft/start", data);
+      return submitResponse.data;
+    },
+  });
+
   useEffect(() => {
     const timerChannel = pusherClient.subscribe("draft_timer");
-    let interval: NodeJS.Timeout;
 
     timerChannel.bind(`timerDraft_${router.query.draftID}`, (data: any) => {
       let countdown = data.timer;
       setTimer(countdown);
 
-      if (data.isPauseTimer) {
-        clearInterval(interval);
+      if (data.isPauseTimer === true) {
+        setIsPause(true);
       } else {
-        interval = setInterval(() => {
-          countdown--;
-          setTimer(countdown);
+        setIsPause(false);
+      }
 
-          if (state.user.role === "GM" && countdown >= 0) {
-            timerUpdate.mutate({
-              timer: countdown,
-              function: `timerDraft_${router.query.draftID}`,
-              draft_id: router.query.draftID,
-              isContinuingCooldown: true,
-              isPauseTimer: false,
-              draftSituation: data.draftSituation,
-            });
-          }
-
-          if (countdown <= 0) {
-            clearInterval(interval);
-            if (
-              data.draftSituation === "characterDraft" &&
-              state.user.role === "GM" &&
-              countdown <= 0
-            ) {
-              setTimeout(() => {
-                draftSequence.mutate({
-                  draft_id: router.query.draftID,
-                  function: `characterDraft_${router.query.draftID}`,
-                  type: "character_draft",
-                  sequence: sequenceIndex === 0 ? sequence[0] : currentSequence,
-                  sequenceIndex: sequenceIndex + 1,
-                  isStartingDraft: false,
-                  characterID: "",
-                });
-              }, 1000);
-            }
-          }
+      if (
+        data.draftSituation === "characterDraft" &&
+        state.user.role === "GM" &&
+        countdown <= 0
+      ) {
+        setTimeout(() => {
+          draftSequence.mutate({
+            draft_id: router.query.draftID,
+            function: `characterDraft_${router.query.draftID}`,
+            type: "character_draft",
+            sequence: sequenceIndex === 0 ? sequence[0] : currentSequence,
+            sequenceIndex: sequenceIndex + 1,
+            isStartingDraft: false,
+            characterID: "",
+          });
         }, 1000);
       }
     });
@@ -422,6 +420,33 @@ const Drafting: NextPage = () => {
       pusherClient.unsubscribe(timerChannel.name);
     };
   }, [router, state.user, currentSequence, sequence]);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    if (!isPauseTimer) {
+      if (state.user.role === "GM") {
+        intervalId = setInterval(() => {
+          let countdown: number = timer - 1;
+          if (countdown < 0) {
+            clearInterval(intervalId);
+            setIsPause(false);
+          } else {
+            timerUpdate.mutate({
+              timer: countdown,
+              function: `timerDraft_${router.query.draftID}`,
+              draft_id: router.query.draftID,
+              isContinuingCooldown: false,
+              isPauseTimer: false,
+              draftSituation: draftSituation,
+            });
+          }
+        }, 1000);
+      }
+    }
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [timer, isPauseTimer, state.user, draftSituation]);
 
   useEffect(() => {
     const arenaChannel = pusherClient.subscribe("arena-room"),
@@ -462,7 +487,7 @@ const Drafting: NextPage = () => {
             draftSituation: "initBoss",
           });
         }
-      }, 2500);
+      }, 3000);
     });
 
     draftChannel.bind(`player_reroll_${router.query.draftID}`, (data: any) => {
@@ -506,6 +531,8 @@ const Drafting: NextPage = () => {
             characters
           );
           if (characterInfo) {
+            console.log(data.sequence.index);
+            console.log(characterInfo);
             setCurrentCharacterFlash(characterInfo.flash_picture);
 
             let characterChooseAudio = null;
@@ -514,33 +541,35 @@ const Drafting: NextPage = () => {
                 inArray(data.sequence.index, banIndexListPlayer1) ||
                 inArray(data.sequence.index, banIndexListPlayer2)
               ) {
-                // updateBanDraftCharacters(
-                //   data.characterID,
-                //   sequenceIndex === 0
-                //     ? sequence[sequenceIndex].index
-                //     : sequence[sequenceIndex - 1].index,
-                //   characterInfo,
-                //   ban,
-                //   banListCharacterDraft
-                // );
+                updateBanDraftCharacters(
+                  data.characterID,
+                  sequenceIndex === 0
+                    ? sequence[sequenceIndex].index
+                    : sequence[sequenceIndex - 1].index,
+                  characterInfo,
+                  ban,
+                  banListCharacterDraft
+                );
                 characterChooseAudio = new Howl({
                   src: [characterInfo.ban_audio],
                 });
               } else {
-                // updatePickDraftCharacters(
-                //   data.characterID,
-                //   sequenceIndex === 0
-                //     ? sequence[sequenceIndex].index
-                //     : sequence[sequenceIndex - 1].index,
-                //   characterInfo,
-                //   pick,
-                //   pickListCharacterDraft
-                // );
+                updatePickDraftCharacters(
+                  data.characterID,
+                  sequenceIndex === 0
+                    ? sequence[sequenceIndex].index
+                    : sequence[sequenceIndex - 1].index,
+                  characterInfo,
+                  pick,
+                  pickListCharacterDraft
+                );
                 characterChooseAudio = new Howl({
                   src: [characterInfo.pick_audio],
                 });
               }
-              characterChooseAudio.play();
+              if (state.user.role === "GM") {
+                characterChooseAudio.play();
+              }
             }
           }
         }
@@ -565,7 +594,7 @@ const Drafting: NextPage = () => {
           }
 
           setIsDoneChooseCharacter(false);
-        }, 2500);
+        }, 3500);
       } else {
         let characterAnnounce = new Howl({
           src: [`/audio/${data.sequence.audio}.wav`],
@@ -574,6 +603,16 @@ const Drafting: NextPage = () => {
         setIsStartDraft(true);
       }
     });
+
+    draftChannel.bind(`restart_draft${router.query.draftID}`, (data: any) => {
+      router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
+    });
+    draftChannel.bind(
+      `switch_layer_draft${router.query.draftID}`,
+      (data: any) => {
+        router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
+      }
+    );
 
     return () => {
       arenaChannel.unbind();
@@ -610,7 +649,7 @@ const Drafting: NextPage = () => {
               draft_id: router.query.draftID,
               isContinuingCooldown: false,
               isPauseTimer: false,
-              draftSituation: draftSituation,
+              draftSituation: "characterDraft",
             });
           }
         }, 4000);
@@ -648,7 +687,7 @@ const Drafting: NextPage = () => {
                 draft_id: router.query.draftID,
                 isContinuingCooldown: false,
                 isPauseTimer: false,
-                draftSituation: draftSituation,
+                draftSituation: "characterDraft",
               });
             }
           }, 3000);
@@ -711,6 +750,32 @@ const Drafting: NextPage = () => {
     return convertVisionToColor(vision);
   };
 
+  const acceptRestartDraft = () => {
+    startDraft.mutate({
+      mode: mode,
+      arenaID: router.query.arenaID,
+      player1: player1.id,
+      player2: player2.id,
+      boss_id: null,
+      function: `restart_draft${router.query.draftID}`,
+      type: "start_drafting",
+    });
+  };
+  const acceptSwitchPlayersDraft = () => {
+    console.log({
+      player1: player2,
+      player2: player1,
+    });
+    startDraft.mutate({
+      mode: mode,
+      arenaID: router.query.arenaID,
+      player1: player2.id,
+      player2: player1.id,
+      boss_id: null,
+      function: `switch_layer_draft${router.query.draftID}`,
+      type: "switch_drafting",
+    });
+  };
   return (
     <>
       <Head>
@@ -764,6 +829,8 @@ const Drafting: NextPage = () => {
           banWidth={banWidthSize}
           boss={boss}
           currentSequence={currentSequence}
+          onAcceptRestartDraft={acceptRestartDraft}
+          onAcceptSwitchPlayersDraft={acceptSwitchPlayersDraft}
         />
 
         {draftDataQuery.isLoading !== true && (

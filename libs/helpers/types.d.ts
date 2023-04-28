@@ -55,7 +55,7 @@ export declare interface ModalFeatures {
     isOpen: boolean
     onClose: () => void
     title: string,
-    onAcceptButton?: () => void
+    onAcceptButton?: (() => void) | undefined
     onCloseButton?: () => void
 }
 
@@ -96,6 +96,8 @@ export declare interface CharacterDraftProps {
     timer?: number
     onCharacterPick?: any
     currentSequence?: DraftSequence | undefined
+    onAcceptRestartDraft?: () => void
+    onAcceptSwitchPlayersDraft?: () => void
 }
 
 export declare interface ProfileChanges {
@@ -318,7 +320,6 @@ export type DraftStateProps = {
     isStartDraft: boolean
     currentPlayerDraft: string
     currentAudioPlay: string
-    timer: number
     boss: BossInfoProps
     currentCharacterChoose: CharacterInfoProps
     finalCharacterChoose: CharacterInfoProps
@@ -340,6 +341,7 @@ export type DraftStateProps = {
     isReroll: boolean
     characterDraft: CharacterDraftPayloadProps[],
     isDoneChooseCharacter: boolean
+    mode: string
 }
 
 export type DraftFunctions = {
@@ -357,7 +359,6 @@ export type DraftFunctions = {
     setBossInfo: (bossInfo: BossInfoProps) => void
     setPickList: (pickList: DraftInfoProps[], mode: string) => void
     setBanList: (banList: DraftInfoProps[], mode: string) => void
-    setTimer: (timer: number) => void
     setSequenceList: (mode: DraftSequence[]) => void
     setCurrentSequence: (currentSequence: DraftSequence) => void
     setCurrentAudioPlay: (audio: string) => void
@@ -372,6 +373,7 @@ export type DraftFunctions = {
     setCharacterDraftListUpdate: (characterDraftList: CharacterDraftPayloadProps[], characters: CharacterInfoProps[]) => void
     setCharacterListAfterUpdate: (characterID: string, characters: CharacterInfoProps[]) => void
     setIsDoneChooseCharacter: (isDone: boolean) => void
+    setMode: (mode: string) => void
     updateBanDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, ban: DraftBanFormat, banArrangeList: DraftCharacterList) => void
     updatePickDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, pick: DraftInfoProps[][], pickArrangeList: DraftCharacterList) => void
 }
@@ -410,3 +412,12 @@ export type TimerUpdateProps = {
     draftSituation: string
 }
 
+export type TimerStoreState = {
+    timer: number
+    isPauseTimer: boolean
+}
+
+export type TimerFunction = {
+    setTimer: (time: number) => void
+    setIsPause: (method: boolean) => void
+}

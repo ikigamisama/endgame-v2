@@ -12,7 +12,6 @@ const initialState: DraftStateProps = {
     applyBossModal: false,
     isStartDraft: false,
     currentPlayerDraft: "",
-    timer: 0,
     boss: {
         id: "",
         name: "",
@@ -84,6 +83,7 @@ const initialState: DraftStateProps = {
     isReroll: false,
     characterDraft: [],
     isDoneChooseCharacter: false,
+    mode: "3v3"
 }
 
 export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get) => ({ 
@@ -150,9 +150,6 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
         set({ banWidthSize: getBanWidth(mode) })
         set({ ban: draftLayoutBan(mode, banList) });
     },
-    setTimer: (timer: number) => {
-        set({ timer: timer })
-    },
     setSequenceList: (sequence: DraftSequence[] ) => {
         set({ sequence: sequence })
     },
@@ -194,6 +191,9 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     },
     setIsDoneChooseCharacter: (isDone: boolean) => {
         set({isDoneChooseCharacter: isDone})
+    },
+    setMode: (mode: string) => {
+        set({mode: mode})
     },
     updateBanDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, ban: DraftBanFormat, banArrangeList: DraftCharacterList) => {
         set({ banListCharacterDraft: updateCharactersDraftList(characterID, index, characterInfo, banArrangeList)})

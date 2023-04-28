@@ -17,15 +17,6 @@ export default async function handler(
         if(session){
             try{
                 let getSequenceList = createSequence(req.body.mode)
-                const updateArena = await prisma.arena.update({
-                    where:{
-                        uid: req.body.arenaID,
-                    },
-                    data:{
-                        mode: req.body.mode,
-                       
-                    }
-                })
                 const createDraft = await prisma.draft.create({
                     data:{
                         arenaID: req.body.arenaID,
@@ -35,7 +26,15 @@ export default async function handler(
                         sequence: getSequenceList
                     }
                 })
-
+                const updateArena = await prisma.arena.update({
+                    where:{
+                        uid: req.body.arenaID,
+                    },
+                    data:{
+                        mode: req.body.mode,
+                    }
+                })
+                
                 const createDraftData = await prisma.characterDraft.createMany({
                     data: generateDraftSlot(req.body.mode, createDraft.uid, req.body.player1, req.body.player2)
                 })
@@ -47,12 +46,13 @@ export default async function handler(
                         player1: req.body.player1,
                         player2: req.body.player2,
                     })
-    
-                    res.status(200).json({ 
-                        success: true,
-                        draft_id: createDraft.uid,
-                    })
                }
+               
+
+               res.status(200).json({ 
+                    success: true,
+                    draft_id: createDraft.uid,
+                })
             }
             catch(err) {
                 res.status(200).json({ 

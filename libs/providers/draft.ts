@@ -575,7 +575,7 @@ export function updateBanListDraftCharacters(characterID: string, index: string,
 
 export function updateCharactersDraftList(characterID: string, index: string, characterInfo: CharacterInfoProps, list: DraftCharacterList ) :  DraftCharacterList {
     for (let draftList of Object.values(list)) {
-        let draftObject = draftList.find(ban => ban.index === index);
+        let draftObject = draftList.find(list => list.index === index);
         if (draftObject) {
             draftObject.characterID = characterID;
             draftObject.character = characterInfo;
