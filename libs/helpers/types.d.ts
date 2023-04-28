@@ -69,6 +69,8 @@ export declare interface ModalBoss {
     user_state: any,
     player1: PlayerDraftInfo
     player2: PlayerDraftInfo
+    isDoneChooseReroll: boolean
+    setIsDoneChooseReroll: (reroll: boolean) => void
 }
 
 export declare interface CharacterDraftDesignProps {
@@ -415,9 +417,11 @@ export type TimerUpdateProps = {
 export type TimerStoreState = {
     timer: number
     isPauseTimer: boolean
+    isDoneChooseReroll: boolean
 }
 
 export type TimerFunction = {
     setTimer: (time: number) => void
     setIsPause: (method: boolean) => void
+    setIsDoneChooseReroll: (reroll: boolean) => void
 }

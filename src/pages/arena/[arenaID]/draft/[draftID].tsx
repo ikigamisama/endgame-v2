@@ -4,7 +4,7 @@ import DraftCountdown from "@/components/DraftCountdown";
 import DraftFooter from "@/components/DraftFooter";
 import DraftHeader from "@/components/DraftHeader";
 import Head from "next/head";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -20,7 +20,6 @@ import { ModalCharacterPickBlur } from "@/src/styles/CharacterPick";
 import { EndgameModalContent, EndgameModalWrapper } from "@/src/styles/Modal";
 import {
   CharacterDraftPayloadProps,
-  CharacterInfoProps,
   DraftInfoProps,
   ModalBoss,
   TimerUpdateProps,
@@ -71,7 +70,8 @@ import {
   findCharacterByCharacterID,
   getSequenceByIndex,
   inArray,
-  updateCharacters,
+  pickIndexListPlayer1,
+  pickIndexListPlayer2,
 } from "@/libs/providers/draft";
 import { timerStore } from "@/libs/store/timer";
 
@@ -85,8 +85,9 @@ const ModalBoss = ({
   user_state,
   player1,
   player2,
+  isDoneChooseReroll,
+  setIsDoneChooseReroll,
 }: ModalBoss) => {
-  const [isDoneChooseReroll, setIsDoneChooseReroll] = useState<boolean>(false);
   return (
     <Modal
       onClose={onClose}
@@ -263,11 +264,20 @@ const Drafting: NextPage = () => {
     state.setMode,
   ]);
 
-  const [timer, setTimer, isPauseTimer, setIsPause] = timerStore((state) => [
+  const [
+    timer,
+    setTimer,
+    isPauseTimer,
+    setIsPause,
+    isDoneChooseReroll,
+    setIsDoneChooseReroll,
+  ] = timerStore((state) => [
     state.timer,
     state.setTimer,
     state.isPauseTimer,
     state.setIsPause,
+    state.isDoneChooseReroll,
+    state.setIsDoneChooseReroll,
   ]);
 
   const onToggleCharacterPickModal = () => {
@@ -289,6 +299,7 @@ const Drafting: NextPage = () => {
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
       setTimer(data.result.timer);
+      setIsPause(true);
       setPlayer1Info({
         id: data.result.player1.id,
         avatar: data.result.player1.avatar,
@@ -327,6 +338,7 @@ const Drafting: NextPage = () => {
       setBanList(banList, data.result.arena.mode);
       setSequenceList(JSON.parse(data.result.sequence));
       setMode(data.result.arena.mode);
+      setIsDoneChooseReroll(false);
 
       if (data.result.bossID !== "" || data.result.bossID !== null) {
         setBossInfo(data.result.boss);
@@ -423,6 +435,7 @@ const Drafting: NextPage = () => {
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
+
     if (!isPauseTimer) {
       if (state.user.role === "GM") {
         intervalId = setInterval(() => {
@@ -531,21 +544,17 @@ const Drafting: NextPage = () => {
             characters
           );
           if (characterInfo) {
-            console.log(data.sequence.index);
-            console.log(characterInfo);
             setCurrentCharacterFlash(characterInfo.flash_picture);
-
             let characterChooseAudio = null;
+
             if (data.sequence !== null) {
               if (
-                inArray(data.sequence.index, banIndexListPlayer1) ||
-                inArray(data.sequence.index, banIndexListPlayer2)
+                inArray(sequence[sequenceIndex].index, banIndexListPlayer1) ||
+                inArray(sequence[sequenceIndex].index, banIndexListPlayer2)
               ) {
                 updateBanDraftCharacters(
                   data.characterID,
-                  sequenceIndex === 0
-                    ? sequence[sequenceIndex].index
-                    : sequence[sequenceIndex - 1].index,
+                  sequence[sequenceIndex].index,
                   characterInfo,
                   ban,
                   banListCharacterDraft
@@ -553,12 +562,14 @@ const Drafting: NextPage = () => {
                 characterChooseAudio = new Howl({
                   src: [characterInfo.ban_audio],
                 });
-              } else {
+              }
+              if (
+                inArray(sequence[sequenceIndex].index, pickIndexListPlayer1) ||
+                inArray(sequence[sequenceIndex].index, pickIndexListPlayer2)
+              ) {
                 updatePickDraftCharacters(
                   data.characterID,
-                  sequenceIndex === 0
-                    ? sequence[sequenceIndex].index
-                    : sequence[sequenceIndex - 1].index,
+                  sequence[sequenceIndex].index,
                   characterInfo,
                   pick,
                   pickListCharacterDraft
@@ -567,7 +578,21 @@ const Drafting: NextPage = () => {
                   src: [characterInfo.pick_audio],
                 });
               }
-              if (state.user.role === "GM") {
+              if (state.user.role === "GM" && characterChooseAudio !== null) {
+                characterChooseAudio.play();
+              }
+            } else {
+              updatePickDraftCharacters(
+                data.characterID,
+                sequence[sequence.length - 1].index,
+                characterInfo,
+                pick,
+                pickListCharacterDraft
+              );
+              characterChooseAudio = new Howl({
+                src: [characterInfo.pick_audio],
+              });
+              if (state.user.role === "GM" && characterChooseAudio !== null) {
                 characterChooseAudio.play();
               }
             }
@@ -776,6 +801,7 @@ const Drafting: NextPage = () => {
       type: "switch_drafting",
     });
   };
+
   return (
     <>
       <Head>
@@ -806,6 +832,8 @@ const Drafting: NextPage = () => {
         user_state={state.user}
         player1={player1}
         player2={player2}
+        isDoneChooseReroll={isDoneChooseReroll}
+        setIsDoneChooseReroll={setIsDoneChooseReroll}
       />
 
       <ModalCharacterPickBlur
