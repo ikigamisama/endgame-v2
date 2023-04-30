@@ -1,7 +1,14 @@
 import Head from "next/head";
 import { CenterBox, ToastBox, ToastText } from "@/src/styles";
 import { useUserData, userStore } from "@/libs/providers/UserContext";
-import { Box, Center, FormControl, Image, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  FormControl,
+  Image,
+  Spinner,
+  useToast,
+} from "@chakra-ui/react";
 import {
   FormLabelText,
   FormSelect,
@@ -36,10 +43,13 @@ const Login: NextPage = () => {
     },
   });
 
-  const [setArenaID, setUserData] = userStore((state) => [
-    state.setArenaID,
-    state.setUserData,
-  ]);
+  const [setArenaID, isLoadingSubmit, setLoadingSubmit, setUserData] =
+    userStore((state) => [
+      state.setArenaID,
+      state.isLoadingSubmit,
+      state.setLoadingSubmit,
+      state.setUserData,
+    ]);
 
   const authCheck = useMutation({
     mutationFn: async (data: GMLoginProps) => {
@@ -59,6 +69,7 @@ const Login: NextPage = () => {
   });
 
   const submitGMLogin: SubmitHandler<GMLoginProps> = async (data) => {
+    setLoadingSubmit(true);
     const res = await signIn("credentials", {
       username: data.gm_name,
       password: data.secret_key,
@@ -68,6 +79,7 @@ const Login: NextPage = () => {
 
     if (res?.ok) {
       authCheck.mutate(data);
+      setLoadingSubmit(false);
     } else {
       toast({
         position: "top-right",
@@ -170,7 +182,18 @@ const Login: NextPage = () => {
                   />
                 </FormControl>
 
-                <FormSubmitButton type="submit">Create Room</FormSubmitButton>
+                <FormSubmitButton type="submit">
+                  {isLoadingSubmit === true ? (
+                    <Spinner
+                      thickness="5px"
+                      speed="0.5s"
+                      emptyColor="#ECDEB5"
+                      color="#1E223F"
+                    />
+                  ) : (
+                    "  Create Room"
+                  )}
+                </FormSubmitButton>
               </form>
             </LoginCardWrapper>
           </LoginCard>

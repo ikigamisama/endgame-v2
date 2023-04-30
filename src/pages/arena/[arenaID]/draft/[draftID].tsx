@@ -7,7 +7,7 @@ import Head from "next/head";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Howl } from "howler";
 import { convertVisionToColor } from "@/libs/includes/color";
