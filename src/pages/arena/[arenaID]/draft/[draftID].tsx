@@ -407,24 +407,6 @@ const Drafting: NextPage = () => {
       } else {
         setIsPause(false);
       }
-
-      if (
-        data.draftSituation === "characterDraft" &&
-        state.user.role === "GM" &&
-        countdown <= 0
-      ) {
-        setTimeout(() => {
-          draftSequence.mutate({
-            draft_id: router.query.draftID,
-            function: `characterDraft_${router.query.draftID}`,
-            type: "character_draft",
-            sequence: sequenceIndex === 0 ? sequence[0] : currentSequence,
-            sequenceIndex: sequenceIndex + 1,
-            isStartingDraft: false,
-            characterID: "",
-          });
-        }, 1000);
-      }
     });
 
     return () => {
@@ -437,24 +419,15 @@ const Drafting: NextPage = () => {
     let intervalId: NodeJS.Timeout;
 
     if (!isPauseTimer) {
-      if (state.user.role === "GM") {
-        intervalId = setInterval(() => {
-          let countdown: number = timer - 1;
-          if (countdown < 0) {
-            clearInterval(intervalId);
-            setIsPause(false);
-          } else {
-            timerUpdate.mutate({
-              timer: countdown,
-              function: `timerDraft_${router.query.draftID}`,
-              draft_id: router.query.draftID,
-              isContinuingCooldown: false,
-              isPauseTimer: false,
-              draftSituation: draftSituation,
-            });
-          }
-        }, 1000);
-      }
+      intervalId = setInterval(() => {
+        let countdown: number = timer - 1;
+        if (countdown < 0) {
+          clearInterval(intervalId);
+          setIsPause(false);
+        } else {
+          setTimer(countdown);
+        }
+      }, 1000);
     }
     return () => {
       clearInterval(intervalId);
