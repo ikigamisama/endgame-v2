@@ -22,6 +22,7 @@ import {
   DraftInfoProps,
   ModalBoss,
   TimerUpdateProps,
+  WinnerModalProps,
 } from "@/libs/helpers/types";
 
 import {
@@ -158,6 +159,56 @@ const ModalBoss = ({
   );
 };
 
+const WinnerModal = ({
+  isOpen,
+  onClose,
+  player1,
+  player2,
+  onPlayerWinner,
+}: WinnerModalProps) => (
+  <Modal
+    onClose={onClose}
+    size="3xl"
+    isOpen={isOpen}
+    motionPreset="slideInBottom"
+    isCentered
+    closeOnOverlayClick={false}
+  >
+    <ModalOverlay />
+
+    <EndgameModalContent>
+      <EndgameModalWrapper>
+        <ModalBody pt={10} pb={5}>
+          <BossChooseText fontSize="2.5rem" mb={8}>
+            Who is the winner?
+          </BossChooseText>
+
+          <SimpleGrid columns={2} spacing={8} my={8}>
+            <BossModalButtons
+              onClick={(e) => {
+                e.preventDefault();
+                onPlayerWinner(player1.id);
+                onClose();
+              }}
+            >
+              {player1.username}
+            </BossModalButtons>
+            <BossModalButtons
+              onClick={(e) => {
+                e.preventDefault();
+                onPlayerWinner(player2.id);
+                onClose();
+              }}
+            >
+              {player2.username}
+            </BossModalButtons>
+          </SimpleGrid>
+        </ModalBody>
+      </EndgameModalWrapper>
+    </EndgameModalContent>
+  </Modal>
+);
+
 const Drafting: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
   const router = useRouter();
@@ -271,6 +322,8 @@ const Drafting: NextPage = () => {
     setIsPause,
     isDoneChooseReroll,
     setIsDoneChooseReroll,
+    isPopupWinnerModal,
+    setPopupModalWinner,
   ] = timerStore((state) => [
     state.timer,
     state.setTimer,
@@ -278,6 +331,8 @@ const Drafting: NextPage = () => {
     state.setIsPause,
     state.isDoneChooseReroll,
     state.setIsDoneChooseReroll,
+    state.isPopupWinnerModal,
+    state.setPopupModalWinner,
   ]);
 
   const onToggleCharacterPickModal = () => {
@@ -560,6 +615,7 @@ const Drafting: NextPage = () => {
               });
               if (state.user.role === "GM" && characterChooseAudio !== null) {
                 characterChooseAudio.play();
+                setPopupModalWinner(true);
               }
             }
           }
@@ -845,6 +901,18 @@ const Drafting: NextPage = () => {
     });
   };
 
+  const onCloseWinnerModal = () => {
+    setPopupModalWinner(!isPopupWinnerModal);
+  };
+
+  const onPlayerWinner = (player_id: string) => {
+    draftSequence.mutate({
+      draft_id: router.query.draftID,
+      type: "winner_update",
+      user_id: player_id,
+    });
+  };
+
   return (
     <>
       <Head>
@@ -877,6 +945,14 @@ const Drafting: NextPage = () => {
         player2={player2}
         isDoneChooseReroll={isDoneChooseReroll}
         setIsDoneChooseReroll={setIsDoneChooseReroll}
+      />
+
+      <WinnerModal
+        isOpen={isPopupWinnerModal}
+        onClose={onCloseWinnerModal}
+        player1={player1}
+        player2={player2}
+        onPlayerWinner={onPlayerWinner}
       />
 
       <ModalCharacterPickBlur

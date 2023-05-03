@@ -418,10 +418,20 @@ export type TimerStoreState = {
     timer: number
     isPauseTimer: boolean
     isDoneChooseReroll: boolean
+    isPopupWinnerModal: boolean
 }
 
 export type TimerFunction = {
     setTimer: (time: number) => void
     setIsPause: (method: boolean) => void
     setIsDoneChooseReroll: (reroll: boolean) => void
+    setPopupModalWinner: (popup: boolean) => void
+}
+
+export declare interface WinnerModalProps {
+    isOpen: boolean
+    onClose: () => void
+    player1: PlayerDraftInfo
+    player2: PlayerDraftInfo
+    onPlayerWinner: (player_id: stgring) => void
 }

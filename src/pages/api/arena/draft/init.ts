@@ -104,6 +104,21 @@ export default async function handler(
                         })
                         break;
                     }
+                    case "winner_update": {
+                        await prisma.draft.update({
+                            where: {
+                                uid: req.body.draft_id
+                            },
+                            data: {
+                                winner_user_id: req.body.user_id
+                            }
+                        })
+
+                        res.status(200).json({ 
+                            success: true
+                        })
+                        break;
+                    }
                 }
             }
             catch(err) {

@@ -5,7 +5,8 @@ import { TimerFunction, TimerStoreState } from "../helpers/types";
 const initialState: TimerStoreState = {
     timer: 0,
     isPauseTimer: true,
-    isDoneChooseReroll: false
+    isDoneChooseReroll: false,
+    isPopupWinnerModal: false
 }
 
 export const timerStore = create<TimerStoreState & TimerFunction>((set, get) => ({ 
@@ -18,5 +19,8 @@ export const timerStore = create<TimerStoreState & TimerFunction>((set, get) => 
     },
     setIsDoneChooseReroll: (reroll: boolean) => {
         set({isDoneChooseReroll: reroll})
+    },
+    setPopupModalWinner: (popup: boolean) => {
+        set({isPopupWinnerModal: popup})
     }
 }))
