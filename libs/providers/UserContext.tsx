@@ -75,15 +75,12 @@ export const UserProvider = ({ children }: any) => {
       let submitResponse = await api.put("/account/settings/edit", data);
       return submitResponse.data;
     },
-    onSuccess: (data) => {
-      if (data.success) {
-      }
-    },
   });
 
   const getSettings = useQuery({
     queryKey: ["settingsFeat"],
     //refetchOnWindowFocus: false,
+    enabled: session !== undefined ? (session !== null ? true : false) : false,
     queryFn: async () => {
       const listResponse = await api.get("/account/settings/get");
       return listResponse.data;
@@ -93,6 +90,7 @@ export const UserProvider = ({ children }: any) => {
   const arenaQuery = useQuery({
     queryKey: ["arenaData"],
     refetchOnWindowFocus: false,
+    enabled: session !== undefined ? (session !== null ? true : false) : false,
     queryFn: async () => {
       const listResponse = await api.get("/arena/get");
       return listResponse.data;

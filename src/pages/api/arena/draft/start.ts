@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '@/prisma/client'
 import { getServerSession } from 'next-auth'
 import { authentication } from '@/src/pages/api/auth/[...nextauth]'
-import { pusherServer } from '@/libs/providers/pusherServer'
 import { createSequence, generateDraftSlot } from '@/libs/providers/draft'
 
 export default async function handler(
@@ -40,19 +39,19 @@ export default async function handler(
                 })
 
                if(updateArena && createDraft && createDraftData){
-                    pusherServer.trigger('drafting', req.body.function, {
+                res.status(200).json({ 
+                    success: true,
+                    draft_id: createDraft.uid,
+                    socket:{
+                        function: req.body.function,
                         arena_id: req.body.arenaID,
                         draft_id: createDraft.uid,
                         player1: req.body.player1,
                         player2: req.body.player2,
-                    })
+                    }
+                })
                }
                
-
-               res.status(200).json({ 
-                    success: true,
-                    draft_id: createDraft.uid,
-                })
             }
             catch(err) {
                 res.status(200).json({ 

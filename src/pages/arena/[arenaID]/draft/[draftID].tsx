@@ -14,7 +14,6 @@ import { convertVisionToColor } from "@/libs/includes/color";
 import { WarpImgPNG, WarpImgGIF, BossImageRandom } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
 import { api } from "@/libs/providers/api";
-import { pusherClient } from "@/libs/providers/pusherClient";
 import { useDraftStore } from "@/libs/store/draft";
 import { ModalCharacterPickBlur } from "@/src/styles/CharacterPick";
 import { EndgameModalContent, EndgameModalWrapper } from "@/src/styles/Modal";
@@ -74,6 +73,7 @@ import {
   pickIndexListPlayer2,
 } from "@/libs/providers/draft";
 import { timerStore } from "@/libs/store/timer";
+import { socket } from "@/libs/providers/socket";
 
 const ModalBoss = ({
   isOpen,
@@ -379,6 +379,11 @@ const Drafting: NextPage = () => {
       let submitResponse = await api.post("/arena/draft/init", data);
       return submitResponse.data;
     },
+    onSuccess: (data) => {
+      if (data.socket) {
+        socket.emit("bossDraftInit", data.socket);
+      }
+    },
   });
 
   const timerUpdate = useMutation({
@@ -393,12 +398,13 @@ const Drafting: NextPage = () => {
       let submitResponse = await api.post("/arena/draft/start", data);
       return submitResponse.data;
     },
+    onSuccess: (data) => {
+      socket.emit("redraft", data.socket);
+    },
   });
 
   useEffect(() => {
-    const timerChannel = pusherClient.subscribe("draft_timer");
-
-    timerChannel.bind(`timerDraft_${router.query.draftID}`, (data: any) => {
+    const timerFeat = (data: any) => {
       let countdown = data.timer;
       setTimer(countdown);
 
@@ -407,44 +413,23 @@ const Drafting: NextPage = () => {
       } else {
         setIsPause(false);
       }
-    });
+    };
+
+    socket.on(`timerDraft_${router.query.draftID}`, timerFeat);
 
     return () => {
-      timerChannel.unbind();
-      pusherClient.unsubscribe(timerChannel.name);
+      socket.off(`timerDraft_${router.query.draftID}`, timerFeat);
     };
   }, [router, state.user, currentSequence, sequence]);
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-
-    if (!isPauseTimer) {
-      intervalId = setInterval(() => {
-        let countdown: number = timer - 1;
-        if (countdown < 0) {
-          clearInterval(intervalId);
-          setIsPause(false);
-        } else {
-          setTimer(countdown);
-        }
-      }, 1000);
-    }
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [timer, isPauseTimer, state.user, draftSituation]);
-
-  useEffect(() => {
-    const arenaChannel = pusherClient.subscribe("arena-room"),
-      draftChannel = pusherClient.subscribe("drafting");
-
-    arenaChannel.bind("back-arena", (data: any) => {
-      if (router.query.draftID === data.draftID) {
-        router.push(`/arena/${data.arenaID}`);
+    const backArena = (data: any) => {
+      if (router.query.draftID === data.draft_id) {
+        router.push(`/arena/${data.arena_id}`);
       }
-    });
+    };
 
-    draftChannel.bind(`initDraft_${router.query.draftID}`, (data: any) => {
+    const bossDraft = (data: any) => {
       setIsStartDraft(true);
       setIsReroll(data.isReroll);
       let draftDrumRollBoss = new Howl({
@@ -464,7 +449,7 @@ const Drafting: NextPage = () => {
           setApplyBossModal(true);
         }
         if (state.user.role === "GM" && data.isReroll === false) {
-          timerUpdate.mutate({
+          socket.emit("draftTimer", {
             timer: 10,
             function: `timerDraft_${router.query.draftID}`,
             draft_id: router.query.draftID,
@@ -472,19 +457,30 @@ const Drafting: NextPage = () => {
             isPauseTimer: false,
             draftSituation: "initBoss",
           });
+          timerUpdate.mutate({
+            timer: 10,
+            draft_id: router.query.draftID,
+            isContinuingCooldown: false,
+            isPauseTimer: false,
+            draftSituation: "initBoss",
+          });
         }
       }, 3000);
-    });
+    };
 
-    draftChannel.bind(`player_reroll_${router.query.draftID}`, (data: any) => {
-      if (data.player_position === "player1") {
+    const restartDraft = (data: any) => {
+      router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
+    };
+
+    const playerReroll = (data: any) => {
+      if (data.playerPosition === "player1") {
         setPlayer1Reroll(data.playerReroll);
       } else {
         setPlayer2Reroll(data.playerReroll);
       }
-    });
+    };
 
-    draftChannel.bind(`characterDraft_${router.query.draftID}`, (data: any) => {
+    const characterDraft = (data: any) => {
       setDraftSituation("characterDraft");
       if (data.sequence !== null) {
         setCurrentSequence(data.sequence);
@@ -580,9 +576,16 @@ const Drafting: NextPage = () => {
             characterAnnounce.play();
 
             if (state.user.role === "GM") {
-              timerUpdate.mutate({
+              socket.emit("draftTimer", {
                 timer: 30,
                 function: `timerDraft_${router.query.draftID}`,
+                draft_id: router.query.draftID,
+                isContinuingCooldown: false,
+                isPauseTimer: false,
+                draftSituation: draftSituation,
+              });
+              timerUpdate.mutate({
+                timer: 30,
                 draft_id: router.query.draftID,
                 isContinuingCooldown: false,
                 isPauseTimer: false,
@@ -600,25 +603,43 @@ const Drafting: NextPage = () => {
         characterAnnounce.play();
         setIsStartDraft(true);
       }
-    });
+    };
 
-    draftChannel.bind(`restart_draft${router.query.draftID}`, (data: any) => {
-      router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
-    });
-    draftChannel.bind(
-      `switch_layer_draft${router.query.draftID}`,
-      (data: any) => {
-        router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
-      }
-    );
+    socket.on("back-arena", backArena);
+    socket.on(`initDraft_${router.query.draftID}`, bossDraft);
+    socket.on(`restart_draft${router.query.draftID}`, restartDraft);
+    socket.on(`switch_layer_draft${router.query.draftID}`, restartDraft);
+    socket.on(`player_reroll_${router.query.draftID}`, playerReroll);
+    socket.on(`characterDraft_${router.query.draftID}`, characterDraft);
 
     return () => {
-      arenaChannel.unbind();
-      draftChannel.unbind();
-      pusherClient.unsubscribe(arenaChannel.name);
-      pusherClient.unsubscribe(draftChannel.name);
+      socket.off("back-arena", backArena);
+      socket.off(`initDraft_${router.query.draftID}`, bossDraft);
+      socket.off(`restart_draft${router.query.draftID}`, restartDraft);
+      socket.off(`switch_layer_draft${router.query.draftID}`, restartDraft);
+      socket.off(`player_reroll_${router.query.draftID}`, playerReroll);
+      socket.off(`characterDraft_${router.query.draftID}`, characterDraft);
     };
   }, [router, state.user, timer]);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (!isPauseTimer) {
+      intervalId = setInterval(() => {
+        let countdown: number = timer - 1;
+        if (countdown < 0) {
+          clearInterval(intervalId);
+          setIsPause(false);
+        } else {
+          setTimer(countdown);
+        }
+      }, 1000);
+    }
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [timer, isPauseTimer, state.user, draftSituation]);
 
   useEffect(() => {
     if (timer === 0 && draftSituation == "initBoss") {
@@ -631,9 +652,16 @@ const Drafting: NextPage = () => {
           setCurrentBossFlash("");
 
           if (state.user.role === "GM") {
-            draftSequence.mutate({
+            socket.emit("characterDraft", {
               draft_id: router.query.draftID,
               function: `characterDraft_${router.query.draftID}`,
+              sequence: sequence[sequenceIndex],
+              sequenceList: sequence,
+              sequenceIndex: 0,
+              isStartingDraft: true,
+            });
+            draftSequence.mutate({
+              draft_id: router.query.draftID,
               type: "character_draft",
               sequence: sequence[sequenceIndex],
               sequenceIndex: 0,
@@ -641,9 +669,17 @@ const Drafting: NextPage = () => {
             });
             setDraftSituation("characterDraft");
 
-            timerUpdate.mutate({
+            socket.emit("draftTimer", {
               timer: 30,
               function: `timerDraft_${router.query.draftID}`,
+              draft_id: router.query.draftID,
+              isContinuingCooldown: false,
+              isPauseTimer: false,
+              draftSituation: "characterDraft",
+            });
+
+            timerUpdate.mutate({
+              timer: 30,
               draft_id: router.query.draftID,
               isContinuingCooldown: false,
               isPauseTimer: false,
@@ -668,6 +704,15 @@ const Drafting: NextPage = () => {
             setCurrentBossFlash("");
 
             if (state.user.role === "GM") {
+              socket.emit("characterDraft", {
+                draft_id: router.query.draftID,
+                function: `characterDraft_${router.query.draftID}`,
+                sequence: sequence[sequenceIndex],
+                sequenceList: sequence,
+                sequenceIndex: 0,
+                isStartingDraft: true,
+              });
+
               draftSequence.mutate({
                 draft_id: router.query.draftID,
                 function: `characterDraft_${router.query.draftID}`,
@@ -678,10 +723,17 @@ const Drafting: NextPage = () => {
               });
 
               setDraftSituation("characterDraft");
+              socket.emit("draftTimer", {
+                timer: 30,
+                function: `timerDraft_${router.query.draftID}`,
+                draft_id: router.query.draftID,
+                isContinuingCooldown: false,
+                isPauseTimer: false,
+                draftSituation: "characterDraft",
+              });
 
               timerUpdate.mutate({
                 timer: 30,
-                function: `timerDraft_${router.query.draftID}`,
                 draft_id: router.query.draftID,
                 isContinuingCooldown: false,
                 isPauseTimer: false,
@@ -702,9 +754,16 @@ const Drafting: NextPage = () => {
   ]);
 
   const onAcceptRerollBoss = (playerID: string, playerPosition: string) => {
-    draftSequence.mutate({
+    socket.emit("rerollDecision", {
       draft_id: router.query.draftID,
       function: `player_reroll_${router.query.draftID}`,
+      playerID: playerID,
+      playerPosition: playerPosition,
+      playerReroll: true,
+    });
+
+    draftSequence.mutate({
+      draft_id: router.query.draftID,
       type: "reroll_decisions",
       playerID: playerID,
       playerPosition: playerPosition,
@@ -713,9 +772,16 @@ const Drafting: NextPage = () => {
   };
 
   const onDeclineRerollBoss = (playerID: string, playerPosition: string) => {
-    draftSequence.mutate({
+    socket.emit("rerollDecision", {
       draft_id: router.query.draftID,
       function: `player_reroll_${router.query.draftID}`,
+      playerID: playerID,
+      playerPosition: playerPosition,
+      playerReroll: false,
+    });
+
+    draftSequence.mutate({
+      draft_id: router.query.draftID,
       type: "reroll_decisions",
       playerID: playerID,
       playerPosition: playerPosition,
@@ -724,7 +790,7 @@ const Drafting: NextPage = () => {
   };
 
   const onCharacterDraftChoose = () => {
-    timerUpdate.mutate({
+    socket.emit("draftTimer", {
       timer: timer,
       function: `timerDraft_${router.query.draftID}`,
       draft_id: router.query.draftID,
@@ -733,9 +799,26 @@ const Drafting: NextPage = () => {
       draftSituation: draftSituation,
     });
 
-    draftSequence.mutate({
+    timerUpdate.mutate({
+      timer: timer,
+      draft_id: router.query.draftID,
+      isContinuingCooldown: false,
+      isPauseTimer: true,
+      draftSituation: draftSituation,
+    });
+
+    socket.emit("characterDraft", {
       draft_id: router.query.draftID,
       function: `characterDraft_${router.query.draftID}`,
+      sequence: currentSequence,
+      sequenceList: sequence,
+      sequenceIndex: sequenceIndex + 1,
+      isStartingDraft: false,
+      characterID: currentCharacterChoose.id,
+    });
+
+    draftSequence.mutate({
+      draft_id: router.query.draftID,
       type: "character_draft",
       sequence: currentSequence,
       sequenceIndex: sequenceIndex + 1,
@@ -760,10 +843,6 @@ const Drafting: NextPage = () => {
     });
   };
   const acceptSwitchPlayersDraft = () => {
-    console.log({
-      player1: player2,
-      player2: player1,
-    });
     startDraft.mutate({
       mode: mode,
       arenaID: router.query.arenaID,
@@ -832,6 +911,7 @@ const Drafting: NextPage = () => {
           currentSequence={currentSequence}
           onAcceptRestartDraft={acceptRestartDraft}
           onAcceptSwitchPlayersDraft={acceptSwitchPlayersDraft}
+          socket={socket}
         />
 
         {draftDataQuery.isLoading !== true && (
@@ -1002,17 +1082,34 @@ const Drafting: NextPage = () => {
                             <DraftButtonStart
                               onClick={() => {
                                 if (boss !== null) {
-                                  draftSequence.mutate({
+                                  socket.emit("characterDraft", {
                                     draft_id: router.query.draftID,
                                     function: `characterDraft_${router.query.draftID}`,
+                                    sequence: sequence[sequenceIndex],
+                                    sequenceList: sequence,
+                                    sequenceIndex: 0,
+                                    isStartingDraft: true,
+                                  });
+
+                                  draftSequence.mutate({
+                                    draft_id: router.query.draftID,
                                     type: "character_draft",
                                     sequence: sequence[sequenceIndex],
                                     sequenceIndex: 0,
                                     isStartingDraft: true,
                                   });
-                                  timerUpdate.mutate({
+
+                                  socket.emit("draftTimer", {
                                     timer: 30,
                                     function: `timerDraft_${router.query.draftID}`,
+                                    draft_id: router.query.draftID,
+                                    isContinuingCooldown: false,
+                                    isPauseTimer: false,
+                                    draftSituation: "characterDraft",
+                                  });
+
+                                  timerUpdate.mutate({
+                                    timer: 30,
                                     draft_id: router.query.draftID,
                                     isContinuingCooldown: false,
                                     isPauseTimer: false,

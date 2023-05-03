@@ -51,8 +51,6 @@ import { ButtonPopUpNav, FontHeaderPopup } from "@/src/styles";
 import { FormLabelText, FormSelect } from "@/src/styles/login";
 import { SettingsIcon } from "@chakra-ui/icons";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { api } from "@/libs/providers/api";
 
 const ModalFeatureDraft = ({
   isOpen,
@@ -115,6 +113,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   currentSequence,
   onAcceptRestartDraft,
   onAcceptSwitchPlayersDraft,
+  socket,
 }) => {
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
@@ -126,13 +125,6 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   const onCloseModalSwitchDraft = () => {
     setModalSwitchDraft(!modalSwitchDraft);
   };
-
-  const backArenaDrafters = useMutation({
-    mutationFn: async (data: BackToArenaProps) => {
-      let submitResponse = await api.post("/arena/draft/end", data);
-      return submitResponse.data;
-    },
-  });
 
   return (
     <>
@@ -163,7 +155,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
               {state?.user.role === "GM" && (
                 <ButtonPopUpNav
                   onClick={() =>
-                    backArenaDrafters.mutate({
+                    socket.emit("backArena", {
                       draft_id: router?.query.draftID,
                       arena_id: router?.query.arenaID,
                     })

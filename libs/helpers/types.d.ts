@@ -100,6 +100,7 @@ export declare interface CharacterDraftProps {
     currentSequence?: DraftSequence | undefined
     onAcceptRestartDraft?: () => void
     onAcceptSwitchPlayersDraft?: () => void
+    socket?: any
 }
 
 export declare interface ProfileChanges {
@@ -410,7 +411,6 @@ export type TimerUpdateProps = {
     draft_id: string | string[] | undefined
     isContinuingCooldown: boolean
     isPauseTimer: boolean
-    function: string
     draftSituation: string
 }
 

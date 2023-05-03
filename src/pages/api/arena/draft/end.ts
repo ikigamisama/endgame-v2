@@ -1,6 +1,5 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import prisma from '@/prisma/client'
 import { getServerSession } from 'next-auth'
 import { authentication } from '@/src/pages/api/auth/[...nextauth]'
 import { pusherServer } from '@/libs/providers/pusherServer'

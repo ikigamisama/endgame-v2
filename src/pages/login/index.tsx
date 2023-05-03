@@ -25,13 +25,11 @@ import { NextPage } from "next";
 import { signIn } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/libs/providers/api";
-import { useRouter } from "next/router";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import useSafePush from "@/libs/hooks/useSafePush";
 
 const Login: NextPage = () => {
   const { state } = useUserData();
-  const router = useRouter();
   const toast = useToast();
   const { safePush } = useSafePush();
   const { handleSubmit, control } = useForm<GMLoginProps>({

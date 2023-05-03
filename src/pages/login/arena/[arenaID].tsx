@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { LoginImageLogo } from "@/libs/includes/image";
-import { useUserData, userStore } from "@/libs/providers/UserContext";
+import { userStore } from "@/libs/providers/UserContext";
 import { CenterBox, ToastBox, ToastText } from "@/src/styles";
 import {
   AvatarCircle,
@@ -34,9 +34,9 @@ import { useRouter } from "next/router";
 import { api } from "@/libs/providers/api";
 import { useMutation } from "@tanstack/react-query";
 import { video_list } from "@/libs/includes/videos";
+import { socket } from "@/libs/providers/socket";
 
 const ArenaPlayerLogin: NextPage = () => {
-  const { state } = useUserData();
   const router = useRouter();
   const toast = useToast();
   const { handleSubmit, control, watch } = useForm<PlayerLoginProps>({
@@ -79,6 +79,7 @@ const ArenaPlayerLogin: NextPage = () => {
           duration: 3000,
           isClosable: true,
         });
+        socket.emit("newArenaPlayers", data.socket);
 
         const res = await signIn("credentials", {
           username: data.result.username,

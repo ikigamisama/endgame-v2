@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '@/prisma/client'
 import { getServerSession } from 'next-auth'
 import { authentication } from '@/src/pages/api/auth/[...nextauth]'
-import { pusherServer } from '@/libs/providers/pusherServer'
 
 export default async function handler(
     req: NextApiRequest,
@@ -19,9 +18,6 @@ export default async function handler(
                     where: { uid: req.body.draft_id },
                     data: { timer: req.body.timer },
                 });
-                if(req.body.isContinuingCooldown === false){
-                    pusherServer.trigger("draft_timer", req.body.function, {draft_id: req.body.draft_id, timer: req.body.timer,isPauseTimer: req.body.isPauseTimer, draftSituation: req.body.draftSituation });
-                }
                 
                 res.status(200).json({ 
                     success: true

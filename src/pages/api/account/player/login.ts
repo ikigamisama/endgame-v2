@@ -1,7 +1,6 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '@/prisma/client'
-import { pusherServer } from '@/libs/providers/pusherServer'
 
 export default async function handler(
     req: NextApiRequest,
@@ -41,13 +40,15 @@ export default async function handler(
                         isActive: true
                     }
                 })
-        
-                pusherServer.trigger('arena-room', 'new-arena-players', {user: createdDraftAccount,arenaID: req.body.arenaID, arenaPlayers: newArenaPlayer })
-                
                 res.status(200).json({ 
                     success: true,
                     message:`Successful Create Drafter Account`,
                     result: createdDraftAccount,
+                    socket: {
+                        user: createdDraftAccount,
+                        arenaID: req.body.arenaID, 
+                        arenaPlayers: newArenaPlayer 
+                    }
                 })
                
             }       
@@ -102,12 +103,16 @@ export default async function handler(
                             }
                         })
                     }
-                    pusherServer.trigger('arena-room', 'new-arena-players', {user: findAccount,arenaID: req.body.arenaID,arenaPlayers: arenaDetails})
-    
+
                     res.status(200).json({ 
                         success: true,
                         message:`Successful Update Account`,
-                        result: isUpdateCharacter
+                        result: isUpdateCharacter,
+                        socket: {
+                            user: findAccount,
+                            arenaID: req.body.arenaID,
+                            arenaPlayers: arenaDetails
+                        }
                     })
                 }
             } 

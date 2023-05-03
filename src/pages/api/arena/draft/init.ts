@@ -29,7 +29,7 @@ export default async function handler(
                         })
                         
                         if(findCharacterDraft && findCurrentDraft){
-                            let getSequenceDraft = JSON.parse(findCurrentDraft.sequence);
+                           
                             if(req.body.characterID !== ""){
                                 await prisma.characterDraft.update({
                                     where: {
@@ -46,27 +46,11 @@ export default async function handler(
                                 data: {current_status_draft: req.body.sequence.index}
                             })
 
-                            if((getSequenceDraft.length + 1)  !== req.body.sequenceIndex){
-                                pusherServer.trigger("drafting", req.body.function, {
-                                    draft_id: req.body.draft_id,
-                                    sequence: getSequenceDraft.length !== req.body.sequenceIndex ? getSequenceDraft[req.body.sequenceIndex] : null,
-                                    sequenceIndex: req.body.sequenceIndex,
-                                    isStartingDraft: req.body.isStartingDraft,
-                                    characterID: req.body.isStartingDraft === true ? null : req.body.characterID,
-                                });
-                            }
-                            else{
-                                pusherServer.trigger("drafting", req.body.function, {
-                                    draft_id: req.body.draft_id,
-                                    sequence: null,
-                                    sequenceIndex: null,
-                                    isStartingDraft: null,
-                                    characterID: null,
-                                });
-                            }
-        
                            
                         }
+                        res.status(200).json({ 
+                            success: true
+                        })        
                         break;
                     }
                     case "boss_init": {
@@ -87,12 +71,17 @@ export default async function handler(
                                 bossID: bossList[bossIndex].id
                             }
                         })
-                       
-                        pusherServer.trigger("drafting", req.body.function, {
-                            draft_id: req.body.draft_id,
-                            boss: bossList[bossIndex],
-                            isReroll: req.body.isReroll
-                        });
+                    
+                        res.status(200).json({ 
+                            success: true,
+                            socket: {
+                                draft_id: req.body.draft_id,
+                                boss: bossList[bossIndex],
+                                isReroll: req.body.isReroll,
+                                function: req.body.function
+                            }
+                        })
+                      
                         break;
                     }
                     case "reroll_decisions": {
@@ -109,22 +98,13 @@ export default async function handler(
                             },
                             data: payload
                         })
-    
-                        pusherServer.trigger("drafting", req.body.function, {
-                            draft_id: req.body.draft_id,
-                            player_position: req.body.playerPosition,
-                            playerReroll: req.body.playerReroll
-                        });
-    
+
+                        res.status(200).json({ 
+                            success: true
+                        })
                         break;
                     }
                 }
-                
-    
-                res.status(200).json({ 
-                    success: true
-                })
-              
             }
             catch(err) {
                 res.status(200).json({ 

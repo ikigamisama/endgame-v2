@@ -63,14 +63,14 @@ import {
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { signOut } from "next-auth/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/libs/providers/api";
 import { useSettingsStore } from "@/libs/store/settings";
 import { useEffect, useState } from "react";
 import BackgroundVid from "@/components/BackgroundVid";
 import { useArenaStore } from "@/libs/store/arena";
 import PromptModal from "@/components/PromptModal";
-import { pusherClient } from "@/libs/providers/pusherClient";
+import { socket } from "@/libs/providers/socket";
 
 const Arena: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
@@ -182,6 +182,7 @@ const Arena: NextPage = () => {
     },
     onSuccess: (data) => {
       if (data.success) {
+        socket.emit("logoutDrafters", data.socket);
         signOut({ callbackUrl: "/" });
       }
     },
@@ -195,6 +196,8 @@ const Arena: NextPage = () => {
     onSuccess: (data) => {
       if (data.success) {
         setLoadingSubmit(false);
+
+        socket.emit("arenaPlayersProceed", data.socket);
         router.push(`/arena/${arena_id}/draft/${data.draft_id}`);
       }
     },
@@ -256,48 +259,59 @@ const Arena: NextPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const arenaChannel = pusherClient.subscribe("arena-room"),
-      draftChannel = pusherClient.subscribe("drafting");
+  const isPlayerAlreadyOnList = (arena_player_id: string): boolean => {
+    let isAlreadyList = false;
 
-    arenaChannel.bind("new-arena-players", (data: any) => {
-      if (data.arenaID === router.query.arenaID) {
-        setInstantNewArenaPlayer({
-          id: data.arenaPlayers.id,
-          arena_id: data.arenaPlayers.arena_id,
-          user_id: data.arenaPlayers.user_id,
-          isActive: data.arenaPlayers.isActive,
-          joinedDate: data.arenaPlayers.joinedDate,
-          user: data.user,
-        });
+    arenaPlayers.map((player) => {
+      if (player.id === arena_player_id) {
+        isAlreadyList = true;
+      } else {
+        isAlreadyList = false;
       }
     });
 
-    arenaChannel.bind("remove-arena-players", (data: any) => {
+    return isAlreadyList;
+  };
+
+  useEffect(() => {
+    const newArenaPlayers = (data: any) => {
+      if (data.arenaID === router.query.arenaID) {
+        if (!isPlayerAlreadyOnList(data.arenaPlayers.id)) {
+          setInstantNewArenaPlayer({
+            id: data.arenaPlayers.id,
+            arena_id: data.arenaPlayers.arena_id,
+            user_id: data.arenaPlayers.user_id,
+            isActive: data.arenaPlayers.isActive,
+            joinedDate: data.arenaPlayers.joinedDate,
+            user: data.user,
+          });
+        }
+      }
+    };
+
+    const removeArenaPlayers = (data: any) => {
       if (data.arenaID === router.query.arenaID) {
         setInstantRemoveArenaPlayer(data.arenaPlayerID);
       }
-    });
-    draftChannel.bind(
-      `arena-player-route_${router.query.arenaID}`,
-      (data: any) => {
-        if (data.player1 === state.user.id) {
-          router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
-        }
+    };
 
-        if (data.player2 === state.user.id) {
+    const drafterProceed = (data: any) => {
+      if (data.arena_id === router.query.arenaID) {
+        if (data.player1 === state.user.id || data.player2 === state.user.id) {
           router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
         }
       }
-    );
+    };
+    socket.on("new_arena_players", newArenaPlayers);
+    socket.on("remove-arena-players", removeArenaPlayers);
+    socket.on("drafters-proceed", drafterProceed);
 
     return () => {
-      arenaChannel.unbind();
-      draftChannel.unbind();
-      pusherClient.unsubscribe(arenaChannel.name);
-      pusherClient.unsubscribe(draftChannel.name);
+      socket.off("new_arena_players", newArenaPlayers);
+      socket.off("remove-arena-players", removeArenaPlayers);
+      socket.off("drafters-proceed", drafterProceed);
     };
-  }, [router]);
+  }, [router, state.user]);
 
   const openModalConfirmSetPlayer = (
     playerData: ArenaPlayers,
@@ -366,6 +380,7 @@ const Arena: NextPage = () => {
   const onCloseModal = () => {
     setModal(!modal);
   };
+
   return (
     <>
       <Head>

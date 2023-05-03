@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '@/prisma/client'
 import { authentication } from '../../auth/[...nextauth]'
 import { getServerSession } from 'next-auth'
-import { pusherServer } from '@/libs/providers/pusherServer'
 
 export default async function handler(
     req: NextApiRequest,
@@ -28,13 +27,13 @@ export default async function handler(
                 }
             })
 
-            pusherServer.trigger('arena-room', 'remove-arena-players', {
-                arenaID: req.body.arenaID, 
-                arenaPlayerID: findUserArenaPlayer?.id 
-            })
             res.status(200).json({ 
                 success: true,
-                message:`Log Out`
+                message:`Log Out`,
+                socket: {
+                    arenaID: req.body.arenaID, 
+                    arenaPlayerID: findUserArenaPlayer?.id 
+                }
             }) 
         }
         catch(error){
