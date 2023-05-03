@@ -409,9 +409,9 @@ export type DraftCountdownProps = {
 export type TimerUpdateProps = {
     timer: number
     draft_id: string | string[] | undefined
-    isContinuingCooldown: boolean
-    isPauseTimer: boolean
-    draftSituation: string
+    isContinuingCooldown?: boolean
+    isPauseTimer?: boolean
+    draftSituation?: string
 }
 
 export type TimerStoreState = {

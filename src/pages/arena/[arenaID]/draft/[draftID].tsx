@@ -420,7 +420,7 @@ const Drafting: NextPage = () => {
     return () => {
       socket.off(`timerDraft_${router.query.draftID}`, timerFeat);
     };
-  }, [router, state.user, currentSequence, sequence]);
+  }, [router, state.user]);
 
   useEffect(() => {
     const backArena = (data: any) => {
@@ -460,9 +460,6 @@ const Drafting: NextPage = () => {
           timerUpdate.mutate({
             timer: 10,
             draft_id: router.query.draftID,
-            isContinuingCooldown: false,
-            isPauseTimer: false,
-            draftSituation: "initBoss",
           });
         }
       }, 3000);
@@ -587,9 +584,6 @@ const Drafting: NextPage = () => {
               timerUpdate.mutate({
                 timer: 30,
                 draft_id: router.query.draftID,
-                isContinuingCooldown: false,
-                isPauseTimer: false,
-                draftSituation: draftSituation,
               });
             }
           }
@@ -620,7 +614,7 @@ const Drafting: NextPage = () => {
       socket.off(`player_reroll_${router.query.draftID}`, playerReroll);
       socket.off(`characterDraft_${router.query.draftID}`, characterDraft);
     };
-  }, [router, state.user, timer]);
+  }, [router, state.user, timer, sequence, currentSequence]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -631,6 +625,10 @@ const Drafting: NextPage = () => {
         if (countdown < 0) {
           clearInterval(intervalId);
           setIsPause(false);
+
+          if (state.user.role === "GM" && draftSituation === "characterDraft") {
+            onCharacterDraftChoose();
+          }
         } else {
           setTimer(countdown);
         }
@@ -681,9 +679,6 @@ const Drafting: NextPage = () => {
             timerUpdate.mutate({
               timer: 30,
               draft_id: router.query.draftID,
-              isContinuingCooldown: false,
-              isPauseTimer: false,
-              draftSituation: "characterDraft",
             });
           }
         }, 4000);
@@ -735,9 +730,6 @@ const Drafting: NextPage = () => {
               timerUpdate.mutate({
                 timer: 30,
                 draft_id: router.query.draftID,
-                isContinuingCooldown: false,
-                isPauseTimer: false,
-                draftSituation: "characterDraft",
               });
             }
           }, 3000);
@@ -802,9 +794,6 @@ const Drafting: NextPage = () => {
     timerUpdate.mutate({
       timer: timer,
       draft_id: router.query.draftID,
-      isContinuingCooldown: false,
-      isPauseTimer: true,
-      draftSituation: draftSituation,
     });
 
     socket.emit("characterDraft", {
@@ -814,7 +803,8 @@ const Drafting: NextPage = () => {
       sequenceList: sequence,
       sequenceIndex: sequenceIndex + 1,
       isStartingDraft: false,
-      characterID: currentCharacterChoose.id,
+      characterID:
+        currentCharacterChoose.id !== "" ? currentCharacterChoose.id : null,
     });
 
     draftSequence.mutate({
@@ -823,7 +813,8 @@ const Drafting: NextPage = () => {
       sequence: currentSequence,
       sequenceIndex: sequenceIndex + 1,
       isStartingDraft: false,
-      characterID: currentCharacterChoose.id,
+      characterID:
+        currentCharacterChoose.id !== "" ? currentCharacterChoose.id : null,
     });
   };
 
@@ -1111,9 +1102,6 @@ const Drafting: NextPage = () => {
                                   timerUpdate.mutate({
                                     timer: 30,
                                     draft_id: router.query.draftID,
-                                    isContinuingCooldown: false,
-                                    isPauseTimer: false,
-                                    draftSituation: "characterDraft",
                                   });
                                 } else {
                                   draftSequence.mutate({
