@@ -145,63 +145,15 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
             </CharacterVisionButton>
             <CharacterVisionButton
               isselectedeleemnt={
-                characterFilterElement === "anemo" ? "true" : "false"
+                characterFilterElement === "pyro" ? "true" : "false"
               }
               onClick={() => {
-                setCharacterFilterVision("anemo");
+                setCharacterFilterVision("pyro");
                 setCharactersList(characterListQuery.data);
-                searchCharacterList(searchCharacter, "anemo");
+                searchCharacterList(searchCharacter, "pyro");
               }}
             >
-              <AnemoVisionIcon color="#b9b4af" />
-            </CharacterVisionButton>
-            <CharacterVisionButton
-              isselectedeleemnt={
-                characterFilterElement === "cryo" ? "true" : "false"
-              }
-              onClick={() => {
-                setCharacterFilterVision("cryo");
-                setCharactersList(characterListQuery.data);
-                searchCharacterList(searchCharacter, "cryo");
-              }}
-            >
-              <CryoVisionIcon color="#b9b4af" />
-            </CharacterVisionButton>
-            <CharacterVisionButton
-              isselectedeleemnt={
-                characterFilterElement === "dendro" ? "true" : "false"
-              }
-              onClick={() => {
-                setCharacterFilterVision("dendro");
-                setCharactersList(characterListQuery.data);
-                searchCharacterList(searchCharacter, "dendro");
-              }}
-            >
-              <DendroVisionIcon color="#b9b4af" />
-            </CharacterVisionButton>
-            <CharacterVisionButton
-              isselectedeleemnt={
-                characterFilterElement === "electro" ? "true" : "false"
-              }
-              onClick={() => {
-                setCharacterFilterVision("electro");
-                setCharactersList(characterListQuery.data);
-                searchCharacterList(searchCharacter, "electro");
-              }}
-            >
-              <ElectroVisionIcon color="#b9b4af" />
-            </CharacterVisionButton>
-            <CharacterVisionButton
-              isselectedeleemnt={
-                characterFilterElement === "geo" ? "true" : "false"
-              }
-              onClick={() => {
-                setCharacterFilterVision("geo");
-                setCharactersList(characterListQuery.data);
-                searchCharacterList(searchCharacter, "geo");
-              }}
-            >
-              <GeoVisionIcon color="#b9b4af" />
+              <PyroVisionIcon color="#b9b4af" />
             </CharacterVisionButton>
             <CharacterVisionButton
               isselectedeleemnt={
@@ -217,15 +169,64 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
             </CharacterVisionButton>
             <CharacterVisionButton
               isselectedeleemnt={
-                characterFilterElement === "pyro" ? "true" : "false"
+                characterFilterElement === "anemo" ? "true" : "false"
               }
               onClick={() => {
-                setCharacterFilterVision("pyro");
+                setCharacterFilterVision("anemo");
                 setCharactersList(characterListQuery.data);
-                searchCharacterList(searchCharacter, "pyro");
+                searchCharacterList(searchCharacter, "anemo");
               }}
             >
-              <PyroVisionIcon color="#b9b4af" />
+              <AnemoVisionIcon color="#b9b4af" />
+            </CharacterVisionButton>
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "electro" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("electro");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "electro");
+              }}
+            >
+              <ElectroVisionIcon color="#b9b4af" />
+            </CharacterVisionButton>
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "dendro" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("dendro");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "dendro");
+              }}
+            >
+              <DendroVisionIcon color="#b9b4af" />
+            </CharacterVisionButton>
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "cryo" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("cryo");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "cryo");
+              }}
+            >
+              <CryoVisionIcon color="#b9b4af" />
+            </CharacterVisionButton>
+
+            <CharacterVisionButton
+              isselectedeleemnt={
+                characterFilterElement === "geo" ? "true" : "false"
+              }
+              onClick={() => {
+                setCharacterFilterVision("geo");
+                setCharactersList(characterListQuery.data);
+                searchCharacterList(searchCharacter, "geo");
+              }}
+            >
+              <GeoVisionIcon color="#b9b4af" />
             </CharacterVisionButton>
           </Flex>
           <Flex

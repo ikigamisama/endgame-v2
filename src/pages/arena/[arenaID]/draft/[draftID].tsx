@@ -429,6 +429,43 @@ const Drafting: NextPage = () => {
     },
   });
 
+  useQuery({
+    queryFn: async () => {
+      const listResponse = await api.post("/arena/draft/update", {
+        draft_id: router.query.draftID,
+      });
+      return listResponse.data;
+    },
+    queryKey: ["characterUpdateDraft", router.query.draftID],
+    enabled: isStartDraft && state.user.role === "Drafter",
+    refetchInterval: isStartDraft === true ? 2500 : false,
+    onSuccess: (data) => {
+      let pickList: DraftInfoProps[] = [],
+        banList: DraftInfoProps[] = [],
+        characterDraft: CharacterDraftPayloadProps[] = [];
+
+      data.result.map((i: DraftInfoProps) => {
+        if (i.status === "pick") {
+          pickList.push(i);
+        } else {
+          banList.push(i);
+        }
+        const characterDraftInfo: CharacterDraftPayloadProps = {
+          draftID: i.draftID,
+          index: i.index,
+          playerID: i.playerID || "",
+          status: i.status,
+          characterID: i.characterID || "",
+        };
+
+        characterDraft.push(characterDraftInfo);
+      });
+      setCharacterDraftList(characterDraft);
+      setPickList(pickList, data.mode);
+      setBanList(banList, data.mode);
+    },
+  });
+
   const draftSequence = useMutation({
     mutationFn: async (data: any) => {
       let submitResponse = await api.post("/arena/draft/init", data);
