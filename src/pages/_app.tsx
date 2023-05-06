@@ -6,6 +6,7 @@ import { UserProvider } from "@/libs/providers/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
 import Loader from "@/components/Loader";
+import { Analytics } from "@vercel/analytics/react";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ export default function App({
           <UserProvider>
             <Loader />
             <Component {...pageProps} />
+            <Analytics />
           </UserProvider>
         </QueryClientProvider>
       </SessionProvider>
