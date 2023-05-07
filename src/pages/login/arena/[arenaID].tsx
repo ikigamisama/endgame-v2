@@ -98,6 +98,7 @@ const ArenaPlayerLogin: NextPage = () => {
               username: data.result.username,
               avatar: data.result.avatar,
               role: data.result.role,
+              arenaPlayer: data.socket.arenaPlayers,
             })
           );
 

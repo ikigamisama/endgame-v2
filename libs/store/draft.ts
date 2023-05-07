@@ -83,7 +83,8 @@ const initialState: DraftStateProps = {
     isReroll: false,
     characterDraft: [],
     isDoneChooseCharacter: false,
-    mode: "3v3"
+    mode: "3v3",
+    winnerButton: false
 }
 
 export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get) => ({ 
@@ -202,7 +203,10 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     updatePickDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps,  pick: DraftInfoProps[][], pickArrangeList: DraftCharacterList) => {
         set({ pickListCharacterDraft: updateCharactersDraftList(characterID, index, characterInfo, pickArrangeList)})
         set({ pick: updatePickListDraftCharacters(characterID, index, characterInfo, pick) });
-    }
+    },
+    setWinnerButton: (winnerButton: boolean) => {
+        set({winnerButton: winnerButton})
+    },
 }))
 
 mountStoreDevtool('DraftStore', useDraftStore);

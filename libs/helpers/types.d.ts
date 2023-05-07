@@ -102,6 +102,8 @@ export declare interface CharacterDraftProps {
     onAcceptSwitchPlayersDraft?: () => void
     socket?: any
     characterPauseDraft?: boolean
+    winnerButton?: boolean
+    setPopupModalWinner?: (popup: boolean) => void
 }
 
 export declare interface ProfileChanges {
@@ -346,6 +348,7 @@ export type DraftStateProps = {
     characterDraft: CharacterDraftPayloadProps[],
     isDoneChooseCharacter: boolean
     mode: string
+    winnerButton: boolean
 }
 
 export type DraftFunctions = {
@@ -380,6 +383,7 @@ export type DraftFunctions = {
     setMode: (mode: string) => void
     updateBanDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, ban: DraftBanFormat, banArrangeList: DraftCharacterList) => void
     updatePickDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, pick: DraftInfoProps[][], pickArrangeList: DraftCharacterList) => void
+    setWinnerButton: (winnerButton: boolean) => void
 }
 
 export declare interface CharacterDraftPayloadProps {

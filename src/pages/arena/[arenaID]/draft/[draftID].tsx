@@ -263,6 +263,8 @@ const Drafting: NextPage = () => {
     updatePickDraftCharacters,
     mode,
     setMode,
+    winnerButton,
+    setWinnerButton,
   ] = useDraftStore((state) => [
     state.applyCharacterModal,
     state.setApplyCharacterModal,
@@ -313,6 +315,8 @@ const Drafting: NextPage = () => {
     state.updatePickDraftCharacters,
     state.mode,
     state.setMode,
+    state.winnerButton,
+    state.setWinnerButton,
   ]);
 
   const [
@@ -448,7 +452,7 @@ const Drafting: NextPage = () => {
     onSuccess: (data) => {
       let pickList: DraftInfoProps[] = [],
         banList: DraftInfoProps[] = [],
-        characterDraft: CharacterDraftPayloadProps[] = [];
+        characterDraftList: CharacterDraftPayloadProps[] = [];
 
       data.result.map((i: DraftInfoProps) => {
         if (i.status === "pick") {
@@ -464,11 +468,12 @@ const Drafting: NextPage = () => {
           characterID: i.characterID || "",
         };
 
-        characterDraft.push(characterDraftInfo);
+        characterDraftList.push(characterDraftInfo);
       });
       setCharacterDraftList(characterDraft);
       setPickList(pickList, data.mode);
       setBanList(banList, data.mode);
+      setCharacterDraftListUpdate(characterDraftList, characters);
     },
   });
 
@@ -659,7 +664,7 @@ const Drafting: NextPage = () => {
               });
               if (state.user.role === "GM" && characterChooseAudio !== null) {
                 characterChooseAudio.play();
-                setPopupModalWinner(true);
+                setWinnerButton(true);
               }
               setIsPauseCharacterDraft(true);
             }
@@ -1028,6 +1033,8 @@ const Drafting: NextPage = () => {
           onAcceptRestartDraft={acceptRestartDraft}
           onAcceptSwitchPlayersDraft={acceptSwitchPlayersDraft}
           socket={socket}
+          winnerButton={winnerButton}
+          setPopupModalWinner={setPopupModalWinner}
         />
 
         {draftDataQuery.isLoading !== true && (

@@ -250,15 +250,20 @@ const Arena: NextPage = () => {
 
   useEffect(() => {
     const handleBeforeUnload = (e: any) => {
-      alert(e);
+      e.preventDefault();
+      e.returnValue = "";
     };
 
+    const refreshArenaPlayerData = () => {};
+
     window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("load", refreshArenaPlayerData);
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("load", refreshArenaPlayerData);
     };
-  }, []);
+  }, [socket]);
 
   const isPlayerAlreadyOnList = (arena_player_id: string): boolean => {
     let isAlreadyList = false;
@@ -277,6 +282,7 @@ const Arena: NextPage = () => {
   useEffect(() => {
     const newArenaPlayers = (data: any) => {
       if (data.arenaID === router.query.arenaID) {
+        console.log(data);
         if (!isPlayerAlreadyOnList(data.arenaPlayers.id)) {
           setInstantNewArenaPlayer({
             id: data.arenaPlayers.id,
@@ -291,6 +297,7 @@ const Arena: NextPage = () => {
     };
 
     const removeArenaPlayers = (data: any) => {
+      console.log(data);
       if (data.arenaID === router.query.arenaID) {
         setInstantRemoveArenaPlayer(data.arenaPlayerID);
       }

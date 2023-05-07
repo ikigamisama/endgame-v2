@@ -3,6 +3,7 @@ import {
   CharacterIcon,
   RestartIcon,
   SwapIcon,
+  WinnerIcon,
 } from "@/libs/includes/icons";
 import {
   BanCharacterWrapper,
@@ -114,6 +115,8 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   onAcceptRestartDraft,
   onAcceptSwitchPlayersDraft,
   socket,
+  winnerButton,
+  setPopupModalWinner,
 }) => {
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
@@ -258,7 +261,20 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                 </BanCharactersListWrapper>
               </BanCharactersListContainer>
             </Flex>
+
             <Flex flex={1} gap={4} justifyContent="flex-end">
+              {winnerButton === true && (
+                <ButtonPopUpNav
+                  onClick={() => {
+                    if (setPopupModalWinner) {
+                      setPopupModalWinner(true);
+                    }
+                  }}
+                >
+                  <WinnerIcon />
+                </ButtonPopUpNav>
+              )}
+
               <Box>
                 <Popover placement="bottom-start">
                   <PopoverTrigger>
