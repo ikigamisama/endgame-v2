@@ -91,6 +91,16 @@ const ArenaPlayerLogin: NextPage = () => {
         setLoadingSubmit(false);
 
         if (res?.ok) {
+          localStorage.setItem(
+            "user_session",
+            JSON.stringify({
+              id: data.result.id,
+              username: data.result.username,
+              avatar: data.result.avatar,
+              role: data.result.role,
+            })
+          );
+
           setUserData(data.result);
           setArenaID(router.query?.arenaID);
           router.replace(`/arena/${router.query?.arenaID}`);

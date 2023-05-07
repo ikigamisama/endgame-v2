@@ -108,12 +108,12 @@ export const UserProvider = ({ children }: any) => {
       const isEmptySessionListLink = ["/arena/[arenaID]", "/arena/settings"];
 
       if (session !== null) {
-        if (inArray(router.pathname, loginRouteList)) {
-          if (!arenaQuery.isLoading) {
-            if (session?.user?.role === "GM") {
-              router.replace(`/arena/${arena_id}`);
-            }
-          }
+        if (
+          inArray(router.pathname, loginRouteList) &&
+          !arenaQuery.isLoading &&
+          session?.user?.role === "GM"
+        ) {
+          router.replace(`/arena/${arena_id}`);
         }
       } else {
         if (inArray(router.pathname, isEmptySessionListLink)) {
@@ -134,18 +134,16 @@ export const UserProvider = ({ children }: any) => {
   useEffect(() => {
     if (status === "authenticated") {
       if (!getSettings.isLoading) {
-        setTimeout(() => {
-          setBackgroundBG(getSettings?.data?.settings);
-          setUserData(getSettings?.data?.user);
+        setBackgroundBG(getSettings?.data?.settings);
+        setUserData(getSettings?.data?.user);
 
-          if (session?.user?.role === "GM") {
-            setArenaID(getSettings?.data?.arena.id);
-          } else {
-            if (router.query.arenaID !== undefined) {
-              setArenaID(router.query.arenaID);
-            }
+        if (session?.user?.role === "GM") {
+          setArenaID(getSettings?.data?.arena.id);
+        } else {
+          if (router.query.arenaID !== undefined) {
+            setArenaID(router.query.arenaID);
           }
-        }, 1000);
+        }
       }
     }
   }, [status, router.query, getSettings.data, getSettings.isLoading]);

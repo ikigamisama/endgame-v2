@@ -183,6 +183,7 @@ const Arena: NextPage = () => {
     onSuccess: (data) => {
       if (data.success) {
         socket.emit("logoutDrafters", data.socket);
+        localStorage.removeItem("user_session");
         signOut({ callbackUrl: "/" });
       }
     },
@@ -297,8 +298,12 @@ const Arena: NextPage = () => {
 
     const drafterProceed = (data: any) => {
       if (data.arena_id === router.query.arenaID) {
-        if (data.player1 === state.user.id || data.player2 === state.user.id) {
-          router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
+        let userData = localStorage.getItem("user_session");
+        if (userData) {
+          let userD = JSON.parse(userData);
+          if (data.player1 === userD.id || data.player2 === userD.id) {
+            router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
+          }
         }
       }
     };

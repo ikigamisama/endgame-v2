@@ -10,7 +10,6 @@ export default async function handler(
   ) {
 
     const session = await getServerSession(req,res,authentication) 
-
     if(req.method === "GET"){
         try{
             if(session){
@@ -34,7 +33,6 @@ export default async function handler(
                     success: false,
                 })
             }
-            
         }
         catch(err) {
             res.status(200).json({ 

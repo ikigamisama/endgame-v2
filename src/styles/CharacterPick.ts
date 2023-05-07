@@ -90,16 +90,17 @@ export const ModalCharacterPickBody = styled(Box)`
     width: 100%;
     height: calc(100vh - 70px);
     padding: 10px;
+    overflow: hidden;
 `
 
 export const CharacterPickWrapper = styled(Box)`
     width: 100%;
-    height: 885px;
+    height: calc(100vh - 175px);
 `
 
 export const CharacterListWrapper = styled(Box)`
     width: 100%;
-    height: 800px;
+    height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
 
