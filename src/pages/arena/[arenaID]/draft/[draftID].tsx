@@ -324,6 +324,8 @@ const Drafting: NextPage = () => {
     setIsDoneChooseReroll,
     isPopupWinnerModal,
     setPopupModalWinner,
+    isPauseCharacterDraft,
+    setIsPauseCharacterDraft,
   ] = timerStore((state) => [
     state.timer,
     state.setTimer,
@@ -333,6 +335,8 @@ const Drafting: NextPage = () => {
     state.setIsDoneChooseReroll,
     state.isPopupWinnerModal,
     state.setPopupModalWinner,
+    state.isPauseCharacterDraft,
+    state.setIsPauseCharacterDraft,
   ]);
 
   const onToggleCharacterPickModal = () => {
@@ -394,6 +398,8 @@ const Drafting: NextPage = () => {
       setSequenceList(JSON.parse(data.result.sequence));
       setMode(data.result.arena.mode);
       setIsDoneChooseReroll(false);
+      setApplyBossModal(false);
+      setCurrentBossFlash("");
 
       if (data.result.bossID !== "" || data.result.bossID !== null) {
         setBossInfo(data.result.boss);
@@ -571,6 +577,7 @@ const Drafting: NextPage = () => {
 
     const characterDraft = (data: any) => {
       setDraftSituation("characterDraft");
+      setIsPauseCharacterDraft(true);
       if (data.sequence !== null) {
         setCurrentSequence(data.sequence);
         setSequenceIndex(data.sequenceIndex);
@@ -654,6 +661,7 @@ const Drafting: NextPage = () => {
                 characterChooseAudio.play();
                 setPopupModalWinner(true);
               }
+              setIsPauseCharacterDraft(true);
             }
           }
         }
@@ -680,7 +688,7 @@ const Drafting: NextPage = () => {
               });
             }
           }
-
+          setIsPauseCharacterDraft(false);
           setIsDoneChooseCharacter(false);
         }, 3500);
       } else {
@@ -688,7 +696,7 @@ const Drafting: NextPage = () => {
           src: [`/audio/${data.sequence.audio}.wav`],
         });
         characterAnnounce.play();
-        setIsStartDraft(true);
+        setIsPauseCharacterDraft(false);
       }
     };
 
@@ -733,6 +741,9 @@ const Drafting: NextPage = () => {
   }, [timer, isPauseTimer, state.user, draftSituation]);
 
   useEffect(() => {
+    if (draftSituation == "characterDraft") {
+      setApplyBossModal(false);
+    }
     if (timer === 0 && draftSituation == "initBoss") {
       setApplyBossModal(false);
 
@@ -825,7 +836,7 @@ const Drafting: NextPage = () => {
                 draft_id: router.query.draftID,
               });
             }
-          }, 3000);
+          }, 4000);
         }
       }
     }
@@ -967,6 +978,7 @@ const Drafting: NextPage = () => {
           timer={timer}
           onCharacterPick={onCharacterDraftChoose}
           state={state}
+          characterPauseDraft={isPauseCharacterDraft}
         />
       )}
 

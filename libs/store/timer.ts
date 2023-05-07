@@ -6,7 +6,8 @@ const initialState: TimerStoreState = {
     timer: 0,
     isPauseTimer: true,
     isDoneChooseReroll: false,
-    isPopupWinnerModal: false
+    isPopupWinnerModal: false,
+    isPauseCharacterDraft: false,
 }
 
 export const timerStore = create<TimerStoreState & TimerFunction>((set, get) => ({ 
@@ -22,5 +23,8 @@ export const timerStore = create<TimerStoreState & TimerFunction>((set, get) => 
     },
     setPopupModalWinner: (popup: boolean) => {
         set({isPopupWinnerModal: popup})
+    },
+    setIsPauseCharacterDraft: (pause: boolean) => {
+        set({isPauseCharacterDraft: pause})
     }
 }))

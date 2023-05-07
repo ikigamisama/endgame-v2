@@ -101,6 +101,7 @@ export declare interface CharacterDraftProps {
     onAcceptRestartDraft?: () => void
     onAcceptSwitchPlayersDraft?: () => void
     socket?: any
+    characterPauseDraft?: boolean
 }
 
 export declare interface ProfileChanges {
@@ -419,6 +420,7 @@ export type TimerStoreState = {
     isPauseTimer: boolean
     isDoneChooseReroll: boolean
     isPopupWinnerModal: boolean
+    isPauseCharacterDraft: boolean
 }
 
 export type TimerFunction = {
@@ -426,6 +428,7 @@ export type TimerFunction = {
     setIsPause: (method: boolean) => void
     setIsDoneChooseReroll: (reroll: boolean) => void
     setPopupModalWinner: (popup: boolean) => void
+    setIsPauseCharacterDraft: (pause: boolean) => void
 }
 
 export declare interface WinnerModalProps {

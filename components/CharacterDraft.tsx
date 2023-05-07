@@ -70,6 +70,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
   timer,
   onCharacterPick,
   state,
+  characterPauseDraft,
 }) => {
   const [
     boss,
@@ -89,6 +90,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     player2,
     isDoneChooseCharacter,
     setIsDoneChooseCharacter,
+    isStartDraft,
   ] = useDraftStore((state) => [
     state.boss,
     state.characters,
@@ -107,6 +109,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     state.player2,
     state.isDoneChooseCharacter,
     state.setIsDoneChooseCharacter,
+    state.isStartDraft,
   ]);
 
   const colorConvertVision = (vision: string) => {
@@ -435,7 +438,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 currentSequence.player == "player1" &&
                 currentCharacterChoose.id !== "" &&
                 timer !== 0 &&
-                isDoneChooseCharacter === false ? (
+                isDoneChooseCharacter === false &&
+                characterPauseDraft === false ? (
                   <CharacterDraftButton
                     drafttype="pick"
                     onClick={() => {
@@ -452,7 +456,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 currentSequence.player == "player2" &&
                 currentCharacterChoose.id !== "" &&
                 timer !== 0 &&
-                isDoneChooseCharacter === false ? (
+                isDoneChooseCharacter === false &&
+                characterPauseDraft === false ? (
                   <CharacterDraftButton
                     drafttype="pick"
                     onClick={() => {
@@ -469,7 +474,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 currentSequence.player == "player1" &&
                 currentCharacterChoose.id !== "" &&
                 timer !== 0 &&
-                isDoneChooseCharacter === false ? (
+                isDoneChooseCharacter === false &&
+                characterPauseDraft === false ? (
                   <CharacterDraftButton
                     drafttype="ban"
                     onClick={() => {
@@ -486,7 +492,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 currentSequence.player == "player2" &&
                 currentCharacterChoose.id !== "" &&
                 timer !== 0 &&
-                isDoneChooseCharacter === false ? (
+                isDoneChooseCharacter === false &&
+                characterPauseDraft === false ? (
                   <CharacterDraftButton
                     drafttype="ban"
                     onClick={() => {
