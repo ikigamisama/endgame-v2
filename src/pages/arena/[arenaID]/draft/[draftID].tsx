@@ -165,6 +165,7 @@ const WinnerModal = ({
   player1,
   player2,
   onPlayerWinner,
+  setPopupModalWinner,
 }: WinnerModalProps) => (
   <Modal
     onClose={onClose}
@@ -188,6 +189,7 @@ const WinnerModal = ({
               onClick={(e) => {
                 e.preventDefault();
                 onPlayerWinner(player1.id);
+                setPopupModalWinner(false);
                 onClose();
               }}
             >
@@ -197,6 +199,7 @@ const WinnerModal = ({
               onClick={(e) => {
                 e.preventDefault();
                 onPlayerWinner(player2.id);
+                setPopupModalWinner(false);
                 onClose();
               }}
             >
@@ -404,6 +407,7 @@ const Drafting: NextPage = () => {
       setIsDoneChooseReroll(false);
       setApplyBossModal(false);
       setCurrentBossFlash("");
+      setPopupModalWinner(false);
 
       if (data.result.bossID !== "" || data.result.bossID !== null) {
         setBossInfo(data.result.boss);
@@ -1007,6 +1011,7 @@ const Drafting: NextPage = () => {
         player1={player1}
         player2={player2}
         onPlayerWinner={onPlayerWinner}
+        setPopupModalWinner={setPopupModalWinner}
       />
 
       <ModalCharacterPickBlur

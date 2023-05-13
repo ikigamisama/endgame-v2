@@ -441,4 +441,5 @@ export declare interface WinnerModalProps {
     player1: PlayerDraftInfo
     player2: PlayerDraftInfo
     onPlayerWinner: (player_id: stgring) => void
+    setPopupModalWinner: (popup: boolean) => void
 }
