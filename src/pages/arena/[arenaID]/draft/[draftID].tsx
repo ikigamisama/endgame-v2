@@ -3,6 +3,8 @@ import CharacterDraft from "@/components/CharacterDraft";
 import DraftCountdown from "@/components/DraftCountdown";
 import DraftFooter from "@/components/DraftFooter";
 import DraftHeader from "@/components/DraftHeader";
+import ModalBoss from "@/components/ModalBoss";
+import WinnerModal from "@/components/WinnerModal";
 import Head from "next/head";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { NextPage } from "next";
@@ -16,13 +18,10 @@ import { useUserData } from "@/libs/providers/UserContext";
 import { api } from "@/libs/providers/api";
 import { useDraftStore } from "@/libs/store/draft";
 import { ModalCharacterPickBlur } from "@/src/styles/CharacterPick";
-import { EndgameModalContent, EndgameModalWrapper } from "@/src/styles/Modal";
 import {
   CharacterDraftPayloadProps,
   DraftInfoProps,
-  ModalBoss,
   TimerUpdateProps,
-  WinnerModalProps,
 } from "@/libs/helpers/types";
 
 import {
@@ -37,9 +36,6 @@ import {
 } from "@/libs/includes/icons";
 
 import {
-  BossChooseText,
-  BossChooseWrapper,
-  BossModalButtons,
   DraftBossCard,
   DraftBossCardBGImg,
   DraftButtonStart,
@@ -51,19 +47,7 @@ import {
   DraftPickBannerWrapper,
 } from "@/src/styles/Draft";
 
-import {
-  Box,
-  Center,
-  Container,
-  Flex,
-  Image,
-  Img,
-  Modal,
-  ModalBody,
-  ModalOverlay,
-  SimpleGrid,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Center, Container, Flex, Image, VStack } from "@chakra-ui/react";
 import {
   banIndexListPlayer1,
   banIndexListPlayer2,
@@ -75,142 +59,6 @@ import {
 } from "@/libs/providers/draft";
 import { timerStore } from "@/libs/store/timer";
 import { socket } from "@/libs/providers/socket";
-
-const ModalBoss = ({
-  isOpen,
-  onClose,
-  onAccept,
-  onDecline,
-  boss,
-  timer,
-  user_state,
-  player1,
-  player2,
-  isDoneChooseReroll,
-  setIsDoneChooseReroll,
-}: ModalBoss) => {
-  return (
-    <Modal
-      onClose={onClose}
-      size="3xl"
-      isOpen={isOpen}
-      motionPreset="slideInBottom"
-      isCentered
-      closeOnOverlayClick={false}
-    >
-      <ModalOverlay />
-
-      <EndgameModalContent>
-        <EndgameModalWrapper>
-          <ModalBody p={10}>
-            <Center>
-              <BossChooseWrapper>
-                <Img src={boss !== null ? boss.picture : ""} width="100%" />
-              </BossChooseWrapper>
-            </Center>
-            <BossChooseText fontSize="2.5rem" mb={8}>
-              {boss !== null ? boss.name : ""} is selected randomly. Reroll ?
-            </BossChooseText>
-
-            {isDoneChooseReroll === false && (
-              <SimpleGrid columns={2} spacing={8} mb={8}>
-                <BossModalButtons
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsDoneChooseReroll(true);
-                    onAccept(
-                      user_state.id,
-                      player1.id === user_state.id
-                        ? "player1"
-                        : player2.id === user_state.id
-                        ? "player2"
-                        : ""
-                    );
-                  }}
-                >
-                  Reroll
-                </BossModalButtons>
-                <BossModalButtons
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsDoneChooseReroll(true);
-                    onDecline(
-                      user_state.id,
-                      player1.id === user_state.id
-                        ? "player1"
-                        : player2.id === user_state.id
-                        ? "player2"
-                        : ""
-                    );
-                  }}
-                >
-                  No Reroll
-                </BossModalButtons>
-              </SimpleGrid>
-            )}
-
-            <BossChooseText fontSize="1.25rem">
-              Automatically declare No Reroll after {timer} seconds
-            </BossChooseText>
-          </ModalBody>
-        </EndgameModalWrapper>
-      </EndgameModalContent>
-    </Modal>
-  );
-};
-
-const WinnerModal = ({
-  isOpen,
-  onClose,
-  player1,
-  player2,
-  onPlayerWinner,
-  setPopupModalWinner,
-}: WinnerModalProps) => (
-  <Modal
-    onClose={onClose}
-    size="3xl"
-    isOpen={isOpen}
-    motionPreset="slideInBottom"
-    isCentered
-    closeOnOverlayClick={false}
-  >
-    <ModalOverlay />
-
-    <EndgameModalContent>
-      <EndgameModalWrapper>
-        <ModalBody pt={10} pb={5}>
-          <BossChooseText fontSize="2.5rem" mb={8}>
-            Who is the winner?
-          </BossChooseText>
-
-          <SimpleGrid columns={2} spacing={8} my={8}>
-            <BossModalButtons
-              onClick={(e) => {
-                e.preventDefault();
-                onPlayerWinner(player1.id);
-                setPopupModalWinner(false);
-                onClose();
-              }}
-            >
-              {player1.username}
-            </BossModalButtons>
-            <BossModalButtons
-              onClick={(e) => {
-                e.preventDefault();
-                onPlayerWinner(player2.id);
-                setPopupModalWinner(false);
-                onClose();
-              }}
-            >
-              {player2.username}
-            </BossModalButtons>
-          </SimpleGrid>
-        </ModalBody>
-      </EndgameModalWrapper>
-    </EndgameModalContent>
-  </Modal>
-);
 
 const Drafting: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
