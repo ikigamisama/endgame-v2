@@ -62,6 +62,7 @@ import {
   pickIndexListPlayer1,
   pickIndexListPlayer2,
 } from "@/libs/providers/draft";
+import { useRef } from "react";
 
 const CharacterDraft: React.FC<CharacterDraftProps> = ({
   statusCharacterModal,
@@ -111,6 +112,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
     state.setIsDoneChooseCharacter,
     state.isStartDraft,
   ]);
+
+  let searchBtn = useRef<HTMLElement | null>(null);
 
   const colorConvertVision = (vision: string) => {
     return convertVisionToColor(vision);
@@ -258,12 +261,19 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setSearchCharacter(e.target.value);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchBtn.current) {
+                    searchBtn.current.click();
+                  }
+                }}
               />
               <CharacterSearchButton
+                ref={searchBtn}
                 onClick={() => {
                   if (searchCharacter == "") {
                     setCharactersList(characterListQuery.data);
                   } else {
+                    setCharactersList(characterListQuery.data);
                     searchCharacterList(searchCharacter, "all");
                   }
                 }}

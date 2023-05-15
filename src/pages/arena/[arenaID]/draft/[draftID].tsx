@@ -116,6 +116,7 @@ const Drafting: NextPage = () => {
     setMode,
     winnerButton,
     setWinnerButton,
+    setCharactersList,
   ] = useDraftStore((state) => [
     state.applyCharacterModal,
     state.setApplyCharacterModal,
@@ -168,6 +169,7 @@ const Drafting: NextPage = () => {
     state.setMode,
     state.winnerButton,
     state.setWinnerButton,
+    state.setCharactersList,
   ]);
 
   const [
@@ -705,6 +707,21 @@ const Drafting: NextPage = () => {
     isReroll,
     state.user,
   ]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onToggleCharacterPickModal();
+        setCharactersList(characterListQuery.data);
+      }
+    };
+
+    if (applyCharacterModal) {
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      window.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [applyCharacterModal]);
 
   const onAcceptRerollBoss = (playerID: string, playerPosition: string) => {
     socket.emit("rerollDecision", {
