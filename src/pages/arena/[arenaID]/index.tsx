@@ -248,23 +248,6 @@ const Arena: NextPage = () => {
     });
   }, [watchBossChoose]);
 
-  useEffect(() => {
-    const handleBeforeUnload = (e: any) => {
-      e.preventDefault();
-      e.returnValue = "";
-    };
-
-    const refreshArenaPlayerData = () => {};
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    window.addEventListener("load", refreshArenaPlayerData);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.removeEventListener("load", refreshArenaPlayerData);
-    };
-  }, [socket]);
-
   const isPlayerAlreadyOnList = (arena_player_id: string): boolean => {
     let isAlreadyList = false;
 
