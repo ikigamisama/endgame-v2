@@ -1163,11 +1163,14 @@ const Drafting: NextPage = ({ character_list }: any) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const prisma = new PrismaClient();
-  const characters = await prisma.characters.findMany();
+  const arenas = await prisma.arena.findMany();
+  const drafts = await prisma.draft.findMany();
 
-  const paths = characters.map((character) => ({
-    params: { id: character.id.toString() },
-  }));
+  const paths = arenas.flatMap((arena) =>
+    drafts.map((draft) => ({
+      params: { arenaID: arena.uid.toString(), draftID: draft.uid.toString() },
+    }))
+  );
 
   return {
     paths,
