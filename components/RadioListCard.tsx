@@ -1,5 +1,5 @@
 import { ArenaChooseModeBox, ArenaChooseModeWrapper } from "@/src/styles/Arena";
-import { Box, useRadio } from "@chakra-ui/react";
+import { useRadio } from "@chakra-ui/react";
 
 export default function RadioListCard(props: any) {
   const { getInputProps, getRadioProps } = useRadio(props);

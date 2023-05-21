@@ -863,7 +863,6 @@ const Arena: NextPage = () => {
                       </ArenaPaddingWrap>
                     </ArenaPlayersListScroll>
                   </AreaCardWrapper>
-
                   <Box pb="25px" />
                 </ArenaCard>
               )}

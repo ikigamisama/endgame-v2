@@ -520,6 +520,7 @@ const Drafting: NextPage = () => {
                 characterChooseAudio.play();
                 setWinnerButton(true);
               }
+              setTimer(0);
               setIsPauseCharacterDraft(true);
             }
           }
