@@ -7,7 +7,7 @@ import ModalBoss from "@/components/ModalBoss";
 import WinnerModal from "@/components/WinnerModal";
 import Head from "next/head";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
@@ -20,9 +20,6 @@ import { useDraftStore } from "@/libs/store/draft";
 import { ModalCharacterPickBlur } from "@/src/styles/CharacterPick";
 import {
   CharacterDraftPayloadProps,
-  CharacterInfoProps,
-  CharacterListProps,
-  CharacterListPropsDraft,
   DraftInfoProps,
   TimerUpdateProps,
 } from "@/libs/helpers/types";
@@ -62,9 +59,8 @@ import {
 } from "@/libs/providers/draft";
 import { timerStore } from "@/libs/store/timer";
 import { socket } from "@/libs/providers/socket";
-import { PrismaClient } from "@prisma/client";
 
-const Drafting: NextPage = ({ character_list }: any) => {
+const Drafting: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
   const router = useRouter();
 
@@ -280,6 +276,23 @@ const Drafting: NextPage = ({ character_list }: any) => {
     },
   });
 
+  const characterListQuery = useQuery({
+    queryFn: async () => {
+      const listResponse = await api.post("/characters/list", {
+        page: "Character List",
+      });
+      return listResponse.data.list;
+    },
+    queryKey: ["characterDraftList", router.query.draftID],
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      for (const character of data) {
+        character.isPicked = false;
+      }
+      setCharacterDraftListUpdate(characterDraft, data);
+    },
+  });
+
   useQuery({
     queryFn: async () => {
       const listResponse = await api.post("/arena/draft/update", {
@@ -346,15 +359,6 @@ const Drafting: NextPage = ({ character_list }: any) => {
       socket.emit("redraft", data.socket);
     },
   });
-
-  useEffect(() => {
-    if (character_list) {
-      for (const character of character_list) {
-        character.isPicked = false;
-      }
-      setCharacterDraftListUpdate(characterDraft, character_list);
-    }
-  }, []);
 
   useEffect(() => {
     const timerFeat = (data: any) => {
@@ -709,7 +713,7 @@ const Drafting: NextPage = ({ character_list }: any) => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onToggleCharacterPickModal();
-        setCharactersList(character_list);
+        setCharactersList(characterListQuery.data);
       }
     };
 
@@ -845,7 +849,7 @@ const Drafting: NextPage = ({ character_list }: any) => {
         <CharacterDraft
           statusCharacterModal={applyCharacterModal}
           onCloseCharacterModal={onToggleCharacterPickModal}
-          characterListQuery={character_list}
+          characterListQuery={characterListQuery}
           timer={timer}
           onCharacterPick={onCharacterDraftChoose}
           state={state}
@@ -1160,42 +1164,4 @@ const Drafting: NextPage = ({ character_list }: any) => {
     </>
   );
 };
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const prisma = new PrismaClient();
-  const arenas = await prisma.arena.findMany();
-  const drafts = await prisma.draft.findMany();
-
-  const paths = arenas.flatMap((arena) =>
-    drafts.map((draft) => ({
-      params: { arenaID: arena.uid.toString(), draftID: draft.uid.toString() },
-    }))
-  );
-
-  return {
-    paths,
-    fallback: true,
-  };
-};
-
-export const getStaticProps: GetStaticProps<CharacterListPropsDraft> = async (
-  context
-) => {
-  const prisma = new PrismaClient();
-  const character_list = await prisma.characters.findMany({
-    where: {
-      is_visible: true,
-    },
-    orderBy: [
-      {
-        name: "asc",
-      },
-    ],
-  });
-
-  return {
-    props: { character_list },
-  };
-};
-
 export default Drafting;
