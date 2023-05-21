@@ -32,8 +32,6 @@ export default async function handler(
                     pick_picture: req.body.pick_picture,
                     flash_picture: req.body.flash_picture,
                     ban_picture:  req.body.ban_picture,
-                    ban_audio:   req.body.ban_audio,
-                    pick_audio:  req.body.pick_audio,
                     is_visible: req.body.is_visible,
                     nation: req.body.nation,
                 }

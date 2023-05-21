@@ -36,7 +36,7 @@ import { Howl } from "howler";
 import { useEffect, useRef } from "react";
 import { userStore } from "@/libs/providers/UserContext";
 
-const Characters: React.FC = () => {
+const Characters: React.FC = ({ list }: any) => {
   const toast = useToast();
   const queryclient = useQueryClient();
   const { handleSubmit, control, watch, setValue, reset } =
@@ -57,7 +57,18 @@ const Characters: React.FC = () => {
       },
     });
 
-  const [characterInfo, setCharacterInfo] = useSettingsStore((state) => [
+  const [
+    ban_audio_file,
+    pick_audio_file,
+    setBanAudioFile,
+    setPickAudioFile,
+    characterInfo,
+    setCharacterInfo,
+  ] = useSettingsStore((state) => [
+    state.ban_audio_file,
+    state.pick_audio_file,
+    state.setBanAudioFile,
+    state.setPickAudioFile,
     state.characterInfo,
     state.setCharacterInfo,
   ]);
@@ -181,27 +192,6 @@ const Characters: React.FC = () => {
           src: [watchBanSound],
         })
       : null;
-
-  const audioCharacterFileConvertToRaw = (type: string, file: File) => {
-    const fileReader = new FileReader();
-    fileReader.addEventListener("load", (e: any) => {
-      const arrayBuffer = e.target.result;
-      const base64Str = Buffer.from(arrayBuffer).toString("base64");
-      const contentType = "audio/ogg";
-
-      if (type === "pick") {
-        setValue("pick_audio", `data:${contentType};base64,${base64Str}`);
-      } else {
-        setValue("ban_audio", `data:${contentType};base64,${base64Str}`);
-      }
-
-      const sound = new Howl({
-        src: [`data:${contentType};base64,${base64Str}`],
-      });
-      sound.play();
-    });
-    fileReader.readAsArrayBuffer(file);
-  };
 
   return (
     <Box as="section" py={4}>
@@ -338,7 +328,7 @@ const Characters: React.FC = () => {
           </Flex>
         </SimpleGrid>
 
-        <SimpleGrid columns={2} spacing={8} mb={8}>
+        {/* <SimpleGrid columns={2} spacing={8} mb={8}>
           <Flex direction="column">
             {watchPickSound !== "" && (
               <ButtonPlayCharacters
@@ -367,7 +357,7 @@ const Characters: React.FC = () => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   if (!e.target.files) return;
 
-                  audioCharacterFileConvertToRaw("pick", e.target.files[0]);
+                  
                 }}
               />
               <AudioUploadButton
@@ -406,7 +396,7 @@ const Characters: React.FC = () => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   if (!e.target.files) return;
 
-                  audioCharacterFileConvertToRaw("ban", e.target.files[0]);
+                  
                 }}
               />
               <AudioUploadButton
@@ -417,7 +407,7 @@ const Characters: React.FC = () => {
               </AudioUploadButton>
             </FormControl>
           </Flex>
-        </SimpleGrid>
+        </SimpleGrid> */}
 
         <SimpleGrid columns={2} spacing={8} mb={4}>
           <FormControl mb="25px">

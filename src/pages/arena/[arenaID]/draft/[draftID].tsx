@@ -484,7 +484,9 @@ const Drafting: NextPage = () => {
                   banListCharacterDraft
                 );
                 characterChooseAudio = new Howl({
-                  src: [characterInfo.ban_audio],
+                  src: [
+                    `/audio/characters/${characterInfo.name.toLowerCase()}_b.ogg`,
+                  ],
                 });
               }
               if (
@@ -499,7 +501,9 @@ const Drafting: NextPage = () => {
                   pickListCharacterDraft
                 );
                 characterChooseAudio = new Howl({
-                  src: [characterInfo.pick_audio],
+                  src: [
+                    `/audio/characters/${characterInfo.name.toLowerCase()}_p.ogg`,
+                  ],
                 });
               }
               if (state.user.role === "GM" && characterChooseAudio !== null) {
@@ -514,7 +518,9 @@ const Drafting: NextPage = () => {
                 pickListCharacterDraft
               );
               characterChooseAudio = new Howl({
-                src: [characterInfo.pick_audio],
+                src: [
+                  `/audio/characters/${characterInfo.name.toLowerCase()}_p.ogg`,
+                ],
               });
               if (state.user.role === "GM" && characterChooseAudio !== null) {
                 characterChooseAudio.play();

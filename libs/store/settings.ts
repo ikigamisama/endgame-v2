@@ -39,7 +39,8 @@ const initialState: SettingState = {
         is_visible: true,
         nation: ''
     },
-
+    ban_audio_file: '',
+    pick_audio_file: ''
 }
 
 export const useSettingsStore = create<SettingState & SettingActions>((set, get) => ({ 
@@ -96,6 +97,12 @@ export const useSettingsStore = create<SettingState & SettingActions>((set, get)
     },
     setCharacterInfo: (character: CharacterInfoProps) => {
         set({ characterInfo: character });
+    },
+    setBanAudioFile: (audio_file: string) => {
+        set({ ban_audio_file: audio_file });
+    },
+    setPickAudioFile: (audio_file: string) => {
+        set({ pick_audio_file: audio_file });
     }
 }))
 

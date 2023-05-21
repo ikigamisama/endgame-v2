@@ -1,38 +1,39 @@
-import { IncomingForm } from 'formidable';
-import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
-import path from 'path';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const form: any = new IncomingForm();
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method Not Allowed' });
+    return;
+  }
 
-  // Set the directory where uploaded files will be saved
-  form.uploadDir = path.join(process.cwd(), 'public', 'uploads');
 
-  form.parse(req, async (err: any, fields: any, files: { file: any; }) => {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to process form data' });
-    }
+  const file = req.body.file;
 
-    const { file } = files;
+  res.status(200).json({ data: req.body, name: req.body.file });
+  // try {
+  //   const file = req.body.file;
+  //   const filename = `${file.name}`;
 
-    if (!file) {
-      return res.status(400).json({ error: 'No file was uploaded' });
-    }
+  //   res.status(200).json({ file });
 
-    // Generate a unique filename to prevent overwriting
-    const fileName = `${file.name}`;
-    const filePath = path.join(form.uploadDir, fileName);
+  //   const writeStream = fs.createWriteStream(`public/audio/characters/${filename}`);
 
-    try {
-      // Move the uploaded file to the specified directory
-      await fs.promises.rename(file.path, filePath);
+  //   file.pipe(writeStream);
 
-      return res.status(200).json({ success: true, fileName });
-    } catch (error) {
-      return res.status(500).json({ error: 'Failed to save file' });
-    }
-  });
-};
+  //   // Handle the completion of the file upload
+  //   writeStream.on('finish', () => {
+  //     const filePath = `/audio/characters/${filename}`;
+  //     res.status(200).json({ filePath });
+  //   });
 
-export default handler;
+  //   // Handle any errors that occur during the file upload
+  //   writeStream.on('error', (error) => {
+  //     console.error('Error uploading file:', error);
+  //     res.status(500).json({ error: error });
+  //   });
+  // } catch (error) {
+  //   console.error('Error uploading file:', error);
+  //   res.status(500).json({ error: error });
+  // }
+}

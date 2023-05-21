@@ -135,8 +135,8 @@ export declare interface CharacterInfoProps {
     pick_picture: string
     flash_picture: string
     ban_picture: string
-    ban_audio: string
-    pick_audio: string
+    ban_audio?: string | any
+    pick_audio?: string | any
     is_visible: any
     nation?: string | any
     isPicked?: boolean | undefined
@@ -158,6 +158,8 @@ export type SettingState = {
     userInfo: ProfileChanges
     bossInfo: BossInfoProps
     characterInfo: CharacterInfoProps,
+    ban_audio_file: string,
+    pick_audio_file: string
 }
 
 export type SettingActions = {
@@ -172,6 +174,8 @@ export type SettingActions = {
     setBossInfo: (boss: BossInfoProps) => void
     setCharacterList: (characters: CharacterInfoProps[]) => void
     setCharacterInfo: (character: CharacterInfoProps) => void
+    setBanAudioFile: (audio_file: string) => void
+    setPickAudioFile: (audio_file: string) => void
 }
 
 export type VideoPropsSettings = {
