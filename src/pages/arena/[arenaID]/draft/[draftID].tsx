@@ -1162,17 +1162,16 @@ const Drafting: NextPage = ({ character_list }: any) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const arenaIDs = ["another-arena-id", "..."];
-  const draftIDs = ["another-draft-id", "..."];
+  const prisma = new PrismaClient();
+  const characters = await prisma.characters.findMany();
 
-  // Generate the dynamic paths using the valid arenaIDs
-  const paths = arenaIDs.flatMap((arenaID) =>
-    draftIDs.map((draftID) => ({ params: { arenaID, draftID } }))
-  );
+  const paths = characters.map((character) => ({
+    params: { id: character.id.toString() },
+  }));
 
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 };
 
