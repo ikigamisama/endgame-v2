@@ -1181,6 +1181,9 @@ export const getStaticProps: GetStaticProps<
 > = async () => {
   const prisma = new PrismaClient();
   const character_list = await prisma.characters.findMany({
+    where: {
+      is_visible: true,
+    },
     orderBy: [
       {
         name: "asc",
