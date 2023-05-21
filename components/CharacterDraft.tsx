@@ -143,7 +143,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("all");
-                setCharactersList(characterListQuery.data);
+                setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "all");
               }}
             >
@@ -155,7 +155,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("pyro");
-                setCharactersList(characterListQuery.data);
+                setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "pyro");
               }}
             >
@@ -167,7 +167,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("hydro");
-                setCharactersList(characterListQuery.data);
+                setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "hydro");
               }}
             >
@@ -179,7 +179,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("anemo");
-                setCharactersList(characterListQuery.data);
+                setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "anemo");
               }}
             >
@@ -191,7 +191,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("electro");
-                setCharactersList(characterListQuery.data);
+                setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "electro");
               }}
             >
@@ -203,7 +203,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("dendro");
-                setCharactersList(characterListQuery.data);
+                setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "dendro");
               }}
             >
@@ -215,7 +215,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("cryo");
-                setCharactersList(characterListQuery.data);
+                setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "cryo");
               }}
             >
@@ -228,7 +228,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("geo");
-                setCharactersList(characterListQuery.data);
+                setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "geo");
               }}
             >
@@ -271,9 +271,9 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                 ref={searchBtn}
                 onClick={() => {
                   if (searchCharacter == "") {
-                    setCharactersList(characterListQuery.data);
+                    setCharactersList(characterListQuery);
                   } else {
-                    setCharactersList(characterListQuery.data);
+                    setCharactersList(characterListQuery);
                     searchCharacterList(searchCharacter, "all");
                   }
                 }}

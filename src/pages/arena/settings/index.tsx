@@ -5,9 +5,10 @@ import Boss from "@/components/settings/Boss";
 import BossList from "@/components/settings/BossList";
 import CharacterList from "@/components/settings/CharacterList";
 import Characters from "@/components/settings/Characters";
+import { CharacterListProps } from "@/libs/helpers/types";
 import { BackIcon } from "@/libs/includes/icons";
 import { useUserData, userStore } from "@/libs/providers/UserContext";
-import { ButtonPopUpNav, CenterBox } from "@/src/styles";
+import { ButtonPopUpNav } from "@/src/styles";
 import {
   AreaCardWrapper,
   ArenaCard,
@@ -25,11 +26,13 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
+import { PrismaClient } from "@prisma/client";
+import { GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export default function Settings() {
+export default function Settings({ characters }: any) {
   const { state } = useUserData();
   const router = useRouter();
 
@@ -115,7 +118,7 @@ export default function Settings() {
                 <Box py={4}>
                   {tabIndex === 0 && <AccountList />}
                   {tabIndex === 1 && <BossList />}
-                  {tabIndex === 2 && <CharacterList />}
+                  {tabIndex === 2 && <CharacterList list={characters} />}
                 </Box>
               </ArenaPaddingWrap>
             </AreaCardWrapper>
@@ -125,3 +128,18 @@ export default function Settings() {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps<CharacterListProps> = async () => {
+  const prisma = new PrismaClient();
+  const characters = await prisma.characters.findMany({
+    orderBy: [
+      {
+        name: "asc",
+      },
+    ],
+  });
+
+  return {
+    props: { characters },
+  };
+};

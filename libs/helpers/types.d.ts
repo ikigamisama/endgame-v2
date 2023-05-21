@@ -127,7 +127,7 @@ export declare interface BossInfoProps {
 export declare interface CharacterInfoProps {
     id?: string,
     name: string
-    display_name: string
+    display_name?: string | any
     rarity: string
     vision: any
     weapon: string
@@ -138,7 +138,7 @@ export declare interface CharacterInfoProps {
     ban_audio: string
     pick_audio: string
     is_visible: any
-    nation?: string
+    nation?: string | any
     isPicked?: boolean | undefined
 }
 
@@ -443,3 +443,11 @@ export declare interface WinnerModalProps {
     onPlayerWinner: (player_id: stgring) => void
     setPopupModalWinner: (popup: boolean) => void
 }
+
+export type CharacterListProps = {
+    characters: CharacterInfoProps[];
+};
+
+export type CharacterListPropsDraft = {
+    character_list: CharacterInfoProps[];
+};

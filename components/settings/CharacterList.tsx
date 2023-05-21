@@ -8,7 +8,6 @@ import {
   HydroVisionIcon,
   PyroVisionIcon,
 } from "@/libs/includes/icons";
-import { api } from "@/libs/providers/api";
 import { useSettingsStore } from "@/libs/store/settings";
 import {
   CharacterPickCard,
@@ -20,18 +19,10 @@ import {
   CharacterTextFieldSearch,
 } from "@/src/styles/CharacterPick";
 import { CharacerListSettingWrapper } from "@/src/styles/Settings";
-import {
-  Box,
-  Center,
-  Grid,
-  GridItem,
-  HStack,
-  Image,
-  Spinner,
-} from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { Box, Grid, GridItem, HStack, Image } from "@chakra-ui/react";
+import { useEffect } from "react";
 
-const CharacterList: React.FC = () => {
+const CharacterList: React.FC<any> = ({ list }: any) => {
   const [
     characterList,
     setCharacterList,
@@ -48,22 +39,15 @@ const CharacterList: React.FC = () => {
     state.searchCharacterList,
   ]);
 
-  const characterListQuery = useQuery({
-    queryKey: ["characterList"],
-    queryFn: async () => {
-      const listResponse = await api.post("/characters/list", {
-        page: "Settings",
-      });
-      return listResponse.data.list;
-    },
-    onSuccess: (data) => {
-      setCharacterList(data);
-    },
-  });
-
   const onSetEditCharacter = (boss: CharacterInfoProps) => {
     setCharacterInfo(boss);
   };
+
+  useEffect(() => {
+    if (list.length > 0) {
+      setCharacterList(list);
+    }
+  }, [list]);
 
   return (
     <Box w="100%">
@@ -78,8 +62,9 @@ const CharacterList: React.FC = () => {
         <CharacterSearchButton
           onClick={() => {
             if (searchCharacter == "") {
-              setCharacterList(characterListQuery.data);
+              setCharacterList(list);
             } else {
+              setCharacterList(list);
               searchCharacterList(searchCharacter);
             }
           }}
@@ -88,46 +73,33 @@ const CharacterList: React.FC = () => {
         </CharacterSearchButton>
       </HStack>
 
-      {characterListQuery.isLoading ? (
-        <Center height="300px">
-          <Spinner
-            thickness="15px"
-            speed="0.5s"
-            emptyColor="#ECDEB5"
-            color="#1E223F"
-            width="150px"
-            height="150px"
-          />
-        </Center>
-      ) : (
-        <CharacerListSettingWrapper>
-          <Grid templateColumns="repeat(8, 1fr)" gap={4} p={2}>
-            {characterList.map((char, index) => (
-              <GridItem key={index}>
-                <CharacterPickCard onClick={() => onSetEditCharacter(char)}>
-                  <CharacterPickCardImg rarity={char.rarity}>
-                    <Image src={char.draft_picture} alt="albedo-character" />
-                    <CharacterPickCardVision>
-                      {char.vision === "anemo" && <AnemoVisionIcon />}
-                      {char.vision === "cryo" && <CryoVisionIcon />}
-                      {char.vision === "dendro" && <DendroVisionIcon />}
-                      {char.vision === "electro" && <ElectroVisionIcon />}
-                      {char.vision === "geo" && <GeoVisionIcon />}
-                      {char.vision === "hydro" && <HydroVisionIcon />}
-                      {char.vision === "pyro" && <PyroVisionIcon />}
-                    </CharacterPickCardVision>
-                  </CharacterPickCardImg>
-                  <CharacterPickCardInfo>
-                    <CharacterPickCardInfoText>
-                      {char.display_name}
-                    </CharacterPickCardInfoText>
-                  </CharacterPickCardInfo>
-                </CharacterPickCard>
-              </GridItem>
-            ))}
-          </Grid>
-        </CharacerListSettingWrapper>
-      )}
+      <CharacerListSettingWrapper>
+        <Grid templateColumns="repeat(8, 1fr)" gap={4} p={2}>
+          {characterList.map((char, index) => (
+            <GridItem key={index}>
+              <CharacterPickCard onClick={() => onSetEditCharacter(char)}>
+                <CharacterPickCardImg rarity={char.rarity}>
+                  <Image src={char.draft_picture} alt="albedo-character" />
+                  <CharacterPickCardVision>
+                    {char.vision === "anemo" && <AnemoVisionIcon />}
+                    {char.vision === "cryo" && <CryoVisionIcon />}
+                    {char.vision === "dendro" && <DendroVisionIcon />}
+                    {char.vision === "electro" && <ElectroVisionIcon />}
+                    {char.vision === "geo" && <GeoVisionIcon />}
+                    {char.vision === "hydro" && <HydroVisionIcon />}
+                    {char.vision === "pyro" && <PyroVisionIcon />}
+                  </CharacterPickCardVision>
+                </CharacterPickCardImg>
+                <CharacterPickCardInfo>
+                  <CharacterPickCardInfoText>
+                    {char.display_name}
+                  </CharacterPickCardInfoText>
+                </CharacterPickCardInfo>
+              </CharacterPickCard>
+            </GridItem>
+          ))}
+        </Grid>
+      </CharacerListSettingWrapper>
     </Box>
   );
 };
