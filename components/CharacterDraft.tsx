@@ -120,6 +120,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
   };
 
   let createEmptyBox = Array(4 - banListCharacterDraft.player2.length).fill("");
+
   return statusCharacterModal === true ? (
     <ModalCharacterPickWrapper>
       <ModalCharacterPickheader as="nav">
@@ -143,6 +144,8 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("all");
+                console.log(searchCharacter);
+                console.log(characters);
                 setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "all");
               }}

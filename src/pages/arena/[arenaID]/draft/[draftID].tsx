@@ -855,7 +855,7 @@ const Drafting: NextPage = () => {
         <CharacterDraft
           statusCharacterModal={applyCharacterModal}
           onCloseCharacterModal={onToggleCharacterPickModal}
-          characterListQuery={characterListQuery}
+          characterListQuery={characterListQuery.data}
           timer={timer}
           onCharacterPick={onCharacterDraftChoose}
           state={state}
