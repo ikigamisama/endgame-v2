@@ -144,8 +144,6 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
               }
               onClick={() => {
                 setCharacterFilterVision("all");
-                console.log(searchCharacter);
-                console.log(characters);
                 setCharactersList(characterListQuery);
                 searchCharacterList(searchCharacter, "all");
               }}
