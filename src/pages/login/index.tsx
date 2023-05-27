@@ -27,6 +27,7 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "@/libs/providers/api";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import useSafePush from "@/libs/hooks/useSafePush";
+import Footer from "@/components/Footer";
 
 const Login: NextPage = () => {
   const { state } = useUserData();
@@ -115,7 +116,7 @@ const Login: NextPage = () => {
         webm={state.settings.video_bg.webm}
       />
 
-      <Box position="relative" h="100vh">
+      <Box position="relative" h="calc(100vh - 66px)">
         <CenterBox>
           <LoginCard>
             <LoginCardWrapper>
@@ -197,6 +198,8 @@ const Login: NextPage = () => {
           </LoginCard>
         </CenterBox>
       </Box>
+
+      <Footer />
     </>
   );
 };

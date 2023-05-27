@@ -35,6 +35,7 @@ import { api } from "@/libs/providers/api";
 import { useMutation } from "@tanstack/react-query";
 import { video_list } from "@/libs/includes/videos";
 import { socket } from "@/libs/providers/socket";
+import Footer from "@/components/Footer";
 
 const ArenaPlayerLogin: NextPage = () => {
   const router = useRouter();
@@ -131,7 +132,7 @@ const ArenaPlayerLogin: NextPage = () => {
         webm={video_list["Default"].webm}
       />
 
-      <Box position="relative" h="100vh">
+      <Box position="relative" h="calc(100vh - 66px)">
         <CenterBox>
           <LoginCard>
             <LoginCardWrapper>
@@ -216,6 +217,8 @@ const ArenaPlayerLogin: NextPage = () => {
           </LoginCard>
         </CenterBox>
       </Box>
+
+      <Footer />
     </>
   );
 };

@@ -2,11 +2,12 @@ import Head from "next/head";
 import { useUserData } from "@/libs/providers/UserContext";
 import BackgroundVid from "@/components/BackgroundVid";
 import { Box, Center, Container, Image } from "@chakra-ui/react";
-import { AreaCardWrapper, ArenaCard, ArenaPaddingWrap } from "../styles/Arena";
+import { AreaCardWrapper, ArenaCard } from "../styles/Arena";
 import { CenterBox } from "../styles";
 import { LoginImageLogo } from "@/libs/includes/image";
 import { AudioUploadButton } from "../styles/Settings";
 import { useRouter } from "next/router";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const { state } = useUserData();
@@ -28,7 +29,7 @@ export default function Home() {
         webm={state.settings.video_bg.webm}
       />
 
-      <Box position="relative" w="100%" h="100vh">
+      <Box position="relative" w="100%" h="calc(100vh - 66px)">
         <CenterBox>
           <Container maxW="container.xl" minW="1000px">
             <ArenaCard>
@@ -50,6 +51,8 @@ export default function Home() {
           </Container>
         </CenterBox>
       </Box>
+
+      <Footer></Footer>
     </>
   );
 }

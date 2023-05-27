@@ -72,3 +72,18 @@ export const ToastBox = styled(Box)`
     box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 6px, rgba(0, 0, 0, 0.5) 0px 3px 6px;
     background-color: #1E223F;
 `
+
+export const FooterBox = styled(Box)`
+    padding: 22px 30px;
+    background-color: #1e223f;
+    font-family: 'GenshinFont', sans-serif;
+    font-size: 18px;
+    color: white;
+    line-height: 1;
+
+    & > div > div > svg{
+        margin-right: 12px;
+        width: 22px;
+        height: 22px;
+    }
+`

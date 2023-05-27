@@ -71,6 +71,7 @@ import BackgroundVid from "@/components/BackgroundVid";
 import { useArenaStore } from "@/libs/store/arena";
 import PromptModal from "@/components/PromptModal";
 import { socket } from "@/libs/providers/socket";
+import Footer from "@/components/Footer";
 
 const Arena: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();
@@ -500,7 +501,7 @@ const Arena: NextPage = () => {
         </Flex>
       </Box>
       {state.user.id === "" ? null : (
-        <Box position="relative" h="calc(100vh - 90px)" w="100%">
+        <Box position="relative" h="calc(100vh - 152px)" w="100%">
           <CenterBox>
             <Container maxW="container.xl" minW="1200px">
               {state?.user?.role === "GM" ? (
@@ -870,6 +871,8 @@ const Arena: NextPage = () => {
           </CenterBox>
         </Box>
       )}
+
+      <Footer />
     </>
   );
 };
