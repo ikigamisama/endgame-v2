@@ -26,7 +26,6 @@ import {
 } from "@chakra-ui/react";
 import { avatarList } from "@/libs/includes/avatars";
 import { PlayerLoginProps } from "@/libs/helpers/types";
-import BackgroundVid from "@/components/BackgroundVid";
 import { NextPage } from "next";
 import { signIn } from "next-auth/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
@@ -36,6 +35,11 @@ import { useMutation } from "@tanstack/react-query";
 import { video_list } from "@/libs/includes/videos";
 import { socket } from "@/libs/providers/socket";
 import Footer from "@/components/Footer";
+import dynamic from "next/dynamic";
+
+const BackgroundVid = dynamic(() => import("@/components/BackgroundVid"), {
+  ssr: false,
+});
 
 const ArenaPlayerLogin: NextPage = () => {
   const router = useRouter();

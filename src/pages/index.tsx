@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useUserData } from "@/libs/providers/UserContext";
-import BackgroundVid from "@/components/BackgroundVid";
 import { Box, Center, Container, Image } from "@chakra-ui/react";
 import { AreaCardWrapper, ArenaCard } from "../styles/Arena";
 import { CenterBox } from "../styles";
@@ -8,6 +7,11 @@ import { LoginImageLogo } from "@/libs/includes/image";
 import { AudioUploadButton } from "../styles/Settings";
 import { useRouter } from "next/router";
 import Footer from "@/components/Footer";
+import dynamic from "next/dynamic";
+
+const BackgroundVid = dynamic(() => import("@/components/BackgroundVid"), {
+  ssr: false,
+});
 
 export default function Home() {
   const { state } = useUserData();

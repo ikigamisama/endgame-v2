@@ -20,7 +20,6 @@ import {
 import { LoginImageLogo } from "@/libs/includes/image";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { GMLoginProps } from "@/libs/helpers/types";
-import BackgroundVid from "@/components/BackgroundVid";
 import { NextPage } from "next";
 import { signIn } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
@@ -28,6 +27,11 @@ import { api } from "@/libs/providers/api";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import useSafePush from "@/libs/hooks/useSafePush";
 import Footer from "@/components/Footer";
+import dynamic from "next/dynamic";
+
+const BackgroundVid = dynamic(() => import("@/components/BackgroundVid"), {
+  ssr: false,
+});
 
 const Login: NextPage = () => {
   const { state } = useUserData();
