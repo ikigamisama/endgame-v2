@@ -1,4 +1,4 @@
-import { CharacterDraftDesignProps } from '@/libs/helpers/types'
+import { CharacterDraftDesignProps, ModalPlayerClueProps } from '@/libs/helpers/types'
 import { Box, Button, Input, Text } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 
@@ -17,7 +17,23 @@ export const ModalCharacterPickWrapper = styled(Box)`
     bottom: 0;
     right: 0;
     z-index: 550;
-    background-color: rgba(119, 119, 119,0.5);
+    background-color: rgba(119, 119, 119,0.5)
+`;
+
+export const ModalCharacterPlayerClue = styled(Box)<ModalPlayerClueProps>`
+    width: 100%;
+    height: 100%;
+
+    ${(props) => (props.isactive === 'true' ? (props.drafttype === "pick" ? `
+        -webkit-box-shadow: inset -1px 0px 15px 10px rgba(103, 228, 100, 1);
+        -moz-box-shadow: inset -1px 0px 15px 10px rgba(103, 228, 100, 1);
+        box-shadow: inset -1px 0px 15px 10px rgba(103, 228, 100, 1);
+    ` : `
+        -webkit-box-shadow: inset -1px 0px 15px 10px rgba(203, 53, 53, 1);
+        -moz-box-shadow: inset -1px 0px 15px 10px rgba(203, 53, 53, 1);
+        box-shadow: inset -1px 0px 15px 10px rgba(203, 53, 53, 1);
+    `) : ``)}
+
 `
 
 export const ModalCharacterPickheader = styled(Box)`
@@ -266,12 +282,20 @@ export const CharacterPickInfoCardHeader = styled(Box)`
     background-color: #1e223f;
     width: 100%;
     height: 40px;
-    font-family: 'GenshinFont',sans-serif;
-    font-size: 18px;
     display: flex;
     align-items:center;
-    justify-content: center;
 `
+
+export const CharacterPickInfoCardHeaderPlayers = styled(Text)`
+    font-family: 'GenshinFont',sans-serif;
+    font-size: 14px;
+`
+
+export const CharacterPickInfoCardHeaderText = styled(Text)`
+    font-family: 'GenshinFont',sans-serif;
+    font-size: 18px;
+`
+
 export const CharacterPickInfoCardBody = styled(Box)`
     width: 100%;
     height: 125px;
@@ -408,6 +432,10 @@ export const CharacterSearchButton = styled(Button)`
         background-color: #ecdeb5;
     }
 `
+
+
+
+
 
 //#495366
 //#b9b4af

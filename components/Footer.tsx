@@ -12,15 +12,24 @@ const Footer = () => {
       <SimpleGrid columns={3}>
         <Flex justifyContent="start" alignItems="center" direction="row">
           <DeveloperIcon />
-          Developed By: Ikigami
+          Developed By:
+          <a href="https://github.com/ikigamisama" target="_blank">
+            Ikigami
+          </a>
         </Flex>
         <Flex justifyContent="center" alignItems="center" direction="row">
           <CreatedByIcon />
-          Created By: Kero
+          Created By:
+          <a href="https://www.facebook.com/chillwithkero" target="_blank">
+            Kero
+          </a>
         </Flex>
         <Flex justifyContent="end" alignItems="center" direction="row">
           <DesignerIcon />
-          Layout Design By: Kinirits
+          Layout Design By:
+          <a href="https://twitch.tv/KiniritsTV" target="_blank">
+            Kinirits
+          </a>
         </Flex>
       </SimpleGrid>
     </FooterBox>

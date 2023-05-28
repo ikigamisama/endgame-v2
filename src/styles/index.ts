@@ -40,6 +40,17 @@ export const ButtonPopUpNav = styled(Box)`
     color: #1e223f;
 `
 
+export const ButtonPopupNavTextHeader = styled(Text)`
+    font-family: 'GenshinFont', sans-serif;
+    font-size: 22px;
+`
+
+export const ButtonPopupNavTextContent = styled(Text)`
+    font-family: 'GenshinFont', sans-serif;
+    font-size: 16px;
+`
+
+
 export const FontHeaderPopup = styled(PopoverHeader)`
     font-family: 'GenshinFont', sans-serif;
     color: #ecdeb5;
@@ -85,5 +96,8 @@ export const FooterBox = styled(Box)`
         margin-right: 12px;
         width: 22px;
         height: 22px;
+    }
+    & > div > div > a{
+        margin-left: 8px;
     }
 `

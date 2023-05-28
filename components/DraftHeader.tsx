@@ -27,7 +27,9 @@ import {
   Popover,
   PopoverArrow,
   PopoverBody,
+  PopoverCloseButton,
   PopoverContent,
+  PopoverHeader,
   PopoverTrigger,
 } from "@chakra-ui/react";
 import {
@@ -48,7 +50,12 @@ import {
   banIndexListPlayer2,
   inArray,
 } from "@/libs/providers/draft";
-import { ButtonPopUpNav, FontHeaderPopup } from "@/src/styles";
+import {
+  ButtonPopUpNav,
+  ButtonPopupNavTextContent,
+  ButtonPopupNavTextHeader,
+  FontHeaderPopup,
+} from "@/src/styles";
 import { FormLabelText, FormSelect } from "@/src/styles/login";
 import { SettingsIcon } from "@chakra-ui/icons";
 import { useState } from "react";
@@ -120,6 +127,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
 }) => {
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
+  const [popupDraftButton, setPopupDraftButton] = useState<boolean>(true);
 
   const onCloseModalRestartDraft = () => {
     setModalRestartDraft(!modalRestartDraft);
@@ -168,9 +176,37 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                 </ButtonPopUpNav>
               )}
               {state?.user.role === "Drafter" && (
-                <ButtonPopUpNav onClick={onOpenCharacterModal}>
-                  <CharacterIcon />
-                </ButtonPopUpNav>
+                <Popover isOpen={popupDraftButton}>
+                  <PopoverTrigger>
+                    <ButtonPopUpNav onClick={onOpenCharacterModal}>
+                      <CharacterIcon />
+                    </ButtonPopUpNav>
+                  </PopoverTrigger>
+                  <PopoverContent bgColor="#1E223F">
+                    <PopoverArrow bgColor="#1E223F" />
+
+                    <PopoverHeader
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <ButtonPopupNavTextHeader>
+                        Drafters!
+                      </ButtonPopupNavTextHeader>
+                      <PopoverCloseButton
+                        position="relative"
+                        onClick={() => setPopupDraftButton(false)}
+                        top={0}
+                        right={2}
+                      />
+                    </PopoverHeader>
+                    <PopoverBody>
+                      <ButtonPopupNavTextContent>
+                        Choose your character pick and ban here
+                      </ButtonPopupNavTextContent>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
               )}
             </Flex>
             <Flex flex={1} justifyContent="center">

@@ -455,3 +455,8 @@ export type CharacterListProps = {
 export type CharacterListPropsDraft = {
     character_list: CharacterInfoProps[];
 };
+
+export type ModalPlayerClueProps = {
+    drafttype: string
+    isactive: string
+}

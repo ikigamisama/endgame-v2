@@ -436,6 +436,7 @@ const Drafting: NextPage = () => {
 
     const characterDraft = (data: any) => {
       setDraftSituation("characterDraft");
+      setIsStartDraft(true);
       setIsPauseCharacterDraft(true);
       if (data.sequence !== null) {
         setCurrentSequence(data.sequence);
