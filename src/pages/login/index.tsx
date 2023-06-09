@@ -26,10 +26,13 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "@/libs/providers/api";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import useSafePush from "@/libs/hooks/useSafePush";
-import Footer from "@/components/Footer";
 import dynamic from "next/dynamic";
 
 const BackgroundVid = dynamic(() => import("@/components/BackgroundVid"), {
+  ssr: false,
+});
+
+const Footer = dynamic(() => import("@/components/Footer"), {
   ssr: false,
 });
 

@@ -157,7 +157,9 @@ const Arena: NextPage = () => {
     },
     refetchOnWindowFocus: false,
     onSuccess: (data: any) => {
-      setValue("name", data.arena.name);
+      if (state.user.role === "GM") {
+        setValue("name", data.arena.name);
+      }
     },
   });
 

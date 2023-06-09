@@ -464,3 +464,54 @@ export type ModalPlayerClueProps = {
     drafttype: string
     isactive: string
 }
+
+export type CharacterDraftRecords = {
+    character: {
+        draft_picture: string
+    },
+    index: string
+}
+
+export type RecordDataProps = {
+    CharacterDraft: CharacterDraftRecords[],
+    arena: {
+        name: string
+    },
+    boss: {
+        picture: string
+    },
+    player1: {
+        avatar: string,
+        username: string
+    },
+    player2: {
+        avatar: string,
+        username: string
+    },
+    user: {
+        avatar: string,
+        username: string
+    }
+}
+export type RecordFilterListProps = {
+    name: string
+}
+
+export type RecordStoreState = {
+    records: RecordDataProps[],
+    currentPage: number, 
+    paginationNumbers: number[],
+    isPreviousPagination: boolean,
+    isNextPagination: boolean,
+    recordFilter: string,
+    recordListFilter: RecordFilterListProps[]
+}
+
+export type RecordFunction = {
+    setRecordsData: (records: RecordDataProps[]) => void,
+    setCurrentNumber: (currentNumber: number) => void,
+    setPaginationNumbers: (paginationNum: number[]) => void
+    setPaginationButton: (isSet: boolean, type: string) => void
+    setRecordFilter: (filter: string) => void
+    setRecordListFilter: (filterList: RecordFilterListProps[]) => void
+}
