@@ -84,7 +84,8 @@ const initialState: DraftStateProps = {
     characterDraft: [],
     isDoneChooseCharacter: false,
     mode: "3v3",
-    winnerButton: false
+    winnerButton: false,
+    isGMDoneDeclareWinner: false,
 }
 
 export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get) => ({ 
@@ -207,6 +208,9 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     setWinnerButton: (winnerButton: boolean) => {
         set({winnerButton: winnerButton})
     },
+    setIsGMDoneDeclareWinner: (isDeclareWinner: boolean) => {
+        set({isGMDoneDeclareWinner: isDeclareWinner})
+    }
 }))
 
 mountStoreDevtool('DraftStore', useDraftStore);

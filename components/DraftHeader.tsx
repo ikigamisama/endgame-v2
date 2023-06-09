@@ -124,6 +124,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
   socket,
   winnerButton,
   setPopupModalWinner,
+  isGMDoneDeclareWinner,
 }) => {
   const [modalRestartDraft, setModalRestartDraft] = useState<boolean>(false);
   const [modalSwitchDraft, setModalSwitchDraft] = useState<boolean>(false);
@@ -366,13 +367,16 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                   >
                     <RestartIcon />
                   </ButtonPopUpNav>
-                  <ButtonPopUpNav
-                    onClick={() => {
-                      setModalSwitchDraft(true);
-                    }}
-                  >
-                    <SwapIcon />
-                  </ButtonPopUpNav>
+
+                  {winnerButton === true && isGMDoneDeclareWinner == true && (
+                    <ButtonPopUpNav
+                      onClick={() => {
+                        setModalSwitchDraft(true);
+                      }}
+                    >
+                      <SwapIcon />
+                    </ButtonPopUpNav>
+                  )}
                 </>
               )}
             </Flex>

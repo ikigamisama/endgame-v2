@@ -26,6 +26,7 @@ import {
   FormLabelText,
   FormSelect,
   FormSubmitButton,
+  FormTextBox,
 } from "@/src/styles/login";
 import {
   Box,
@@ -80,6 +81,7 @@ const Arena: NextPage = () => {
   const { handleSubmit, control, watch, setValue } = useForm<ArenaDraftProps>({
     defaultValues: {
       user_gm_id: "",
+      name: "",
       mode: "3v3",
       is_manual_select_boss: false,
       boss_id: "",
@@ -146,6 +148,18 @@ const Arena: NextPage = () => {
   const toastPopup = useToast();
   const watchCheckboxBoss: any = watch("is_manual_select_boss"),
     watchBossChoose = watch("boss_id");
+
+  useQuery({
+    queryKey: ["arenaDetails"],
+    queryFn: async () => {
+      const listResponse = await api.get("/arena/get");
+      return listResponse.data;
+    },
+    refetchOnWindowFocus: false,
+    onSuccess: (data: any) => {
+      setValue("name", data.arena.name);
+    },
+  });
 
   const bossListQuery = useQuery({
     queryKey: ["listBossArena"],
@@ -519,6 +533,26 @@ const Arena: NextPage = () => {
                         >
                           <ArenaPlayersListScroll heightarea="535px">
                             <ArenaPaddingWrap>
+                              <FormControl mb="35px">
+                                <FormLabelText>Name</FormLabelText>
+
+                                <Controller
+                                  render={({
+                                    field: { onChange, value, name },
+                                  }) => (
+                                    <FormTextBox
+                                      type="text"
+                                      onChange={onChange}
+                                      value={value}
+                                      name={name}
+                                      required
+                                    />
+                                  )}
+                                  name="name"
+                                  control={control}
+                                />
+                              </FormControl>
+
                               <FormControl mb="35px">
                                 <FormLabelText>Mode</FormLabelText>
 

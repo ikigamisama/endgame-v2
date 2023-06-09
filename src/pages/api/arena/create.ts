@@ -19,6 +19,7 @@ export default async function handler(
             if(userData){
                 const createArena = await prisma.arena.create({
                     data:{
+                        name: `Endgame ${req.body.game_type}`,
                         host_id: userData?.id,
                         type: req.body.game_type
                     }

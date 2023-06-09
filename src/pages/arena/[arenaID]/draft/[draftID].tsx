@@ -139,6 +139,8 @@ const Drafting: NextPage = () => {
     winnerButton,
     setWinnerButton,
     setCharactersList,
+    isGMDoneDeclareWinner,
+    setIsGMDoneDeclareWinner,
   ] = useDraftStore((state) => [
     state.applyCharacterModal,
     state.setApplyCharacterModal,
@@ -192,6 +194,8 @@ const Drafting: NextPage = () => {
     state.winnerButton,
     state.setWinnerButton,
     state.setCharactersList,
+    state.isGMDoneDeclareWinner,
+    state.setIsGMDoneDeclareWinner,
   ]);
 
   const [
@@ -280,6 +284,10 @@ const Drafting: NextPage = () => {
       setApplyBossModal(false);
       setCurrentBossFlash("");
       setPopupModalWinner(false);
+      setIsGMDoneDeclareWinner(
+        data.result.winner_user_id !== null ? true : false
+      );
+      setWinnerButton(data.result.winner_user_id !== null ? true : false);
 
       if (data.result.bossID !== "" || data.result.bossID !== null) {
         setBossInfo(data.result.boss);
@@ -494,7 +502,11 @@ const Drafting: NextPage = () => {
             setCurrentCharacterFlash(characterInfo.flash_picture);
             let characterChooseAudio = null;
 
-            if (data.sequence !== null) {
+            if (
+              data.sequence !== null &&
+              characterInfo.pick_audio &&
+              characterInfo.ban_audio
+            ) {
               if (
                 inArray(sequence[sequenceIndex].index, banIndexListPlayer1) ||
                 inArray(sequence[sequenceIndex].index, banIndexListPlayer2)
@@ -506,10 +518,9 @@ const Drafting: NextPage = () => {
                   ban,
                   banListCharacterDraft
                 );
+
                 characterChooseAudio = new Howl({
-                  src: [
-                    `/audio/characters/${characterInfo.name.toLowerCase()}_b.ogg`,
-                  ],
+                  src: [characterInfo.ban_audio],
                 });
               }
               if (
@@ -524,9 +535,7 @@ const Drafting: NextPage = () => {
                   pickListCharacterDraft
                 );
                 characterChooseAudio = new Howl({
-                  src: [
-                    `/audio/characters/${characterInfo.name.toLowerCase()}_p.ogg`,
-                  ],
+                  src: [characterInfo.pick_audio],
                 });
               }
               if (state.user.role === "GM" && characterChooseAudio !== null) {
@@ -540,11 +549,12 @@ const Drafting: NextPage = () => {
                 pick,
                 pickListCharacterDraft
               );
-              characterChooseAudio = new Howl({
-                src: [
-                  `/audio/characters/${characterInfo.name.toLowerCase()}_p.ogg`,
-                ],
-              });
+              if (characterInfo.pick_audio) {
+                characterChooseAudio = new Howl({
+                  src: [characterInfo.pick_audio],
+                });
+              }
+
               if (state.user.role === "GM" && characterChooseAudio !== null) {
                 characterChooseAudio.play();
                 setWinnerButton(true);
@@ -863,6 +873,8 @@ const Drafting: NextPage = () => {
       type: "winner_update",
       user_id: player_id,
     });
+
+    setIsGMDoneDeclareWinner(true);
   };
 
   return (
@@ -935,6 +947,7 @@ const Drafting: NextPage = () => {
           socket={socket}
           winnerButton={winnerButton}
           setPopupModalWinner={setPopupModalWinner}
+          isGMDoneDeclareWinner={isGMDoneDeclareWinner}
         />
 
         {draftDataQuery.isLoading !== true && (

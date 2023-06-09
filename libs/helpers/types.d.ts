@@ -27,7 +27,8 @@ export declare interface AvatarProps {
 
 export declare interface ArenaDraftProps {
     user_gm_id: string
-    mode: "1v1" | "2v2" | "3v3" | "4v4" | string,
+    name: string
+    mode: "1v1" | "2v2" | "3v3" | "4v4" | string
     is_manual_select_boss: any
     boss_id?: string
 }
@@ -104,6 +105,7 @@ export declare interface CharacterDraftProps {
     characterPauseDraft?: boolean
     winnerButton?: boolean
     setPopupModalWinner?: (popup: boolean) => void
+    isGMDoneDeclareWinner?: boolean
 }
 
 export declare interface ProfileChanges {
@@ -135,8 +137,8 @@ export declare interface CharacterInfoProps {
     pick_picture: string
     flash_picture: string
     ban_picture: string
-    ban_audio: string 
-    pick_audio: string 
+    ban_audio: string | null 
+    pick_audio: string | null 
     is_visible: any
     nation?: string | any
     isPicked?: boolean | undefined
@@ -352,7 +354,8 @@ export type DraftStateProps = {
     characterDraft: CharacterDraftPayloadProps[],
     isDoneChooseCharacter: boolean
     mode: string
-    winnerButton: boolean
+    winnerButton: boolean,
+    isGMDoneDeclareWinner: boolean,
 }
 
 export type DraftFunctions = {
@@ -387,7 +390,8 @@ export type DraftFunctions = {
     setMode: (mode: string) => void
     updateBanDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, ban: DraftBanFormat, banArrangeList: DraftCharacterList) => void
     updatePickDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, pick: DraftInfoProps[][], pickArrangeList: DraftCharacterList) => void
-    setWinnerButton: (winnerButton: boolean) => void
+    setWinnerButton: (winnerButton: boolean) => void,
+    setIsGMDoneDeclareWinner: (isDeclareWinner: boolean) => void
 }
 
 export declare interface CharacterDraftPayloadProps {

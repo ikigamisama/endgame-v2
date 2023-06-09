@@ -181,19 +181,26 @@ const Characters: React.FC = ({ list }: any) => {
   const pickCharacterAudioFile = useRef<HTMLInputElement>(null),
     banCharacterAudioFile = useRef<HTMLInputElement>(null);
 
-  let playPick =
-    watchPickSound !== ""
-      ? new Howl({
-          src: [watchPickSound],
-        })
-      : null;
+  let playPick: Howl | null = null,
+    playBan: Howl | null = null;
 
-  let playBan =
-    watchBanSound !== ""
-      ? new Howl({
-          src: [watchBanSound],
-        })
-      : null;
+  if (watchPickSound) {
+    playPick =
+      watchPickSound !== ""
+        ? new Howl({
+            src: [watchPickSound],
+          })
+        : null;
+  }
+
+  if (watchBanSound) {
+    playBan =
+      watchBanSound !== ""
+        ? new Howl({
+            src: [watchBanSound],
+          })
+        : null;
+  }
 
   const handleSoundUpload = async (file: File, type: string) => {
     try {

@@ -110,7 +110,8 @@ export default async function handler(
                                 uid: req.body.draft_id
                             },
                             data: {
-                                winner_user_id: req.body.user_id
+                                winner_user_id: req.body.user_id,
+                                isFinish: true
                             }
                         })
 
