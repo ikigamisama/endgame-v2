@@ -1,39 +1,47 @@
-import fs from 'fs';
-import { NextApiRequest, NextApiResponse } from 'next';
+import formidable from 'formidable'
+import { NextApiHandler, NextApiRequest } from 'next'
+import path from 'path'
+import fs from 'fs/promises'
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method Not Allowed' });
-    return;
+export const config = {
+  api: {
+    bodyParser: false,
+  }
+}
+
+const readFile = (req: NextApiRequest, saveLocally: boolean): Promise<{fields: formidable.Fields; files: formidable.Files}> => {
+  const options: formidable.Options = {};
+  if(saveLocally){
+    options.uploadDir = path.join(process.cwd(), '/public/audio/characters')
+    options.filename = (name, ext, path, form) => {
+      return path.originalFilename || ''
+    }
+  }
+  const form = formidable(options)
+
+  return new Promise((resolve, reject) => {
+    form.parse(req, (err, fields, files) => {
+      if (err) reject(err)
+      resolve({fields, files})
+    })
+  })
+}
+
+const handler: NextApiHandler = async (req, res) => {
+  try{
+    await fs.readdir(path.join(process.cwd() + '/public', '/audio/characters'))
+  }
+  catch (error) {
+    await fs.mkdir(path.join(process.cwd() + '/public', '/audio/characters'))
   }
 
+  const { files } = await readFile(req, true);
+  const firstFile = Object.values(files)[0] as formidable.File;
+  const filePath = firstFile ? `/audio/characters/${firstFile.newFilename}` : '';
 
-  const file = req.body.file;
+  res.status(200).json({ success: true, path: filePath });
 
-  res.status(200).json({ data: req.body, name: req.body.file });
-  // try {
-  //   const file = req.body.file;
-  //   const filename = `${file.name}`;
-
-  //   res.status(200).json({ file });
-
-  //   const writeStream = fs.createWriteStream(`public/audio/characters/${filename}`);
-
-  //   file.pipe(writeStream);
-
-  //   // Handle the completion of the file upload
-  //   writeStream.on('finish', () => {
-  //     const filePath = `/audio/characters/${filename}`;
-  //     res.status(200).json({ filePath });
-  //   });
-
-  //   // Handle any errors that occur during the file upload
-  //   writeStream.on('error', (error) => {
-  //     console.error('Error uploading file:', error);
-  //     res.status(500).json({ error: error });
-  //   });
-  // } catch (error) {
-  //   console.error('Error uploading file:', error);
-  //   res.status(500).json({ error: error });
-  // }
 }
+
+
+export default handler;

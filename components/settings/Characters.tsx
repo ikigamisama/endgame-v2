@@ -48,6 +48,8 @@ const Characters: React.FC = ({ list }: any) => {
         rarity: "",
         vision: "",
         weapon: "",
+        ban_audio: "",
+        pick_audio: "",
         draft_picture: "",
         pick_picture: "",
         flash_picture: "",
@@ -193,6 +195,21 @@ const Characters: React.FC = ({ list }: any) => {
         })
       : null;
 
+  const handleSoundUpload = async (file: File, type: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("characterSoundFile", file);
+      const { data } = await api.post("/characters/upload", formData);
+
+      if (data.success) {
+        type === "pick"
+          ? setValue("pick_audio", data.path)
+          : setValue("ban_audio", data.path);
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
   return (
     <Box as="section" py={4}>
       <form method="post" onSubmit={handleSubmit(onSubmitCharacters)}>
@@ -328,7 +345,7 @@ const Characters: React.FC = ({ list }: any) => {
           </Flex>
         </SimpleGrid>
 
-        {/* <SimpleGrid columns={2} spacing={8} mb={8}>
+        <SimpleGrid columns={2} spacing={8} mb={8}>
           <Flex direction="column">
             {watchPickSound !== "" && (
               <ButtonPlayCharacters
@@ -357,7 +374,7 @@ const Characters: React.FC = ({ list }: any) => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   if (!e.target.files) return;
 
-                  
+                  handleSoundUpload(e.target.files[0], "pick");
                 }}
               />
               <AudioUploadButton
@@ -396,7 +413,7 @@ const Characters: React.FC = ({ list }: any) => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   if (!e.target.files) return;
 
-                  
+                  handleSoundUpload(e.target.files[0], "ban");
                 }}
               />
               <AudioUploadButton
@@ -407,7 +424,7 @@ const Characters: React.FC = ({ list }: any) => {
               </AudioUploadButton>
             </FormControl>
           </Flex>
-        </SimpleGrid> */}
+        </SimpleGrid>
 
         <SimpleGrid columns={2} spacing={8} mb={4}>
           <FormControl mb="25px">

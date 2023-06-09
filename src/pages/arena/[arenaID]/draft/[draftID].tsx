@@ -1,17 +1,12 @@
-import BackgroundVid from "@/components/BackgroundVid";
-import CharacterDraft from "@/components/CharacterDraft";
-import DraftCountdown from "@/components/DraftCountdown";
-import DraftFooter from "@/components/DraftFooter";
-import DraftHeader from "@/components/DraftHeader";
-import ModalBoss from "@/components/ModalBoss";
-import WinnerModal from "@/components/WinnerModal";
 import Head from "next/head";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Howl } from "howler";
+import { Box, Center, Container, Flex, Image, VStack } from "@chakra-ui/react";
+import { NextPage } from "next";
+import dynamic from "next/dynamic";
 import { convertVisionToColor } from "@/libs/includes/color";
 import { WarpImgPNG, WarpImgGIF, BossImageRandom } from "@/libs/includes/image";
 import { useUserData } from "@/libs/providers/UserContext";
@@ -47,7 +42,6 @@ import {
   DraftPickBannerWrapper,
 } from "@/src/styles/Draft";
 
-import { Box, Center, Container, Flex, Image, VStack } from "@chakra-ui/react";
 import {
   banIndexListPlayer1,
   banIndexListPlayer2,
@@ -59,6 +53,34 @@ import {
 } from "@/libs/providers/draft";
 import { timerStore } from "@/libs/store/timer";
 import { socket } from "@/libs/providers/socket";
+
+const BackgroundVid = dynamic(() => import("@/components/BackgroundVid"), {
+  ssr: false,
+});
+
+const CharacterDraft = dynamic(() => import("@/components/CharacterDraft"), {
+  ssr: false,
+});
+
+const DraftCountdown = dynamic(() => import("@/components/DraftCountdown"), {
+  ssr: false,
+});
+
+const DraftFooter = dynamic(() => import("@/components/DraftFooter"), {
+  ssr: false,
+});
+
+const DraftHeader = dynamic(() => import("@/components/DraftHeader"), {
+  ssr: false,
+});
+
+const ModalBoss = dynamic(() => import("@/components/ModalBoss"), {
+  ssr: false,
+});
+
+const WinnerModal = dynamic(() => import("@/components/WinnerModal"), {
+  ssr: false,
+});
 
 const Drafting: NextPage = () => {
   const { state, setBackgroundVid } = useUserData();

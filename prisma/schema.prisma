@@ -40,6 +40,8 @@ model Characters {
   rarity         String
   vision         String
   weapon         String
+  ban_audio      String?
+  pick_audio     String?
   draft_picture  String
   pick_picture   String
   flash_picture  String

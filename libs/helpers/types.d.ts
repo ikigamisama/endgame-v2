@@ -135,8 +135,8 @@ export declare interface CharacterInfoProps {
     pick_picture: string
     flash_picture: string
     ban_picture: string
-    ban_audio?: string | any
-    pick_audio?: string | any
+    ban_audio: string 
+    pick_audio: string 
     is_visible: any
     nation?: string | any
     isPicked?: boolean | undefined

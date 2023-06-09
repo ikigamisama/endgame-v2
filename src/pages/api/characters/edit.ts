@@ -19,6 +19,8 @@ export default async function handler(
                     rarity: req.body.rarity,
                     vision: req.body.vision,
                     weapon: req.body.weapon,
+                    ban_audio: req.body.ban_audio,
+                    pick_audio: req.body.pick_audio,
                     draft_picture: req.body.draft_picture,
                     pick_picture: req.body.pick_picture,
                     flash_picture: req.body.flash_picture,
