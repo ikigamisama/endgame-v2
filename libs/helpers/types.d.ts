@@ -27,7 +27,6 @@ export declare interface AvatarProps {
 
 export declare interface ArenaDraftProps {
     user_gm_id: string
-    name: string
     mode: "1v1" | "2v2" | "3v3" | "4v4" | string
     is_manual_select_boss: any
     boss_id?: string

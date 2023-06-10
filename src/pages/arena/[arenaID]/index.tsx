@@ -81,7 +81,6 @@ const Arena: NextPage = () => {
   const { handleSubmit, control, watch, setValue } = useForm<ArenaDraftProps>({
     defaultValues: {
       user_gm_id: "",
-      name: "Endgame ",
       mode: "3v3",
       is_manual_select_boss: false,
       boss_id: "",
@@ -155,18 +154,7 @@ const Arena: NextPage = () => {
       const listResponse = await api.get("/arena/get");
       return listResponse.data;
     },
-    onSuccess: (data: any) => {
-      if (state?.user?.role === "GM") {
-        let matchName = "";
-        if (data.arena.name.includes(" - ")) {
-          let newNameMatchSplit = data.arena.name.split(" - ");
-          matchName = newNameMatchSplit[0];
-        } else {
-          matchName = data.arena.name;
-        }
-        setValue("name", matchName);
-      }
-    },
+    onSuccess: (data: any) => {},
   });
 
   const bossListQuery = useQuery({
@@ -231,7 +219,6 @@ const Arena: NextPage = () => {
     setLoadingSubmit(true);
     if (player1.user_id !== "" && player2.user_id !== "") {
       startDraft.mutate({
-        name: data.name,
         mode: data.mode,
         arenaID: arena_id,
         player1: player1.user_id,
@@ -544,26 +531,6 @@ const Arena: NextPage = () => {
                         >
                           <ArenaPlayersListScroll heightarea="535px">
                             <ArenaPaddingWrap>
-                              <FormControl mb="35px">
-                                <FormLabelText>Name</FormLabelText>
-
-                                <Controller
-                                  render={({
-                                    field: { onChange, value, name },
-                                  }) => (
-                                    <FormTextBox
-                                      type="text"
-                                      onChange={onChange}
-                                      value={value}
-                                      name={name}
-                                      required
-                                    />
-                                  )}
-                                  name="name"
-                                  control={control}
-                                />
-                              </FormControl>
-
                               <FormControl mb="35px">
                                 <FormLabelText>Mode</FormLabelText>
 

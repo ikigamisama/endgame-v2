@@ -22,11 +22,6 @@ export default async function handler(
                             username: true
                         }
                     },
-                    arena: {
-                        select: {
-                            name: true
-                        }
-                    },
                     boss: {
                         select: {
                             picture: true
@@ -60,15 +55,7 @@ export default async function handler(
                     createdAt: 'desc'
                 }
             })
-            const listArenaName = await prisma.arena.findMany({
-                select: {
-                    name: true
-                },
-                orderBy: {
-                    name: 'desc'
-                },
-                distinct: ['name']
-            })
+            
             const totalRecords = records.length;
             const totalPages = Math.ceil(totalRecords / limit);
 
@@ -81,12 +68,11 @@ export default async function handler(
             const endIndex = req.body.page * limit;
             const currentRecords = records.slice(startIndex, endIndex);
 
-            listArenaName.push({name: 'All'})
             
             res.status(200).json({ 
                 success: true,
                 records: currentRecords,
-                arenaList: listArenaName,
+                arenaList: [],
                 totalRecords: totalRecords,
                 currentNumber: req.body.page,
                 paginationNumbers: paginationNumbers

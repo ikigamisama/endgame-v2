@@ -64,7 +64,6 @@ model Boss {
 
 model Arena {
   uid       String   @id @default(uuid())
-  name      String?
   host_id   String
   mode      String?
   type      String
@@ -92,6 +91,7 @@ model ArenaPlayer {
 
 model Draft {
   uid                  String           @id @default(uuid())
+  name                 String?
   arenaID              String?
   bossID               String?
   timer                Int              @default(30)

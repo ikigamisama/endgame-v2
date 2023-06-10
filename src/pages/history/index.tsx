@@ -148,7 +148,7 @@ const History: NextPage = () => {
               <HistoryCardWrapper>
                 <HistoryPaddingWrap>
                   <HistoryTitleText>History</HistoryTitleText>
-                  <FormControl mb="25px">
+                  {/* <FormControl mb="25px">
                     <FormLabelText>Select Match</FormLabelText>
                     <FormSelect
                       placeContent="Select Avatar"
@@ -164,7 +164,7 @@ const History: NextPage = () => {
                         </option>
                       ))}
                     </FormSelect>
-                  </FormControl>
+                  </FormControl> */}
 
                   {recordData.isLoading === true ? (
                     <Center height="300px">

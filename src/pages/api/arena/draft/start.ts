@@ -18,6 +18,7 @@ export default async function handler(
                 let getSequenceList = createSequence(req.body.mode)
                 const createDraft = await prisma.draft.create({
                     data:{
+                        name: 'Endgame' + ' - ' + req.body.player1_name + ' vs ' + req.body.player2_name,
                         arenaID: req.body.arenaID,
                         bossID: req.body.boss_id,
                         player1_id: req.body.player1,
@@ -30,8 +31,7 @@ export default async function handler(
                         uid: req.body.arenaID,
                     },
                     data:{
-                        mode: req.body.mode,
-                        name: req.body.name + ' - ' + req.body.player1_name + ' vs ' + req.body.player2_name
+                        mode: req.body.mode
                     }
                 })
                 
