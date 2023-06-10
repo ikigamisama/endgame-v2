@@ -119,8 +119,30 @@ const ArenaPlayerLogin: NextPage = () => {
     watchAvatar: any = watch("avatar");
 
   const submitPlayerLogin: SubmitHandler<PlayerLoginProps> = async (data) => {
-    setLoadingSubmit(true);
-    authCheck.mutate({ ...data, arenaID: router.query.arenaID });
+    if (watchAvatar !== "") {
+      setLoadingSubmit(true);
+      authCheck.mutate({ ...data, arenaID: router.query.arenaID });
+    } else {
+      toast({
+        position: "top-right",
+        render: () => (
+          <ToastBox
+            px={8}
+            py={6}
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            gap={4}
+            borderLeft="10px solid #95292D"
+          >
+            <CheckCircleIcon boxSize={5} />
+            <ToastText>Choose your avatar</ToastText>
+          </ToastBox>
+        ),
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
   return (
     <>
