@@ -66,7 +66,8 @@ export default async function handler(
                 },
                 orderBy: {
                     name: 'desc'
-                }
+                },
+                distinct: ['name']
             })
             const totalRecords = records.length;
             const totalPages = Math.ceil(totalRecords / limit);
