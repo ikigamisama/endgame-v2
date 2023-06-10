@@ -81,7 +81,7 @@ const Arena: NextPage = () => {
   const { handleSubmit, control, watch, setValue } = useForm<ArenaDraftProps>({
     defaultValues: {
       user_gm_id: "",
-      name: "",
+      name: "Endgame ",
       mode: "3v3",
       is_manual_select_boss: false,
       boss_id: "",
@@ -155,10 +155,16 @@ const Arena: NextPage = () => {
       const listResponse = await api.get("/arena/get");
       return listResponse.data;
     },
-    refetchOnWindowFocus: false,
     onSuccess: (data: any) => {
-      if (state.user.role === "GM") {
-        setValue("name", data.arena.name);
+      if (state?.user?.role === "GM") {
+        let matchName = "";
+        if (data.arena.name.includes(" - ")) {
+          let newNameMatchSplit = data.arena.name.split(" - ");
+          matchName = newNameMatchSplit[0];
+        } else {
+          matchName = data.arena.name;
+        }
+        setValue("name", matchName);
       }
     },
   });
@@ -225,10 +231,13 @@ const Arena: NextPage = () => {
     setLoadingSubmit(true);
     if (player1.user_id !== "" && player2.user_id !== "") {
       startDraft.mutate({
+        name: data.name,
         mode: data.mode,
         arenaID: arena_id,
         player1: player1.user_id,
         player2: player2.user_id,
+        player1_name: player1.user?.username,
+        player2_name: player2.user?.username,
         boss_id: data.boss_id,
         function: `arena-player-route_${router.query.arenaID}`,
         type: "start_drafting",

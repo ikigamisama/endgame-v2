@@ -31,6 +31,7 @@ export default async function handler(
                     },
                     data:{
                         mode: req.body.mode,
+                        name: req.body.name + ' - ' + req.body.player1_name + ' vs ' + req.body.player2_name
                     }
                 })
                 
