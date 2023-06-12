@@ -115,6 +115,8 @@ const Arena: NextPage = () => {
     setPlayerFunctionType,
     setInstantNewArenaPlayer,
     setInstantRemoveArenaPlayer,
+    gameType,
+    setGameType,
   ] = useArenaStore((state) => [
     state.arenaPlayers,
     state.setArenaPlayersList,
@@ -132,6 +134,8 @@ const Arena: NextPage = () => {
     state.setPlayerFunctionType,
     state.setInstantNewArenaPlayer,
     state.setInstantRemoveArenaPlayer,
+    state.gameType,
+    state.setGameType,
   ]);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
@@ -154,7 +158,11 @@ const Arena: NextPage = () => {
       const listResponse = await api.get("/arena/get");
       return listResponse.data;
     },
-    onSuccess: (data: any) => {},
+    onSuccess: (data: any) => {
+      if (state?.user.role === "GM") {
+        setGameType(data.arena.type);
+      }
+    },
   });
 
   const bossListQuery = useQuery({
@@ -221,6 +229,7 @@ const Arena: NextPage = () => {
       startDraft.mutate({
         mode: data.mode,
         arenaID: arena_id,
+        arena_type: gameType,
         player1: player1.user_id,
         player2: player2.user_id,
         player1_name: player1.user?.username,

@@ -239,7 +239,8 @@ export type ArenaPlayersState = {
     player1: ArenaPlayers
     player2: ArenaPlayers
     modal_title: string
-    player_function_type: ArenaPlayersPayloadFeature
+    player_function_type: ArenaPlayersPayloadFeature,
+    gameType: string
 }
 
 export type ArenaPlayerFunction = {
@@ -252,6 +253,7 @@ export type ArenaPlayerFunction = {
     setPlayerFunctionType: (data: ArenaPlayersPayloadFeature) => void
     setInstantNewArenaPlayer: (arenaPlayer: ArenaPlayers) => void
     setInstantRemoveArenaPlayer: (arenaID: string) => void
+    setGameType: (gameType: string) => void
 }
 
 export type PusherType = {
@@ -355,6 +357,7 @@ export type DraftStateProps = {
     mode: string
     winnerButton: boolean,
     isGMDoneDeclareWinner: boolean,
+    gameType: string
 }
 
 export type DraftFunctions = {
@@ -391,6 +394,7 @@ export type DraftFunctions = {
     updatePickDraftCharacters: (characterID: string, index: string, characterInfo: CharacterInfoProps, pick: DraftInfoProps[][], pickArrangeList: DraftCharacterList) => void
     setWinnerButton: (winnerButton: boolean) => void,
     setIsGMDoneDeclareWinner: (isDeclareWinner: boolean) => void
+    setGameType: (gameType: string) => void
 }
 
 export declare interface CharacterDraftPayloadProps {

@@ -86,6 +86,7 @@ const initialState: DraftStateProps = {
     mode: "3v3",
     winnerButton: false,
     isGMDoneDeclareWinner: false,
+    gameType: ''
 }
 
 export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get) => ({ 
@@ -210,6 +211,9 @@ export const useDraftStore = create<DraftStateProps & DraftFunctions>((set, get)
     },
     setIsGMDoneDeclareWinner: (isDeclareWinner: boolean) => {
         set({isGMDoneDeclareWinner: isDeclareWinner})
+    },
+    setGameType: (gameType: string) => {
+        set({gameType: gameType})
     }
 }))
 

@@ -49,7 +49,8 @@ const initialState: ArenaPlayersState = {
     player_function_type: {
         player: "player1",
         type: 'insert'
-    }
+    },
+    gameType: ''
 }
 
 
@@ -84,7 +85,10 @@ export const useArenaStore = create<ArenaPlayersState & ArenaPlayerFunction>((se
     setInstantRemoveArenaPlayer: (arenaID: string) => {
         let arenaNewPlayers = get().arenaPlayers.filter((i) => i.id !== arenaID);
         set({arenaPlayers: arenaNewPlayers})
-    }
+    },
+    setGameType: (gameType: string) => {
+        set({gameType:gameType})
+    }   
 }))
 
 

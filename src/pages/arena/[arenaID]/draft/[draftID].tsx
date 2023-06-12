@@ -141,6 +141,8 @@ const Drafting: NextPage = () => {
     setCharactersList,
     isGMDoneDeclareWinner,
     setIsGMDoneDeclareWinner,
+    gameType,
+    setGameType,
   ] = useDraftStore((state) => [
     state.applyCharacterModal,
     state.setApplyCharacterModal,
@@ -196,6 +198,8 @@ const Drafting: NextPage = () => {
     state.setCharactersList,
     state.isGMDoneDeclareWinner,
     state.setIsGMDoneDeclareWinner,
+    state.gameType,
+    state.setGameType,
   ]);
 
   const [
@@ -288,6 +292,7 @@ const Drafting: NextPage = () => {
         data.result.winner_user_id !== null ? true : false
       );
       setWinnerButton(data.result.winner_user_id !== null ? true : false);
+      setGameType(data.result.arena.type);
 
       if (data.result.bossID !== "" || data.result.bossID !== null) {
         setBossInfo(data.result.boss);
@@ -844,8 +849,11 @@ const Drafting: NextPage = () => {
     startDraft.mutate({
       mode: mode,
       arenaID: router.query.arenaID,
+      arena_type: gameType,
       player1: player1.id,
       player2: player2.id,
+      player1_name: player1.username,
+      player2_name: player2.username,
       boss_id: null,
       function: `restart_draft${router.query.draftID}`,
       type: "start_drafting",
@@ -855,8 +863,11 @@ const Drafting: NextPage = () => {
     startDraft.mutate({
       mode: mode,
       arenaID: router.query.arenaID,
+      arena_type: gameType,
       player1: player2.id,
       player2: player1.id,
+      player1_name: player1.username,
+      player2_name: player2.username,
       boss_id: null,
       function: `switch_layer_draft${router.query.draftID}`,
       type: "switch_drafting",
