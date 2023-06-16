@@ -198,6 +198,7 @@ export type UserSettingsProp = {
 };
 
 export declare interface UserDataPropState {
+
     user: UserDataProp;
     settings: UserSettingsProp;
     arena_id: string | string[] | undefined
@@ -517,4 +518,17 @@ export type RecordFunction = {
     setPaginationButton: (isSet: boolean, type: string) => void
     setRecordFilter: (filter: string) => void
     setRecordListFilter: (filterList: RecordFilterListProps[]) => void
+}
+
+export type SpiralAbyssHeaderProps = {
+    onAcceptRestartDraft?: () => void
+    onAcceptSwitchPlayersDraft?: () => void
+    onOpenCharacterModal?: () => void
+    state?: UserDataPropState 
+    socket?: any
+    router?: NextRouter
+    winnerButton: boolean
+    setPopupModalWinner?: (popup: boolean) => void
+    setBackgroundVid?: ((data: VideoPropsSettings) => void) | undefined
+    isGMDoneDeclareWinner?: boolean
 }

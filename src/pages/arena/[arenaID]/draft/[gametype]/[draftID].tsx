@@ -458,7 +458,11 @@ const Drafting: NextPage = () => {
     };
 
     const restartDraft = (data: any) => {
-      router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
+      router.push(
+        `/arena/${data.arena_id}/draft/${gameType.toLowerCase()}/${
+          data.draft_id
+        }`
+      );
     };
 
     const playerReroll = (data: any) => {
@@ -606,16 +610,16 @@ const Drafting: NextPage = () => {
 
     socket.on("back-arena", backArena);
     socket.on(`initDraft_${router.query.draftID}`, bossDraft);
-    socket.on(`restart_draft${router.query.draftID}`, restartDraft);
-    socket.on(`switch_layer_draft${router.query.draftID}`, restartDraft);
+    socket.on(`restart_draft_${router.query.draftID}`, restartDraft);
+    socket.on(`switch_layer_draft_${router.query.draftID}`, restartDraft);
     socket.on(`player_reroll_${router.query.draftID}`, playerReroll);
     socket.on(`characterDraft_${router.query.draftID}`, characterDraft);
 
     return () => {
       socket.off("back-arena", backArena);
       socket.off(`initDraft_${router.query.draftID}`, bossDraft);
-      socket.off(`restart_draft${router.query.draftID}`, restartDraft);
-      socket.off(`switch_layer_draft${router.query.draftID}`, restartDraft);
+      socket.off(`restart_draft_${router.query.draftID}`, restartDraft);
+      socket.off(`switch_layer_draft_${router.query.draftID}`, restartDraft);
       socket.off(`player_reroll_${router.query.draftID}`, playerReroll);
       socket.off(`characterDraft_${router.query.draftID}`, characterDraft);
     };
@@ -855,7 +859,7 @@ const Drafting: NextPage = () => {
       player1_name: player1.username,
       player2_name: player2.username,
       boss_id: null,
-      function: `restart_draft${router.query.draftID}`,
+      function: `restart_draft_${router.query.draftID}`,
       type: "start_drafting",
     });
   };
@@ -869,7 +873,7 @@ const Drafting: NextPage = () => {
       player1_name: player1.username,
       player2_name: player2.username,
       boss_id: null,
-      function: `switch_layer_draft${router.query.draftID}`,
+      function: `switch_layer_draft_${router.query.draftID}`,
       type: "switch_drafting",
     });
   };
