@@ -159,7 +159,7 @@ const Arena: NextPage = () => {
       return listResponse.data;
     },
     onSuccess: (data: any) => {
-      if (state?.user.role === "GM") {
+      if (state.user.role === "GM") {
         setGameType(data.arena.type);
       }
     },
@@ -180,17 +180,18 @@ const Arena: NextPage = () => {
     queryKey: ["listArenaPlayers"],
     queryFn: async () => {
       const listResponse = await api.post("/arena/players/list", {
-        arenaID: router.query?.arenaID,
+        arenaID: router?.query?.arenaID,
         role: state.user.role,
       });
-      return listResponse.data.list;
+      return listResponse.data;
     },
-    onSuccess: (data: ArenaPlayers[]) => {
-      let removePlayerIfSelected = data.filter(
-        (i) => i.id !== player1.id && i.id !== player2.id
+    onSuccess: (data: any) => {
+      let removePlayerIfSelected = data.list.filter(
+        (i: any) => i.id !== player1.id && i.id !== player2.id
       );
 
       setArenaPlayersList(removePlayerIfSelected);
+      setGameType(data.details.type);
     },
   });
 
@@ -218,7 +219,11 @@ const Arena: NextPage = () => {
         setLoadingSubmit(false);
 
         socket.emit("arenaPlayersProceed", data.socket);
-        router.push(`/arena/${arena_id}/draft/${data.draft_id}`);
+        router.push(
+          `/arena/${arena_id}/draft/${data.socket.gameType.toLowerCase()}/${
+            data.draft_id
+          }`
+        );
       }
     },
   });
@@ -314,7 +319,11 @@ const Arena: NextPage = () => {
         if (userData) {
           let userD = JSON.parse(userData);
           if (data.player1 === userD.id || data.player2 === userD.id) {
-            router.push(`/arena/${data.arena_id}/draft/${data.draft_id}`);
+            router.push(
+              `/arena/${data.arena_id}/draft/${data.gameType.toLowerCase()}/${
+                data.draft_id
+              }`
+            );
           }
         }
       }

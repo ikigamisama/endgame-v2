@@ -21,13 +21,21 @@ export default async function handler(
                 const getArenaPlayers = await prisma.arenaPlayer.findMany({
                     where: wherePayload,
                     include:{
-                        user: true
+                        user: true,
                     }
                 })  
+
+                const arenaDetails = await prisma.arena.findFirst({
+                    where:{
+                        uid: req.body.arenaID,
+                    }
+                })
+
                 res.status(200).json({ 
                     success: true,
                     payload: wherePayload,
                     list: getArenaPlayers,
+                    details: arenaDetails
                 })
             }
             catch(err) {

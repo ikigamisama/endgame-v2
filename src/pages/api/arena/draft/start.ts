@@ -40,17 +40,18 @@ export default async function handler(
                 })
 
                if(updateArena && createDraft && createDraftData){
-                res.status(200).json({ 
-                    success: true,
-                    draft_id: createDraft.uid,
-                    socket:{
-                        function: req.body.function,
-                        arena_id: req.body.arenaID,
+                    res.status(200).json({ 
+                        success: true,
                         draft_id: createDraft.uid,
-                        player1: req.body.player1,
-                        player2: req.body.player2,
-                    }
-                })
+                        socket:{
+                            function: req.body.function,
+                            arena_id: req.body.arenaID,
+                            draft_id: createDraft.uid,
+                            player1: req.body.player1,
+                            player2: req.body.player2,
+                            gameType: updateArena.type
+                        }
+                    })
                }
                
             }
