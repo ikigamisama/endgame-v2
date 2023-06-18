@@ -4,6 +4,7 @@ import prisma from '@/prisma/client'
 import { getServerSession } from 'next-auth'
 import { authentication } from '@/src/pages/api/auth/[...nextauth]'
 import { createSequence, generateDraftSlot } from '@/libs/providers/draft'
+import { createSpiralAbyssSequence, generateSpiralAbyssDraft } from '@/libs/providers/spiral_abyss'
 
 export default async function handler(
     req: NextApiRequest,
@@ -15,7 +16,9 @@ export default async function handler(
 
         if(session){
             try{
-                let getSequenceList = createSequence(req.body.mode)
+                const getSequenceList = createSequence(req.body.mode),
+                    getSequenceSpiralAbyss = createSpiralAbyssSequence();
+
                 const createDraft = await prisma.draft.create({
                     data:{
                         name: 'Endgame ' + req.body.arena_type + ' - ' + req.body.player1_name + ' vs ' + req.body.player2_name,
@@ -23,7 +26,7 @@ export default async function handler(
                         bossID: req.body.boss_id,
                         player1_id: req.body.player1,
                         player2_id: req.body.player2,
-                        sequence: getSequenceList
+                        sequence: req.body.arena_type === 'Spiral Abyss' ? getSequenceSpiralAbyss : getSequenceList
                     }
                 })
                 const updateArena = await prisma.arena.update({
@@ -34,11 +37,13 @@ export default async function handler(
                         mode: req.body.mode
                     }
                 })
-                
-                const createDraftData = await prisma.characterDraft.createMany({
-                    data: generateDraftSlot(req.body.mode, createDraft.uid, req.body.player1, req.body.player2)
-                })
 
+                console.log(generateSpiralAbyssDraft(createDraft.uid, req.body.player1, req.body.player2))
+                    
+                const createDraftData = await prisma.characterDraft.createMany({
+                    data: req.body.arena_type === 'Spiral Abyss' ? generateSpiralAbyssDraft(createDraft.uid, req.body.player1, req.body.player2) : generateDraftSlot(req.body.mode, createDraft.uid, req.body.player1, req.body.player2) 
+                })
+                
                if(updateArena && createDraft && createDraftData){
                     res.status(200).json({ 
                         success: true,

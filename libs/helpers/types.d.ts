@@ -114,6 +114,7 @@ export declare interface ProfileChanges {
     avatar: string | undefined
     password?: string
     confirm_password?: string
+
 }
 
 export declare interface BossInfoProps {
@@ -531,4 +532,41 @@ export type SpiralAbyssHeaderProps = {
     setPopupModalWinner?: (popup: boolean) => void
     setBackgroundVid?: ((data: VideoPropsSettings) => void) | undefined
     isGMDoneDeclareWinner?: boolean
+}
+
+export type DraftSpiralAbyssProps = {
+    applyCharacterModal: boolean
+    state?: UserDataPropState 
+    timer?: number
+    onCharacterPick?: any
+    characterListQuery?: any
+    characterPauseDraft?: boolean
+}
+
+
+export type SpiralAbyssStateProps = {
+    pick: {
+        player1: DraftInfoProps[],
+        player2: DraftInfoProps[],
+    },
+    ban: {
+        player1: DraftInfoProps[],
+        player2: DraftInfoProps[],
+    }
+}
+
+export type SpiralAbyssFunction = {
+    setPickPlayer1: (pickList: DraftInfoProps[]) => void
+    setPickPlayer2: (pickList: DraftInfoProps[]) => void
+    setBanPlayer1: (banList: DraftInfoProps[]) => void
+    setBanPlayer2: (banList: DraftInfoProps[]) => void
+    updatePlayer1PickDraft: (characterID: string, index: string, characterInfo: CharacterInfoProps) => void 
+    updatePlayer2PickDraft: (characterID: string, index: string, characterInfo: CharacterInfoProps) => void 
+    updatePlayer1BanDraft: (characterID: string, index: string, characterInfo: CharacterInfoProps) => void 
+    updatePlayer2BanDraft: (characterID: string, index: string, characterInfo: CharacterInfoProps) => void 
+    updateDraftList: () => void
+}
+
+export type DraftCountdownSpiralAbyssProps = {
+    timer: number
 }

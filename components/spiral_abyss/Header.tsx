@@ -80,12 +80,12 @@ const Header: React.FC<SpiralAbyssHeaderProps> = ({
           <Flex flex={1} gap={4} justifyContent="flex-start">
             {state?.user.role === "GM" && (
               <ButtonPopUpNav
-                onClick={() =>
+                onClick={() => {
                   socket.emit("backArena", {
-                    draft_id: router?.query.draftID,
-                    arena_id: router?.query.arenaID,
-                  })
-                }
+                    draft_id: router?.query?.draftID,
+                    arena_id: router?.query?.arenaID,
+                  });
+                }}
               >
                 <BackIcon />
               </ButtonPopUpNav>

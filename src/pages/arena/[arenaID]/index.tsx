@@ -219,11 +219,15 @@ const Arena: NextPage = () => {
         setLoadingSubmit(false);
 
         socket.emit("arenaPlayersProceed", data.socket);
-        router.push(
-          `/arena/${arena_id}/draft/${data.socket.gameType.toLowerCase()}/${
-            data.draft_id
-          }`
-        );
+        if (data.socket.gameType !== "Spiral Abyss") {
+          router.push(
+            `/arena/${arena_id}/draft/${data.socket.gameType.toLowerCase()}/${
+              data.draft_id
+            }`
+          );
+        } else {
+          router.push(`/arena/${arena_id}/draft/spiral_abyss/${data.draft_id}`);
+        }
       }
     },
   });
@@ -292,7 +296,6 @@ const Arena: NextPage = () => {
   useEffect(() => {
     const newArenaPlayers = (data: any) => {
       if (data.arenaID === router.query.arenaID) {
-        console.log(data);
         if (!isPlayerAlreadyOnList(data.arenaPlayers.id)) {
           setInstantNewArenaPlayer({
             id: data.arenaPlayers.id,
@@ -307,7 +310,6 @@ const Arena: NextPage = () => {
     };
 
     const removeArenaPlayers = (data: any) => {
-      console.log(data);
       if (data.arenaID === router.query.arenaID) {
         setInstantRemoveArenaPlayer(data.arenaPlayerID);
       }
@@ -319,11 +321,17 @@ const Arena: NextPage = () => {
         if (userData) {
           let userD = JSON.parse(userData);
           if (data.player1 === userD.id || data.player2 === userD.id) {
-            router.push(
-              `/arena/${data.arena_id}/draft/${data.gameType.toLowerCase()}/${
-                data.draft_id
-              }`
-            );
+            if (data.gameType !== "Spiral Abyss") {
+              router.push(
+                `/arena/${data.arena_id}/draft/${data.gameType.toLowerCase()}/${
+                  data.draft_id
+                }`
+              );
+            } else {
+              router.push(
+                `/arena/${data.arena_id}/draft/spiral_abyss/${data.draft_id}`
+              );
+            }
           }
         }
       }
@@ -549,20 +557,23 @@ const Arena: NextPage = () => {
                         >
                           <ArenaPlayersListScroll heightarea="535px">
                             <ArenaPaddingWrap>
-                              <FormControl mb="35px">
-                                <FormLabelText>Mode</FormLabelText>
+                              {gameType === "Casuals" ||
+                                (gameType === "Officials" && (
+                                  <FormControl mb="35px">
+                                    <FormLabelText>Mode</FormLabelText>
 
-                                <HStack {...group} w="100">
-                                  {modeOption.map((value) => {
-                                    const radio = getRadioProps({ value });
-                                    return (
-                                      <RadioListCard key={value} {...radio}>
-                                        {value}
-                                      </RadioListCard>
-                                    );
-                                  })}
-                                </HStack>
-                              </FormControl>
+                                    <HStack {...group} w="100">
+                                      {modeOption.map((value) => {
+                                        const radio = getRadioProps({ value });
+                                        return (
+                                          <RadioListCard key={value} {...radio}>
+                                            {value}
+                                          </RadioListCard>
+                                        );
+                                      })}
+                                    </HStack>
+                                  </FormControl>
+                                ))}
 
                               <SimpleGrid columns={2} spacing={8} mb="35px">
                                 <FormControl>
@@ -690,68 +701,75 @@ const Arena: NextPage = () => {
                                 </FormSubmitButton>
                               </FormControl>
 
-                              <FormControl mb="35px">
-                                <Controller
-                                  render={({
-                                    field: { onChange, value, name },
-                                  }) => (
-                                    <ArenaCheckbox
-                                      size="lg"
-                                      onChange={onChange}
-                                      value={value}
-                                      name={name}
-                                      defaultChecked={value}
-                                    >
-                                      Manually Select Boss
-                                    </ArenaCheckbox>
-                                  )}
-                                  name="is_manual_select_boss"
-                                  control={control}
-                                />
-                              </FormControl>
+                              {gameType === "Casuals" ||
+                                (gameType === "Officials" && (
+                                  <>
+                                    <FormControl mb="35px">
+                                      <Controller
+                                        render={({
+                                          field: { onChange, value, name },
+                                        }) => (
+                                          <ArenaCheckbox
+                                            size="lg"
+                                            onChange={onChange}
+                                            value={value}
+                                            name={name}
+                                            defaultChecked={value}
+                                          >
+                                            Manually Select Boss
+                                          </ArenaCheckbox>
+                                        )}
+                                        name="is_manual_select_boss"
+                                        control={control}
+                                      />
+                                    </FormControl>
 
-                              <HStack
-                                hidden={
-                                  watchCheckboxBoss === false ||
-                                  bossListQuery.isLoading === true
-                                    ? true
-                                    : false
-                                }
-                                gap={4}
-                                alignItems="center"
-                                mb="35px"
-                              >
-                                <FormControl>
-                                  <FormLabelText>Boss Enemy</FormLabelText>
-                                  <Controller
-                                    render={({
-                                      field: { onChange, value, name },
-                                    }) => (
-                                      <FormSelect
-                                        placeholder="Select Boss"
-                                        onChange={onChange}
-                                        value={value}
-                                        name={name}
-                                      >
-                                        {bossList.map((b, i) => (
-                                          <option value={b.id} key={i}>
-                                            {b.name}
-                                          </option>
-                                        ))}
-                                      </FormSelect>
-                                    )}
-                                    name="boss_id"
-                                    control={control}
-                                  />
-                                </FormControl>
-                                <Box>
-                                  <ArenaBossCircleWrapper>
-                                    {bossImg !== "" ? (
-                                      <Image src={bossImg} w="100%" />
-                                    ) : null}
-                                  </ArenaBossCircleWrapper>
-                                </Box>
-                              </HStack>
+                                    <HStack
+                                      hidden={
+                                        watchCheckboxBoss === false ||
+                                        bossListQuery.isLoading === true
+                                          ? true
+                                          : false
+                                      }
+                                      gap={4}
+                                      alignItems="center"
+                                      mb="35px"
+                                    >
+                                      <FormControl>
+                                        <FormLabelText>
+                                          Boss Enemy
+                                        </FormLabelText>
+                                        <Controller
+                                          render={({
+                                            field: { onChange, value, name },
+                                          }) => (
+                                            <FormSelect
+                                              placeholder="Select Boss"
+                                              onChange={onChange}
+                                              value={value}
+                                              name={name}
+                                            >
+                                              {bossList.map((b, i) => (
+                                                <option value={b.id} key={i}>
+                                                  {b.name}
+                                                </option>
+                                              ))}
+                                            </FormSelect>
+                                          )}
+                                          name="boss_id"
+                                          control={control}
+                                        />
+                                      </FormControl>
+                                      <Box>
+                                        <ArenaBossCircleWrapper>
+                                          {bossImg !== "" ? (
+                                            <Image src={bossImg} w="100%" />
+                                          ) : null}
+                                        </ArenaBossCircleWrapper>
+                                      </Box>
+                                    </HStack>
+                                  </>
+                                ))}
                             </ArenaPaddingWrap>
                           </ArenaPlayersListScroll>
 

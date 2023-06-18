@@ -244,69 +244,73 @@ const Drafting: NextPage = () => {
     },
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
-      setTimer(data.result.timer);
-      setIsPause(true);
-      setPlayer1Info({
-        id: data.result.player1.id,
-        avatar: data.result.player1.avatar,
-        username: data.result.player1.username,
-      });
-      setPlayer2Info({
-        id: data.result.player2.id,
-        avatar: data.result.player2.avatar,
-        username: data.result.player2.username,
-      });
+      if (data.success === true) {
+        setTimer(data.result.timer);
+        setIsPause(true);
+        setPlayer1Info({
+          id: data.result.player1.id,
+          avatar: data.result.player1.avatar,
+          username: data.result.player1.username,
+        });
+        setPlayer2Info({
+          id: data.result.player2.id,
+          avatar: data.result.player2.avatar,
+          username: data.result.player2.username,
+        });
 
-      setIsStartDraft(data.result.current_status_draft === null ? false : true);
-
-      let pickList: DraftInfoProps[] = [],
-        banList: DraftInfoProps[] = [],
-        characterDraft: CharacterDraftPayloadProps[] = [];
-
-      data.result.CharacterDraft.map((i: DraftInfoProps) => {
-        if (i.status === "pick") {
-          pickList.push(i);
-        } else {
-          banList.push(i);
-        }
-        const characterDraftInfo: CharacterDraftPayloadProps = {
-          draftID: i.draftID,
-          index: i.index,
-          playerID: i.playerID || "",
-          status: i.status,
-          characterID: i.characterID || "",
-        };
-
-        characterDraft.push(characterDraftInfo);
-      });
-      setCharacterDraftList(characterDraft);
-      setPickList(pickList, data.result.arena.mode);
-      setBanList(banList, data.result.arena.mode);
-      setSequenceList(JSON.parse(data.result.sequence));
-      setMode(data.result.arena.mode);
-      setIsDoneChooseReroll(false);
-      setApplyBossModal(false);
-      setCurrentBossFlash("");
-      setPopupModalWinner(false);
-      setIsGMDoneDeclareWinner(
-        data.result.winner_user_id !== null ? true : false
-      );
-      setWinnerButton(data.result.winner_user_id !== null ? true : false);
-      setGameType(data.result.arena.type);
-
-      if (data.result.bossID !== "" || data.result.bossID !== null) {
-        setBossInfo(data.result.boss);
-      }
-
-      if (
-        data.result.current_status_draft !== null ||
-        data.result.current_status_draft !== "init"
-      ) {
-        let credatedSequence = getSequenceByIndex(
-          data.result.current_status_draft,
-          JSON.parse(data.result.sequence)
+        setIsStartDraft(
+          data.result.current_status_draft === null ? false : true
         );
-        setCurrentSequence(credatedSequence);
+
+        let pickList: DraftInfoProps[] = [],
+          banList: DraftInfoProps[] = [],
+          characterDraft: CharacterDraftPayloadProps[] = [];
+
+        data.result.CharacterDraft.map((i: DraftInfoProps) => {
+          if (i.status === "pick") {
+            pickList.push(i);
+          } else {
+            banList.push(i);
+          }
+          const characterDraftInfo: CharacterDraftPayloadProps = {
+            draftID: i.draftID,
+            index: i.index,
+            playerID: i.playerID || "",
+            status: i.status,
+            characterID: i.characterID || "",
+          };
+
+          characterDraft.push(characterDraftInfo);
+        });
+        setCharacterDraftList(characterDraft);
+        setPickList(pickList, data.result.arena.mode);
+        setBanList(banList, data.result.arena.mode);
+        setSequenceList(JSON.parse(data.result.sequence));
+        setMode(data.result.arena.mode);
+        setIsDoneChooseReroll(false);
+        setApplyBossModal(false);
+        setCurrentBossFlash("");
+        setPopupModalWinner(false);
+        setIsGMDoneDeclareWinner(
+          data.result.winner_user_id !== null ? true : false
+        );
+        setWinnerButton(data.result.winner_user_id !== null ? true : false);
+        setGameType(data.result.arena.type);
+
+        if (data.result.bossID !== "" || data.result.bossID !== null) {
+          setBossInfo(data.result.boss);
+        }
+
+        if (
+          data.result.current_status_draft !== null ||
+          data.result.current_status_draft !== "init"
+        ) {
+          let credatedSequence = getSequenceByIndex(
+            data.result.current_status_draft,
+            JSON.parse(data.result.sequence)
+          );
+          setCurrentSequence(credatedSequence);
+        }
       }
     },
   });
@@ -870,8 +874,8 @@ const Drafting: NextPage = () => {
       arena_type: gameType,
       player1: player2.id,
       player2: player1.id,
-      player1_name: player1.username,
-      player2_name: player2.username,
+      player1_name: player2.username,
+      player2_name: player1.username,
       boss_id: null,
       function: `switch_layer_draft_${router.query.draftID}`,
       type: "switch_drafting",
