@@ -87,18 +87,9 @@ const Arena: NextPage = () => {
     },
   });
 
-  const [arena_id, isLoadingSubmit, setLoadingSubmit] = userStore((state) => [
-    state.arena_id,
-    state.isLoadingSubmit,
-    state.setLoadingSubmit,
-  ]);
-
-  const [bossList, setBossList] = useSettingsStore((state) => [
-    state.bossList,
-    state.setBossList,
-  ]);
-
   const [
+    gameType,
+    setGameType,
     arenaPlayers,
     setArenaPlayersList,
     modal,
@@ -115,9 +106,9 @@ const Arena: NextPage = () => {
     setPlayerFunctionType,
     setInstantNewArenaPlayer,
     setInstantRemoveArenaPlayer,
-    gameType,
-    setGameType,
   ] = useArenaStore((state) => [
+    state.gameType,
+    state.setGameType,
     state.arenaPlayers,
     state.setArenaPlayersList,
     state.modal,
@@ -134,8 +125,17 @@ const Arena: NextPage = () => {
     state.setPlayerFunctionType,
     state.setInstantNewArenaPlayer,
     state.setInstantRemoveArenaPlayer,
-    state.gameType,
-    state.setGameType,
+  ]);
+
+  const [arena_id, isLoadingSubmit, setLoadingSubmit] = userStore((state) => [
+    state.arena_id,
+    state.isLoadingSubmit,
+    state.setLoadingSubmit,
+  ]);
+
+  const [bossList, setBossList] = useSettingsStore((state) => [
+    state.bossList,
+    state.setBossList,
   ]);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
@@ -158,10 +158,9 @@ const Arena: NextPage = () => {
       const listResponse = await api.get("/arena/get");
       return listResponse.data;
     },
+    enabled: state.user.role === "GM" ? true : false,
     onSuccess: (data: any) => {
-      if (state.user.role === "GM") {
-        setGameType(data.arena.type);
-      }
+      setGameType(data.arena.type);
     },
   });
 
@@ -186,12 +185,12 @@ const Arena: NextPage = () => {
       return listResponse.data;
     },
     onSuccess: (data: any) => {
+      setGameType(data.details.type);
       let removePlayerIfSelected = data.list.filter(
         (i: any) => i.id !== player1.id && i.id !== player2.id
       );
 
       setArenaPlayersList(removePlayerIfSelected);
-      setGameType(data.details.type);
     },
   });
 
@@ -557,23 +556,22 @@ const Arena: NextPage = () => {
                         >
                           <ArenaPlayersListScroll heightarea="535px">
                             <ArenaPaddingWrap>
-                              {gameType === "Casuals" ||
-                                (gameType === "Officials" && (
-                                  <FormControl mb="35px">
-                                    <FormLabelText>Mode</FormLabelText>
+                              {gameType !== "Spiral Abyss" && (
+                                <FormControl mb="35px">
+                                  <FormLabelText>Mode</FormLabelText>
 
-                                    <HStack {...group} w="100">
-                                      {modeOption.map((value) => {
-                                        const radio = getRadioProps({ value });
-                                        return (
-                                          <RadioListCard key={value} {...radio}>
-                                            {value}
-                                          </RadioListCard>
-                                        );
-                                      })}
-                                    </HStack>
-                                  </FormControl>
-                                ))}
+                                  <HStack {...group} w="100">
+                                    {modeOption.map((value) => {
+                                      const radio = getRadioProps({ value });
+                                      return (
+                                        <RadioListCard key={value} {...radio}>
+                                          {value}
+                                        </RadioListCard>
+                                      );
+                                    })}
+                                  </HStack>
+                                </FormControl>
+                              )}
 
                               <SimpleGrid columns={2} spacing={8} mb="35px">
                                 <FormControl>
@@ -701,75 +699,72 @@ const Arena: NextPage = () => {
                                 </FormSubmitButton>
                               </FormControl>
 
-                              {gameType === "Casuals" ||
-                                (gameType === "Officials" && (
-                                  <>
-                                    <FormControl mb="35px">
+                              {gameType !== "Spiral Abyss" && (
+                                <>
+                                  <FormControl mb="35px">
+                                    <Controller
+                                      render={({
+                                        field: { onChange, value, name },
+                                      }) => (
+                                        <ArenaCheckbox
+                                          size="lg"
+                                          onChange={onChange}
+                                          value={value}
+                                          name={name}
+                                          defaultChecked={value}
+                                        >
+                                          Manually Select Boss
+                                        </ArenaCheckbox>
+                                      )}
+                                      name="is_manual_select_boss"
+                                      control={control}
+                                    />
+                                  </FormControl>
+
+                                  <HStack
+                                    hidden={
+                                      watchCheckboxBoss === false ||
+                                      bossListQuery.isLoading === true
+                                        ? true
+                                        : false
+                                    }
+                                    gap={4}
+                                    alignItems="center"
+                                    mb="35px"
+                                  >
+                                    <FormControl>
+                                      <FormLabelText>Boss Enemy</FormLabelText>
                                       <Controller
                                         render={({
                                           field: { onChange, value, name },
                                         }) => (
-                                          <ArenaCheckbox
-                                            size="lg"
+                                          <FormSelect
+                                            placeholder="Select Boss"
                                             onChange={onChange}
                                             value={value}
                                             name={name}
-                                            defaultChecked={value}
                                           >
-                                            Manually Select Boss
-                                          </ArenaCheckbox>
+                                            {bossList.map((b, i) => (
+                                              <option value={b.id} key={i}>
+                                                {b.name}
+                                              </option>
+                                            ))}
+                                          </FormSelect>
                                         )}
-                                        name="is_manual_select_boss"
+                                        name="boss_id"
                                         control={control}
                                       />
                                     </FormControl>
-
-                                    <HStack
-                                      hidden={
-                                        watchCheckboxBoss === false ||
-                                        bossListQuery.isLoading === true
-                                          ? true
-                                          : false
-                                      }
-                                      gap={4}
-                                      alignItems="center"
-                                      mb="35px"
-                                    >
-                                      <FormControl>
-                                        <FormLabelText>
-                                          Boss Enemy
-                                        </FormLabelText>
-                                        <Controller
-                                          render={({
-                                            field: { onChange, value, name },
-                                          }) => (
-                                            <FormSelect
-                                              placeholder="Select Boss"
-                                              onChange={onChange}
-                                              value={value}
-                                              name={name}
-                                            >
-                                              {bossList.map((b, i) => (
-                                                <option value={b.id} key={i}>
-                                                  {b.name}
-                                                </option>
-                                              ))}
-                                            </FormSelect>
-                                          )}
-                                          name="boss_id"
-                                          control={control}
-                                        />
-                                      </FormControl>
-                                      <Box>
-                                        <ArenaBossCircleWrapper>
-                                          {bossImg !== "" ? (
-                                            <Image src={bossImg} w="100%" />
-                                          ) : null}
-                                        </ArenaBossCircleWrapper>
-                                      </Box>
-                                    </HStack>
-                                  </>
-                                ))}
+                                    <Box>
+                                      <ArenaBossCircleWrapper>
+                                        {bossImg !== "" ? (
+                                          <Image src={bossImg} w="100%" />
+                                        ) : null}
+                                      </ArenaBossCircleWrapper>
+                                    </Box>
+                                  </HStack>
+                                </>
+                              )}
                             </ArenaPaddingWrap>
                           </ArenaPlayersListScroll>
 

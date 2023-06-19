@@ -4,6 +4,7 @@ import { mountStoreDevtool } from 'simple-zustand-devtools'
 
 
 const initialState: ArenaPlayersState = {
+    gameType: 'Casuals',
     arenaPlayers: [],
     playerInfo: {
         id: '',
@@ -50,7 +51,7 @@ const initialState: ArenaPlayersState = {
         player: "player1",
         type: 'insert'
     },
-    gameType: ''
+   
 }
 
 
