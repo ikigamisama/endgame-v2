@@ -37,8 +37,6 @@ export default async function handler(
                         mode: req.body.mode
                     }
                 })
-
-                console.log(generateSpiralAbyssDraft(createDraft.uid, req.body.player1, req.body.player2))
                     
                 const createDraftData = await prisma.characterDraft.createMany({
                     data: req.body.arena_type === 'Spiral Abyss' ? generateSpiralAbyssDraft(createDraft.uid, req.body.player1, req.body.player2) : generateDraftSlot(req.body.mode, createDraft.uid, req.body.player1, req.body.player2) 

@@ -11,7 +11,11 @@ const initState: SpiralAbyssStateProps = {
     ban: {
         player1: [],
         player2: []
-    }
+    },
+    timer: 0,
+    isPauseTimer: true,
+    isPauseCharacterDraft: false,
+    isPopupWinnerModal: false,
 }
 
 
@@ -112,10 +116,19 @@ export const useSpiralAbyssDraftStore = create<SpiralAbyssStateProps & SpiralAby
               },
             };
         });
-    } ,
-    updateDraftList: () => {
-        
-    }
+    },
+    setTimer: (time: number) => {
+      set({timer: time})
+    },
+    setIsPause: (method: boolean) => {
+      set({isPauseTimer: method})
+    },
+    setIsPauseCharacterDraft: (pause: boolean) => {
+      set({isPauseCharacterDraft: pause})
+    },
+    setPopupModalWinner: (popup: boolean) => {
+      set({isPopupWinnerModal: popup})
+    },
 }))
 
 mountStoreDevtool('SpiralAbyssStore', useSpiralAbyssDraftStore);

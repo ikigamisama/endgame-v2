@@ -552,7 +552,11 @@ export type SpiralAbyssStateProps = {
     ban: {
         player1: DraftInfoProps[],
         player2: DraftInfoProps[],
-    }
+    },
+    timer: number
+    isPauseTimer: boolean
+    isPauseCharacterDraft: boolean
+    isPopupWinnerModal: boolean,
 }
 
 export type SpiralAbyssFunction = {
@@ -564,7 +568,10 @@ export type SpiralAbyssFunction = {
     updatePlayer2PickDraft: (characterID: string, index: string, characterInfo: CharacterInfoProps) => void 
     updatePlayer1BanDraft: (characterID: string, index: string, characterInfo: CharacterInfoProps) => void 
     updatePlayer2BanDraft: (characterID: string, index: string, characterInfo: CharacterInfoProps) => void 
-    updateDraftList: () => void
+    setTimer: (time: number) => void
+    setIsPause: (method: boolean) => void
+    setIsPauseCharacterDraft: (pause: boolean) => void
+    setPopupModalWinner: (popup: boolean) => void
 }
 
 export type DraftCountdownSpiralAbyssProps = {

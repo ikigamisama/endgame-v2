@@ -7,7 +7,6 @@ import { socket } from "@/libs/providers/socket";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/libs/providers/api";
 import { useDraftStore } from "@/libs/store/draft";
-import { timerStore } from "@/libs/store/timer";
 import { useEffect } from "react";
 import {
   CharacterDraftPayloadProps,
@@ -86,6 +85,46 @@ const SpiralAbyssDraft: NextPage = () => {
   const router = useRouter();
 
   const [
+    pick,
+    ban,
+    timer,
+    setTimer,
+    isPauseTimer,
+    setIsPause,
+    isPauseCharacterDraft,
+    setIsPauseCharacterDraft,
+    setPickPlayer1,
+    setPickPlayer2,
+    setBanPlayer1,
+    setBanPlayer2,
+    updatePlayer1BanDraft,
+    updatePlayer2BanDraft,
+    updatePlayer1PickDraft,
+    updatePlayer2PickDraft,
+    isPopupWinnerModal,
+    setPopupModalWinner,
+  ] = useSpiralAbyssDraftStore((state) => [
+    state.pick,
+    state.ban,
+    state.timer,
+    state.setTimer,
+    state.isPauseTimer,
+    state.setIsPause,
+    state.isPauseCharacterDraft,
+    state.setIsPauseCharacterDraft,
+    state.setPickPlayer1,
+    state.setPickPlayer2,
+    state.setBanPlayer1,
+    state.setBanPlayer2,
+    state.updatePlayer1BanDraft,
+    state.updatePlayer2BanDraft,
+    state.updatePlayer1PickDraft,
+    state.updatePlayer2PickDraft,
+    state.isPopupWinnerModal,
+    state.setPopupModalWinner,
+  ]);
+
+  const [
     applyCharacterModal,
     setApplyCharacterModal,
     isStartDraft,
@@ -149,50 +188,6 @@ const SpiralAbyssDraft: NextPage = () => {
     state.setIsGMDoneDeclareWinner,
     state.gameType,
     state.setGameType,
-  ]);
-
-  const [
-    timer,
-    setTimer,
-    isPauseTimer,
-    setIsPause,
-    isPopupWinnerModal,
-    setPopupModalWinner,
-    isPauseCharacterDraft,
-    setIsPauseCharacterDraft,
-  ] = timerStore((state) => [
-    state.timer,
-    state.setTimer,
-    state.isPauseTimer,
-    state.setIsPause,
-    state.isPopupWinnerModal,
-    state.setPopupModalWinner,
-    state.isPauseCharacterDraft,
-    state.setIsPauseCharacterDraft,
-  ]);
-
-  const [
-    pick,
-    ban,
-    setPickPlayer1,
-    setPickPlayer2,
-    setBanPlayer1,
-    setBanPlayer2,
-    updatePlayer1BanDraft,
-    updatePlayer2BanDraft,
-    updatePlayer1PickDraft,
-    updatePlayer2PickDraft,
-  ] = useSpiralAbyssDraftStore((state) => [
-    state.pick,
-    state.ban,
-    state.setPickPlayer1,
-    state.setPickPlayer2,
-    state.setBanPlayer1,
-    state.setBanPlayer2,
-    state.updatePlayer1BanDraft,
-    state.updatePlayer2BanDraft,
-    state.updatePlayer1PickDraft,
-    state.updatePlayer2PickDraft,
   ]);
 
   const timerUpdate = useMutation({
@@ -367,33 +362,9 @@ const SpiralAbyssDraft: NextPage = () => {
   });
 
   useEffect(() => {
-    let intervalID: NodeJS.Timeout;
-
-    if (!isPauseTimer) {
-      intervalID = setInterval(() => {
-        let countdown: number = timer - 1;
-        if (countdown < 0) {
-          clearInterval(intervalID);
-          setIsPause(false);
-
-          if (
-            state?.user?.role === "GM" &&
-            draftSituation === "characterDraft"
-          ) {
-            onCharacterDraftChoose();
-          }
-        } else {
-          setTimer(countdown);
-        }
-      }, 1000);
-    }
-  }, [timer, isPauseTimer, state.user, draftSituation]);
-
-  useEffect(() => {
     const timerFeat = (data: any) => {
       let countdown = data.timer;
       setTimer(countdown);
-
       if (data.isPauseTimer === true) {
         setIsPause(true);
       } else {
@@ -478,8 +449,7 @@ const SpiralAbyssDraft: NextPage = () => {
                 characterChooseAudio = new Howl({
                   src: [characterInfo.ban_audio],
                 });
-              }
-              if (
+              } else if (
                 inArray(
                   sequence[sequenceIndex].index,
                   banIndexListSpiralAbyssPlayer2
@@ -493,8 +463,7 @@ const SpiralAbyssDraft: NextPage = () => {
                 characterChooseAudio = new Howl({
                   src: [characterInfo.ban_audio],
                 });
-              }
-              if (
+              } else if (
                 inArray(
                   sequence[sequenceIndex].index,
                   pickIndexListSpiralAbyssPlayer1
@@ -508,8 +477,7 @@ const SpiralAbyssDraft: NextPage = () => {
                 characterChooseAudio = new Howl({
                   src: [characterInfo.pick_audio],
                 });
-              }
-              if (
+              } else if (
                 inArray(
                   sequence[sequenceIndex].index,
                   pickIndexListSpiralAbyssPlayer1
@@ -562,7 +530,7 @@ const SpiralAbyssDraft: NextPage = () => {
                 draft_id: router.query.draftID,
                 isContinuingCooldown: false,
                 isPauseTimer: false,
-                draftSituation: draftSituation,
+                draftSituation: "characterDraft",
               });
               timerUpdate.mutate({
                 timer: 30,
@@ -594,6 +562,27 @@ const SpiralAbyssDraft: NextPage = () => {
       socket.off(`characterDraft_${router.query.draftID}`, characterDraft);
     };
   }, [router, state.user, timer, sequence, currentSequence]);
+
+  useEffect(() => {
+    let intervalID: NodeJS.Timeout;
+    console.log(1);
+    if (!isPauseTimer) {
+      intervalID = setInterval(() => {
+        let countdown: number = timer - 1;
+        if (countdown < 0) {
+          clearInterval(intervalID);
+          setIsPause(false);
+
+          if (state.user.role === "GM" && draftSituation === "characterDraft") {
+            onCharacterDraftChoose();
+          }
+        }
+        setTimer(countdown);
+      }, 1000);
+    }
+
+    return () => clearInterval(intervalID);
+  }, [timer, isPauseTimer, state.user.role, draftSituation]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -723,36 +712,38 @@ const SpiralAbyssDraft: NextPage = () => {
           {state.user.role === "GM" && isStartDraft === false ? (
             <SpiralAbyssStartButton
               onClick={() => {
-                socket.emit("characterDraft", {
-                  draft_id: router.query.draftID,
-                  function: `characterDraft_${router.query.draftID}`,
-                  sequence: sequence[sequenceIndex],
-                  sequenceList: sequence,
-                  sequenceIndex: 0,
-                  isStartingDraft: true,
-                });
+                setTimeout(() => {
+                  socket.emit("characterDraft", {
+                    draft_id: router.query.draftID,
+                    function: `characterDraft_${router.query.draftID}`,
+                    sequence: sequence[sequenceIndex],
+                    sequenceList: sequence,
+                    sequenceIndex: 0,
+                    isStartingDraft: true,
+                  });
 
-                draftSequence.mutate({
-                  draft_id: router.query.draftID,
-                  type: "character_draft",
-                  sequence: sequence[sequenceIndex],
-                  sequenceIndex: 0,
-                  isStartingDraft: true,
-                });
+                  draftSequence.mutate({
+                    draft_id: router.query.draftID,
+                    type: "character_draft",
+                    sequence: sequence[sequenceIndex],
+                    sequenceIndex: 0,
+                    isStartingDraft: true,
+                  });
 
-                socket.emit("draftTimer", {
-                  timer: 30,
-                  function: `timerDraft_${router.query.draftID}`,
-                  draft_id: router.query.draftID,
-                  isContinuingCooldown: false,
-                  isPauseTimer: false,
-                  draftSituation: "characterDraft",
-                });
+                  socket.emit("draftTimer", {
+                    timer: 30,
+                    function: `timerDraft_${router.query.draftID}`,
+                    draft_id: router.query.draftID,
+                    isContinuingCooldown: false,
+                    isPauseTimer: false,
+                    draftSituation: "characterDraft",
+                  });
 
-                timerUpdate.mutate({
-                  timer: 30,
-                  draft_id: router.query.draftID,
-                });
+                  timerUpdate.mutate({
+                    timer: 30,
+                    draft_id: router.query.draftID,
+                  });
+                }, 1000);
               }}
             >
               <StartIcon />
