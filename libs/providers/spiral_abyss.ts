@@ -53,7 +53,7 @@ export function createSpiralAbyssSequence (): string {
         },
         {
             audio: 'teamOneBan',
-            player: 'player2',
+            player: 'player1',
             index: 'player-1-ban-2'
         },
         {
