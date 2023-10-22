@@ -38,6 +38,7 @@ export const ButtonPopUpNav = styled(Box)`
     align-items: center;
     justify-content: center;
     color: #1e223f;
+    box-shadow: 0 0 10px #000;
 `
 
 export const ButtonPopupNavTextHeader = styled(Text)`
@@ -85,17 +86,19 @@ export const ToastBox = styled(Box)`
 `
 
 export const FooterBox = styled(Box)`
-    padding: 22px 30px;
+    padding: 14px 30px 10px 30px;
     background-color: #1e223f;
     font-family: 'GenshinFont', sans-serif;
     font-size: 18px;
     color: white;
     line-height: 1;
+    box-shadow: 0 0 10px #000;
 
     & > div > div > svg{
         margin-right: 12px;
         width: 22px;
         height: 22px;
+        margin-top: -2px;
     }
     & > div > div > a{
         margin-left: 8px;

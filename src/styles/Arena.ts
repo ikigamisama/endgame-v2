@@ -23,12 +23,12 @@ export const AvatarNameWrapper = styled(Box)`
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background-color: #ecdeb5;
+    background-color: #ebebeb;
     border-radius: 33px;
     z-index: 10;
     display: flex;
     align-items:center;
-    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3)
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
 
 
 `
@@ -37,7 +37,12 @@ export const AvatarName = styled(Text)`
     font-family: 'GenshinFont', sans-serif;
     font-size: 20px;
     color: #3e4557;
-    margin-left: 85px;
+    padding-left: 85px;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
 `
 
 export const ArenaCard = styled(Box)`
@@ -54,7 +59,8 @@ export const AreaCardWrapper = styled(Box)`
     height: 100%;
     width: ${(props? : any) => (props.widthgap)};
     margin: auto;
-    border: 5px solid #1e223f;
+    border: 1px solid #1e223f;
+    box-shadow: inset 0 0 10px #000;
 `
 
 export const ArenaPaddingWrap = styled(Box)`
@@ -64,7 +70,7 @@ export const ArenaPaddingWrap = styled(Box)`
 export const ArenaTitleText = styled(Text)`
     font-family: 'GenshinFont', sans-serif;
     font-size: 2rem;
-    color: #ecdeb5;
+    color: #ebebeb;
     margin-bottom: 20px;
 `
 
@@ -89,12 +95,20 @@ export const ArenaPlayersListScroll = styled(Box)`
 export const ArenaChooseModeWrapper = styled(Box)`
     width: 100%;
     margin-inline-start: 0 !important;
+
+    &:first-of-type > div {
+        border-radius: 10px 0 0 10px;
+    }
+
+    &:last-of-type > div {
+        border-radius: 0 10px 10px 0;
+    }
 `
 
 export const ArenaChooseModeBox = styled(Box)`
     width: 100%;
     cursor: pointer;
-    border: 3px solid #ecdeb5;
+    border: 3px solid #ebebeb;
     display: flex;
     align-items:center;
     justify-content: center;
@@ -110,6 +124,7 @@ export const ArenaBossCircleWrapper = styled(Box)`
     border-radius: 100%;
     overflow: hidden;
     border: 5px solid #ecdeb5;
+    box-shadow: 0 0 10px #000;
 `
 
 export const ArenaCheckbox = styled(Checkbox)`
@@ -118,15 +133,16 @@ export const ArenaCheckbox = styled(Checkbox)`
         width: 25px;
         height: 25px;
         margin-right: 10px;
+        box-shadow: 0 0 10px #000;
     }
     & > .chakra-checkbox__control[data-checked]{
-        background: #ecdeb5;   
-        border-color: #ecdeb5; margin-right: 10px;
+        background: #ebebeb;   
+        border-color: #ebebeb; margin-right: 10px;
     }
 
     & > .chakra-checkbox__label{
         font-size: 18px;
-        color: #ecdeb5;    
+        color: #ebebeb;    
         font-family: 'GenshinFont', sans-serif
     }
 `

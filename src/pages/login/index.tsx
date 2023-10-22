@@ -123,7 +123,7 @@ const Login: NextPage = () => {
         webm={state.settings.video_bg.webm}
       />
 
-      <Box position="relative" h="calc(100vh - 66px)">
+      <Box position="relative" h="calc(100vh - 46px)">
         <CenterBox>
           <LoginCard>
             <LoginCardWrapper>

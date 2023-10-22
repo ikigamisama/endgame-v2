@@ -17,64 +17,66 @@ export const LoginCardWrapper = styled(Box)`
     width: 95%;
     margin: auto;
     padding: 50px 35px;
-    border: 5px solid #1e223f;
-    
+    border: 1px solid #1e223f;
+    box-shadow: inset 0 0 10px #000;
 `
 
 export const FormLabelText = styled(FormLabel)`
     font-family: 'GenshinFont', sans-serif;
-    color: #ecdeb5;
+    color: #ebebeb;
     font-size: 22px;
     margin-bottom: 15px;
 `
 
 export const FormTextBox = styled(Input)`
     font-size: 22px;
-    color: #ecdeb5;
+    color: #ebebeb;
     border-radius: 33px;
     width: 100%;
     transition:  0.2 5s all;
-    border: 2px solid #ecdeb5;
+    border: 2px solid #ebebeb;
     font-family: 'GenshinFont', sans-serif;
     padding: 22px 18px;
+    box-shadow: 0 0 10px #000;
 
     &:focus{
         outline: none !important;
-        box-shadow: none;
-        border: 2px solid #ecdeb5;
+        border: 2px solid #ebebeb;
     }
 
     &:focus-visible{
-        border-color: #ecdeb5;
-        background-color: #ecdeb5;
+        border-color: #ebebeb;
+        background-color: #ebebeb;
         color: #1e223f;
+        box-shadow: 0 0 20px #000;
     }
 
     &:hover{
-        border: 2px solid #ecdeb5;
+        border: 2px solid #ebebeb;
     }
 
 `
 
 export const FormSelect = styled(Select)`
     font-size: 22px;
-    color: #ecdeb5;
+    color: #ebebeb;
     border-radius: 33px;
     width: 100%;
     transition:  0.25s all;
-    border: 2px solid #ecdeb5;
+    border: 2px solid #ebebeb;
     font-family: 'GenshinFont', sans-serif;
     padding: 10px 18px;
     height: auto;
+    box-shadow: 0 0 10px #000;
 
     &:focus{
         outline: none !important;
         box-shadow: none;
-        border: 2px solid #ecdeb5;
+        border: 2px solid #ebebeb;
     }
 
     &:hover{
-        border: 2px solid #ecdeb5;
+        border: 2px solid #ebebeb;
     }
    
 `
@@ -82,14 +84,16 @@ export const FormSelect = styled(Select)`
 export const FormSubmitButton = styled(Button)`
     width: 100%;
     border-radius: 33px;
-    background-color: #ecdeb5;
+    background-color: #ECE5D8;
     color: #1e223f;
     font-family: 'GenshinFont', sans-serif;
-    font-size: 22px;
+    font-size: 18px;
     padding: 24px 18px;
     line-height: 1;
+    box-shadow: 0 0 10px #000;
 
     &:hover{
-        background-color: #ecdeb5;
+        background-color: #ECE5D8;
+        box-shadow: 0 0 20px #000;
     }
 `

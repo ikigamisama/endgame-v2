@@ -141,7 +141,7 @@ const History: NextPage = () => {
         webm={state.settings.video_bg.webm}
       />
 
-      <Box position="relative" w="100%" h="calc(100vh - 66px)">
+      <Box position="relative" w="100%" h="calc(100vh - 46px)">
         <CenterBox>
           <Container maxW="container.xl" minW="1250px">
             <HistoryCard>

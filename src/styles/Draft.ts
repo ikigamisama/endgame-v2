@@ -9,6 +9,7 @@ export const BossDraftContainer = styled(Box)`
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     margin-inline-start: 0rem !important;
+    box-shadow: 0 0 10px #000;
 `
 
 export const BossDraftWrapper = styled(Box)`
@@ -41,6 +42,7 @@ export const BossNameWrapper = styled(Box)`
     justify-content: center;
     align-items: flex-end;
     font-size: 14px;
+    text-shadow: 0 0 5px #000;
 `
 
 export const BanCharactersListContainer = styled(Box)<DraftPositionProps>`
@@ -52,6 +54,7 @@ export const BanCharactersListContainer = styled(Box)<DraftPositionProps>`
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-end' : 'flex-start')};
     ${(props) => (props.statusdraft === 'none' ? null : 'box-shadow: 0px 0px 16px 4px rgba(203, 53, 53, 1);background-color: #c93535;')}
    overflow: hidden;
+   box-shadow: 0 0 10px #000;
 ` 
 
 export const BanCharactersListWrapper = styled(Box)`
@@ -74,6 +77,11 @@ export const BanCharacterWrapper = styled(Box)<DraftPositionProps>`
     overflow:hidden;
     display: flex;
     justify-content:  ${(props) => (props.aligndraft === 'left' ? 'flex-start' : 'flex-end')};
+    box-shadow: 0 0 10px #000;
+
+    img {
+        object-fit: cover;
+    }
 `
 
 export const DraftRerollBanner = styled(Box)`
@@ -93,6 +101,7 @@ export const DraftCountdownCard = styled(Box)`
     background-color: #ecdeb5;
     border-radius:15px;
     overflow: hidden;
+    box-shadow: 0 0 10px #000;
 `
 
 export const DraftCountdownCardWrapper = styled(Box)`
@@ -103,12 +112,14 @@ export const DraftCountdownCardWrapper = styled(Box)`
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: inset 0 0 10px #000;
 `
 
 export const DraftCountdownText = styled(Text)`
     font-family: 'GenshinFont', sans-serif;
     font-size: 4rem;
     line-height: 1;
+    text-shadow: 0 0 20px #000;
 `
 
 
@@ -122,6 +133,7 @@ export const DraftPlayersNamePlate = styled(Box)`
     display: flex;
     flex-direction: row;
     padding: 4px 0;
+    box-shadow: 0 0 10px #000;
 ` 
 
 export const DraftPlayerTextWrapper = styled(Box)<DraftPositionProps> `
@@ -137,10 +149,14 @@ export const DraftPlayerText = styled(Text)`
     color:#3c343d;
     width: 100%;
     text-align:center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 4px 20px 0 20px;
 `    
 
 export const DraftPlayerVersusWrapper = styled(Box)`
-    width: 150px;
+    width: 175px;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     background-color: #1e223f;
@@ -149,13 +165,16 @@ export const DraftPlayerVersusWrapper = styled(Box)`
     bottom: 0;
     transform: translate(-50%, 0);
     z-index: 25;
-    text-align:center;
+    text-align: center;
 `
 
 export const DraftPlayerVersusText = styled(Text)`
     font-family: 'GenshinFont', sans-serif;
-    font-size: 3.5rem;
+    font-size: 3rem;
     padding-top: 10px;
+    box-shadow: 0 0 10px #000;
+    border-radius: 15px 15px 0 0;
+    text-shadow: 0 0 20px #000;
 `
 
 export const DraftPickBanner = styled(Box)<DraftPositionProps>`
@@ -215,6 +234,7 @@ export const DraftCharacterPickBanner = styled(Box)<DraftPositionProps>`
     background-color: ${(props) => (props.colorcharacter)};
     overflow: hidden;
     position: relative;
+    box-shadow: inset 0 0 5px #000;
 `
 
 export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
@@ -232,15 +252,17 @@ export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
         ${(props) => (props.aligndraft === 'right' ? 'transform:scaleX(-1)' : '')};
         z-index: 22;
         width: 60%;
+        object-fit: cover;
     }
 
     & .character-vision-icon{
         position: absolute;
-        bottom: 0;
-        ${(props) => (props.aligndraft === 'left' ? 'right: 15px;' : 'left: 15px;')}
-        width: 100px;
-        height: 100px;
+        bottom: -35px;
+        ${(props) => (props.aligndraft === 'left' ? 'right: -25px;' : 'left: -25px;')}
+        width: 130px;
+        height: 130px;
         z-index: 15;
+        opacity: 50%;
     }
 
     & .character-name-wrapper{
@@ -252,6 +274,7 @@ export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
 
     & div p{
         ${(props) => (props.aligndraft === 'left' ? 'padding-right: 165px;text-align: right;' : 'padding-left: 165px;text-align: left;')}
+        text-shadow: 0 0 5px #000;
     }
 `
 
@@ -281,9 +304,10 @@ export const DraftBossCard = styled(Box)`
     transform: translate(-50%, 0);
     z-index: 20;
     background-color: #ecdeb5;   
-    border: 10px solid #ecdeb5;   
+    border: 3px solid #ecdeb5;   
     margin-top: 0 !important;
     overflow: hidden;
+    box-shadow: 0 0 5px #000;
 `
 
 export const DraftBossCardBGImg = styled(Image)`
@@ -342,6 +366,7 @@ export const DraftButtonStart = styled(Button)`
     flex-direction: column;
     z-index: 0;
     position: relative;
+    box-shadow: 0 0 10px #000;
 
     & > svg{
         width: 150px;

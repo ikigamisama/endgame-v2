@@ -15,11 +15,12 @@ export const SettingsProfileAvatarWrapper = styled(Box)`
     margin-bottom: 25px;
     overflow: hidden;
     border: 5px solid  #ecdeb5;
+    box-shadow: 0 0 10px #000;
 `
 
 export const TableTextFont = styled.p`
     font-family: 'GenshinFont',sans-serif;
-    color: #ecdeb5;
+    color: #ebebeb;
 `
 
 export const AccountAvatar = styled(Box)`
@@ -49,6 +50,7 @@ export const BosstAvatarWrapper = styled(Box)`
     display: flex;
     align-items:center;
     justify-content: center;
+    box-shadow: 0 0 10px #000;
 `
 
 export const BosstAvatarWrapperMini = styled(Box)`
@@ -62,6 +64,7 @@ export const BosstAvatarWrapperMini = styled(Box)`
     align-items:center;
     justify-content: center;
     cursor: pointer;
+    box-shadow: 0 0 10px #000;
 `
 
 export const BossCard = styled(Box)`
@@ -80,6 +83,7 @@ export const ButtonPlayCharacters = styled(Button)<CharacterDraftDesignProps>`
     font-size: 20px;
     width: 100%;
     padding: 28px 0;
+    box-shadow: 0 0 10px #000;
 
     &:hover{
         background-color: ${(props) => (props.drafttype === 'pick' ? '#61b162' : '#95292d')};
@@ -122,13 +126,16 @@ export const GeneratePasswordButton = styled(Button)`
 
 export const AudioUploadButton = styled(Button)`
     font-family: 'GenshinFont',sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     width: 100%;
     padding: 28px 0;
     color: #1E223F;
-    background-color: #ECDEB5;
+    background-color: #ECE5D8;
+    box-shadow: 0 0 10px #000;
+    border-radius: 33px;
 
     &:hover{
-        background-color: #ECDEB5;
+        background-color: #ECE5D8;
+        box-shadow: 0 0 20px #000;
     }
 `

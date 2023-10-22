@@ -1027,6 +1027,7 @@ const Drafting: NextPage = () => {
                                           pickDataSide.character.vision
                                         )
                                       : "",
+                                  boxShadow: "inset 0 0 5px #000"
                                 }}
                               >
                                 <DraftCharacterContainer
@@ -1131,6 +1132,9 @@ const Drafting: NextPage = () => {
                         zIndex="50"
                         w="100%"
                         height="100%"
+                        borderRadius="100%"
+                        boxShadow="inset 0 0 5px #000"
+                        border="solid 7px #e9e5dc"
                       >
                         {state.user.role === "GM" && isStartDraft === false ? (
                           <Center w="100%" height="100%">

@@ -15,10 +15,9 @@ export default function RadioListCard(props: any) {
         w="100%"
         cursor="pointer"
         _checked={{
-          bg: "#ecdeb5",
+          bg: "#ebebeb",
           color: "#1E223F",
-          borderColor: "teal.600",
-          border: "3px solid #ecdeb5",
+          border: "3px solid #ebebeb"
         }}
       >
         {props.children}

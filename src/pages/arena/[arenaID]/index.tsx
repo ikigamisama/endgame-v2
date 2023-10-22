@@ -538,7 +538,7 @@ const Arena: NextPage = () => {
         </Flex>
       </Box>
       {state.user.id === "" ? null : (
-        <Box position="relative" h="calc(100vh - 152px)" w="100%">
+        <Box position="relative" h="calc(100vh - 135px)" w="100%">
           <CenterBox>
             <Container maxW="container.xl" minW="1200px">
               {state?.user?.role === "GM" ? (
@@ -560,7 +560,7 @@ const Arena: NextPage = () => {
                                 <FormControl mb="35px">
                                   <FormLabelText>Mode</FormLabelText>
 
-                                  <HStack {...group} w="100">
+                                  <HStack {...group} w="100" boxShadow="0 0 10px rgba(0, 0, 0)">
                                     {modeOption.map((value) => {
                                       const radio = getRadioProps({ value });
                                       return (
@@ -907,7 +907,6 @@ const Arena: NextPage = () => {
                       </ArenaPaddingWrap>
                     </ArenaPlayersListScroll>
                   </AreaCardWrapper>
-                  <Box pb="25px" />
                 </ArenaCard>
               )}
             </Container>

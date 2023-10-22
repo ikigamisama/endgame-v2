@@ -158,7 +158,7 @@ const ArenaPlayerLogin: NextPage = () => {
         webm={video_list["Default"].webm}
       />
 
-      <Box position="relative" h="calc(100vh - 66px)">
+      <Box position="relative" h="calc(100vh - 46px)">
         <CenterBox>
           <LoginCard>
             <LoginCardWrapper>

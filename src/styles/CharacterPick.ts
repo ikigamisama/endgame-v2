@@ -127,13 +127,14 @@ export const CharacterListWrapper = styled(Box)`
         width: 10px;
     }
     &::-webkit-scrollbar-thumb {
-        background-color: #ecdeb5;
+        background-color: rgba(235, 235, 235, 0.5);
+        border-radius: 5px;
     }
 ` 
 
 export const CharacterPickCard = styled(Box)<CharacterDraftDesignProps>`
-    width: 100%;
-    height: 135px;
+    width: 120px;
+    height: 145px;
     background-color: #e9e5dc;
     border-radius: 5px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.8);
@@ -155,7 +156,7 @@ export const CharacterPickCard = styled(Box)<CharacterDraftDesignProps>`
 
 export const CharacterPickCardImg = styled(Box)<CharacterDraftDesignProps>`
     width: 100%;
-    height: 110px;
+    height: 120px;
     ${(props) => (props.rarity === '4' ? `
         background-image: -moz-linear-gradient( 90deg, rgb(137,110,170) 0%, rgb(99,95,140) 100%);
         background-image: -webkit-linear-gradient( 90deg, rgb(137,110,170) 0%, rgb(99,95,140) 100%);
@@ -172,8 +173,8 @@ export const CharacterPickCardImg = styled(Box)<CharacterDraftDesignProps>`
     justify-content: center;
     overflow: hidden;
     z-index: 575;
-    
-
+    border-bottom-right-radius: 20px;
+    box-shadow: 0 0 2px #000;
 
     & > img{
         width: 100%;
@@ -197,11 +198,16 @@ export const CharacterPickCardInfo = styled(Box)`
 `
 export const CharacterPickCardInfoText = styled(Text)`
     width: 100%;
-    font-size: 0.8vw;
+    font-size: 14px;
     font-family: 'GenshinFont', sans-serif;
     color: #495366;
     line-height: 1;
     text-align:center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 120px;
+    padding: 1px 10px;
+    overflow: hidden;
 `
 
 export const CharacterInfoWrapper = styled(Box)`
@@ -225,6 +231,7 @@ export const CharacterPickInfoCardCharacter = styled(Box)<CharacterDraftDesignPr
     position: relative;
     background-color: ${(props) => (props.colorpickedcharacter === '' ? '#1e223f;' : props.colorpickedcharacter)};
     z-index: 575;
+    overflow: hidden;
 
     & .character-picked-image-pick{
         transform:scaleX(-1);
@@ -238,11 +245,12 @@ export const CharacterPickInfoCardCharacter = styled(Box)<CharacterDraftDesignPr
 
     & .character-picked-vision-icon{
         position: absolute;
-        left: 0;
-        bottom: 0;
+        left: -50px;
+        bottom: -30px;
         z-index: 578;
-        width: 175px;
-        height: 175px;
+        width: 225px;
+        height: 225px;
+        opacity: 50%;
     }
 `
 
@@ -357,7 +365,7 @@ export const BossAvatarNameWrapper = styled(Box)`
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background-color: #ecdeb5;
+    background-color: #e9e5dc;
     border-radius: 33px;
     z-index: 10;
     display: flex;
@@ -379,6 +387,7 @@ export const CharacterDraftButton = styled(Button)<CharacterDraftDesignProps>`
     background-color: ${(props) => (props.drafttype === 'pick' ? '#61b162': ' #95292D')};
     margin-bottom: 10px;
     padding: 28px 0;
+    box-shadow: 0 0 10px #000;
     
     ${(props) => (props.drafttype === 'pick' ? `
         &:hover{
@@ -396,21 +405,30 @@ export const CharacterDraftButton = styled(Button)<CharacterDraftDesignProps>`
 
 export const CharacterTextFieldSearch = styled(Input)`
     font-size: 22px;
-    color: #ecdeb5;
+    color: #ebebeb;
     border-radius: 33px;
     width: 100%;
     transition:  0.2 5s all;
-    border: 2px solid #ecdeb5;
+    border: 2px solid #ebebeb;
     font-family: 'GenshinFont', sans-serif;
     padding: 22px 18px;
+    box-shadow: 0 0 10px #000;
 
     &:focus{
         outline: none !important;
         box-shadow: none;
-        border: 2px solid #ecdeb5;
+        border: 2px solid #ebebeb;
     }
+
     &:hover{
-        border: 2px solid #ecdeb5;
+        border: 2px solid #ebebeb;
+        box-shadow: 0 0 20px #000;
+    }
+
+    &:focus-visible{
+        background-color: #ebebeb;
+        color: #1e223f;
+        box-shadow: 0 0 20px #000;
     }
 
     &::placeholder{
@@ -425,11 +443,13 @@ export const CharacterSearchButton = styled(Button)`
     color: #495366;
     font-family: 'GenshinFont', sans-serif;
     padding: 22px 50px;
-    background-color: #ecdeb5;
+    background-color: #ebebeb;
     border-radius: 33px;
+    box-shadow: 0 0 10px #000;
 
     &:hover{
-        background-color: #ecdeb5;
+        background-color: #ebebeb;
+        box-shadow: 0 0 20px #000;
     }
 `
 
