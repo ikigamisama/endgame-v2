@@ -185,7 +185,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                     >
                       {banData.characterID !== null && (
                         <Image
-                          src={banData.character.draft_picture}
+                          src={banData.character.ban_picture}
                           w={banData.imageWidthSize}
                           alt={banData.index}
                         />
@@ -235,7 +235,7 @@ const DraftHeader: React.FC<CharacterDraftProps> = ({
                     >
                       {banData.characterID !== null && (
                         <Image
-                          src={banData.character.draft_picture}
+                          src={banData.character.ban_picture}
                           w={banData.imageWidthSize}
                           alt={banData.index}
                         />

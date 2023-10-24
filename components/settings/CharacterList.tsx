@@ -79,7 +79,7 @@ const CharacterList: React.FC<any> = ({ list }: any) => {
             <GridItem key={index}>
               <CharacterPickCard onClick={() => onSetEditCharacter(char)}>
                 <CharacterPickCardImg rarity={char.rarity}>
-                  <Image src={char.ban_picture} alt="albedo-character" />
+                  <Image src={char.draft_picture} alt="albedo-character" />
                   <CharacterPickCardVision>
                     {char.vision === "anemo" && <AnemoVisionIcon />}
                     {char.vision === "cryo" && <CryoVisionIcon />}

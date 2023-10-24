@@ -331,7 +331,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                       >
                         <CharacterPickCardImg rarity={charData.rarity}>
                           <Image
-                            src={charData.ban_picture}
+                            src={charData.draft_picture}
                             alt={`${charData.name}-character-image`}
                           />
                           <CharacterPickCardVision>
@@ -605,7 +605,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                               <CharacterDraftPlayerImg
                                 rarity={draft.character.rarity}
                               >
-                                <Image src={draft.character.ban_picture} />
+                                <Image src={draft.character.draft_picture} />
                               </CharacterDraftPlayerImg>
                             )}
                           </CharacterDraftPlayerWrapper>
@@ -634,7 +634,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                               <CharacterDraftPlayerImg
                                 rarity={draft.character.rarity}
                               >
-                                <Image src={draft.character.ban_picture} />
+                                <Image src={draft.character.draft_picture} />
                               </CharacterDraftPlayerImg>
                             )}
                           </CharacterDraftPlayerWrapper>
@@ -680,7 +680,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                               <CharacterDraftPlayerImg
                                 rarity={draft.character.rarity}
                               >
-                                <Image src={draft.character.ban_picture} />
+                                <Image src={draft.character.draft_picture} />
                               </CharacterDraftPlayerImg>
                             )}
                           </CharacterDraftPlayerWrapper>
@@ -709,7 +709,7 @@ const CharacterDraft: React.FC<CharacterDraftProps> = ({
                               <CharacterDraftPlayerImg
                                 rarity={draft.character.rarity}
                               >
-                                <Image src={draft.character.ban_picture} />
+                                <Image src={draft.character.draft_picture} />
                               </CharacterDraftPlayerImg>
                             )}
                           </CharacterDraftPlayerWrapper>
