@@ -248,10 +248,8 @@ export const DraftCharacterContainer = styled(Box)<DraftPositionProps>`
     &  .character-img-pick{
         position: absolute;
         top: 0;
-        ${(props) => (props.aligndraft === 'left' ? 'left: 0;' : 'right: 0;')}
-        ${(props) => (props.aligndraft === 'right' ? 'transform:scaleX(-1)' : '')};
+        ${(props) => (props.aligndraft === 'left' ? 'left: -100px;' : 'right: -100px;')}
         z-index: 22;
-        width: 60%;
         object-fit: cover;
     }
 

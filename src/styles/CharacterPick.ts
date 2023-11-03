@@ -234,13 +234,12 @@ export const CharacterPickInfoCardCharacter = styled(Box)<CharacterDraftDesignPr
     overflow: hidden;
 
     & .character-picked-image-pick{
-        transform:scaleX(-1);
-        width: 50%;
         height: 100%;
         position: absolute;
-        right: 0;
+        right: -30%;
         top: 0;
         z-index: 585;
+        object-fit: cover;
     }
 
     & .character-picked-vision-icon{
