@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
-  relationMode = "prisma"
 }
 
 model User {
@@ -97,7 +96,7 @@ model Draft {
   timer                Int              @default(30)
   pause_timer          Int              @default(3)
   current_status_draft String?
-  sequence             String           @db.LongText
+  sequence             String           @db.Text
   player1_id           String?
   player2_id           String?
   winner_user_id       String?
