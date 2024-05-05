@@ -179,7 +179,11 @@ const Characters: React.FC = ({ list }: any) => {
     watchPickSound = watch("pick_audio");
 
   const pickCharacterAudioFile = useRef<HTMLInputElement>(null),
-    banCharacterAudioFile = useRef<HTMLInputElement>(null);
+    banCharacterAudioFile = useRef<HTMLInputElement>(null),
+    characterDraftImage = useRef<HTMLInputElement>(null),
+    characterFlashImage = useRef<HTMLInputElement>(null),
+    characterBanImage = useRef<HTMLInputElement>(null),
+    characterPickImage = useRef<HTMLInputElement>(null);
 
   let playPick: Howl | null = null,
     playBan: Howl | null = null;
@@ -206,7 +210,7 @@ const Characters: React.FC = ({ list }: any) => {
     try {
       const formData = new FormData();
       formData.append("characterSoundFile", file);
-      const { data } = await api.post("/characters/upload", formData);
+      const { data } = await api.post("/characters/audio_upload", formData);
 
       if (data.success) {
         type === "pick"
@@ -217,6 +221,51 @@ const Characters: React.FC = ({ list }: any) => {
       console.log(error);
     }
   };
+
+  const handleCharacterImageUpload = async (file: File, type: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("characterImageFile", file);
+      
+      let postLink = "/characters/draft_upload";
+      switch (type) {
+        case "flash":
+          postLink = "/characters/flash_upload"
+          break;
+        case "pick":
+          postLink = "/characters/pick_upload";
+          break;
+        case "ban":
+          postLink = "/characters/ban_upload";
+          break;
+        default:
+          postLink = "/characters/draft_upload";
+          break;
+      }
+      
+      const { data } = await api.post(postLink, formData);
+
+      if (data.success) {
+        switch (type) {
+          case "flash":
+            setValue("flash_picture", data.path);
+            break;
+          case "pick":
+            setValue("pick_picture", data.path);
+            break;
+          case "ban":
+            setValue("ban_picture", data.path);
+            break;
+          default:
+            setValue("draft_picture", data.path);
+            break;
+        }
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   return (
     <Box as="section" py={4}>
       <form method="post" onSubmit={handleSubmit(onSubmitCharacters)}>
@@ -247,20 +296,24 @@ const Characters: React.FC = ({ list }: any) => {
             </Center>
 
             <FormControl mb="25px">
-              <FormLabelText>Image Source</FormLabelText>
-              <Controller
-                render={({ field: { onChange, value, name } }) => (
-                  <FormTextBox
-                    type="text"
-                    onChange={onChange}
-                    value={value}
-                    name={name}
-                    required
-                  />
-                )}
+              <input
+                type="file"
+                id="character_draft"
+                ref={characterDraftImage}
+                style={{ display: "none" }}
                 name="draft_picture"
-                control={control}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!e.target.files) return;
+
+                  handleCharacterImageUpload(e.target.files[0], "draft");
+                }}
               />
+              <AudioUploadButton
+                onClick={() => characterDraftImage?.current?.click()}
+                leftIcon={<UploadIcon />}
+              >
+                Upload Character Draft Image
+              </AudioUploadButton>
             </FormControl>
           </Flex>
 
@@ -285,20 +338,24 @@ const Characters: React.FC = ({ list }: any) => {
             </Center>
 
             <FormControl mb="25px">
-              <FormLabelText>Image Source</FormLabelText>
-              <Controller
-                render={({ field: { onChange, value, name } }) => (
-                  <FormTextBox
-                    type="text"
-                    onChange={onChange}
-                    value={value}
-                    name={name}
-                    required
-                  />
-                )}
+              <input
+                type="file"
+                id="character_flash"
+                ref={characterFlashImage}
+                style={{ display: "none" }}
                 name="flash_picture"
-                control={control}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!e.target.files) return;
+
+                  handleCharacterImageUpload(e.target.files[0], "flash");
+                }}
               />
+              <AudioUploadButton
+                onClick={() => characterFlashImage?.current?.click()}
+                leftIcon={<UploadIcon />}
+              >
+                Upload Character Flash Image
+              </AudioUploadButton>
             </FormControl>
           </Flex>
           <Flex flex={1} direction="column">
@@ -310,20 +367,24 @@ const Characters: React.FC = ({ list }: any) => {
             </Center>
 
             <FormControl mb="25px">
-              <FormLabelText>Image Source</FormLabelText>
-              <Controller
-                render={({ field: { onChange, value, name } }) => (
-                  <FormTextBox
-                    type="text"
-                    onChange={onChange}
-                    value={value}
-                    name={name}
-                    required
-                  />
-                )}
+              <input
+                type="file"
+                id="character_pick"
+                ref={characterPickImage}
+                style={{ display: "none" }}
                 name="pick_picture"
-                control={control}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!e.target.files) return;
+
+                  handleCharacterImageUpload(e.target.files[0], "pick");
+                }}
               />
+              <AudioUploadButton
+                onClick={() => characterPickImage?.current?.click()}
+                leftIcon={<UploadIcon />}
+              >
+                Upload Character Pick Image
+              </AudioUploadButton>
             </FormControl>
           </Flex>
           <Flex flex={1} direction="column">
@@ -334,20 +395,24 @@ const Characters: React.FC = ({ list }: any) => {
               )}
             </Center>
             <FormControl mb="25px">
-              <FormLabelText>Image Source</FormLabelText>
-              <Controller
-                render={({ field: { onChange, value, name } }) => (
-                  <FormTextBox
-                    type="text"
-                    onChange={onChange}
-                    value={value}
-                    name={name}
-                    required
-                  />
-                )}
+              <input
+                type="file"
+                id="character_ban"
+                ref={characterBanImage}
+                style={{ display: "none" }}
                 name="ban_picture"
-                control={control}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!e.target.files) return;
+
+                  handleCharacterImageUpload(e.target.files[0], "ban");
+                }}
               />
+              <AudioUploadButton
+                onClick={() => characterBanImage?.current?.click()}
+                leftIcon={<UploadIcon />}
+              >
+                Upload Character Ban Image
+              </AudioUploadButton>
             </FormControl>
           </Flex>
         </SimpleGrid>

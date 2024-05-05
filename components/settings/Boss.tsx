@@ -44,9 +44,9 @@ const Boss: React.FC = () => {
     state.setBossInfo,
   ]);
 
-  const pickBossIconImage = useRef<HTMLInputElement>(null);
-  const pickBossCenterImage = useRef<HTMLInputElement>(null);
-  const pickBossFlashImage = useRef<HTMLInputElement>(null);
+  const bossIconImage = useRef<HTMLInputElement>(null),
+    bossCenterImage = useRef<HTMLInputElement>(null),
+    bossFlashImage = useRef<HTMLInputElement>(null);
 
   const sendAddBoss = useMutation({
     mutationFn: async (newAccount: BossInfoProps) => {
@@ -165,8 +165,8 @@ const Boss: React.FC = () => {
             <FormControl mb="25px">
               <input
                 type="file"
-                id="pick_boss_icon"
-                ref={pickBossIconImage}
+                id="boss_icon"
+                ref={bossIconImage}
                 style={{ display: "none" }}
                 name="picture"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -176,10 +176,10 @@ const Boss: React.FC = () => {
                 }}
               />
               <AudioUploadButton
-                onClick={() => pickBossIconImage?.current?.click()}
+                onClick={() => bossIconImage?.current?.click()}
                 leftIcon={<UploadIcon />}
               >
-                Upload Boss Icon
+                Upload Boss Icon Image
               </AudioUploadButton>
             </FormControl>
           </Flex>
@@ -196,8 +196,8 @@ const Boss: React.FC = () => {
             <FormControl mb="25px">
               <input
                 type="file"
-                id="pick_boss_center"
-                ref={pickBossCenterImage}
+                id="boss_center"
+                ref={bossCenterImage}
                 style={{ display: "none" }}
                 name="picture_choose"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -207,10 +207,10 @@ const Boss: React.FC = () => {
                 }}
               />
               <AudioUploadButton
-                onClick={() => pickBossCenterImage?.current?.click()}
+                onClick={() => bossCenterImage?.current?.click()}
                 leftIcon={<UploadIcon />}
               >
-                Upload Boss Center
+                Upload Boss Center Image
               </AudioUploadButton>
             </FormControl>
           </Flex>
@@ -226,8 +226,8 @@ const Boss: React.FC = () => {
             <FormControl mb="25px">
               <input
                 type="file"
-                id="pick_boss_flash"
-                ref={pickBossFlashImage}
+                id="boss_flash"
+                ref={bossFlashImage}
                 style={{ display: "none" }}
                 name="picture_flash"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -237,10 +237,10 @@ const Boss: React.FC = () => {
                 }}
               />
               <AudioUploadButton
-                onClick={() => pickBossFlashImage?.current?.click()}
+                onClick={() => bossFlashImage?.current?.click()}
                 leftIcon={<UploadIcon />}
               >
-                Upload Boss Flash
+                Upload Boss Flash Image
               </AudioUploadButton>
             </FormControl>
           </Flex>
