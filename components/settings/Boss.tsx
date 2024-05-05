@@ -1,9 +1,10 @@
 import { BossInfoProps } from "@/libs/helpers/types";
+import { UploadIcon } from "@/libs/includes/icons";
 import { api } from "@/libs/providers/api";
 import { useSettingsStore } from "@/libs/store/settings";
 import { ToastBox, ToastText } from "@/src/styles";
 import { ArenaCheckbox } from "@/src/styles/Arena";
-import { BosstAvatarWrapper, TableTextFont } from "@/src/styles/Settings";
+import { BosstAvatarWrapper, TableTextFont, AudioUploadButton } from "@/src/styles/Settings";
 import {
   FormLabelText,
   FormSubmitButton,
@@ -20,7 +21,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 const Boss: React.FC = () => {
@@ -42,6 +43,10 @@ const Boss: React.FC = () => {
     state.bossInfo,
     state.setBossInfo,
   ]);
+
+  const pickBossIconImage = useRef<HTMLInputElement>(null);
+  const pickBossCenterImage = useRef<HTMLInputElement>(null);
+  const pickBossFlashImage = useRef<HTMLInputElement>(null);
 
   const sendAddBoss = useMutation({
     mutationFn: async (newAccount: BossInfoProps) => {
@@ -110,6 +115,22 @@ const Boss: React.FC = () => {
     sendAddBoss.mutate(data);
   };
 
+  const handleBossImageUpload = async (file: File, type: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("bossImageFile", file);
+      const { data } = await api.post((type === "icon" ? "/boss/icon_upload" : (type === "flash" ? "/boss/flash_upload" : "/boss/center_upload")), formData);
+
+      if (data.success) {
+        type === "icon"
+          ? setValue("picture", data.path)
+          : (type === "flash" ? setValue("picture_choose", data.path) : setValue("picture_flash", data.path));
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   return (
     <Box as="section" py={4}>
       <form method="post" onSubmit={handleSubmit(onSubmitBoss)}>
@@ -142,19 +163,24 @@ const Boss: React.FC = () => {
             </Center>
 
             <FormControl mb="25px">
-              <FormLabelText>Image Source</FormLabelText>
-              <Controller
-                render={({ field: { onChange, value, name } }) => (
-                  <FormTextBox
-                    type="text"
-                    onChange={onChange}
-                    value={value}
-                    name={name}
-                  />
-                )}
+              <input
+                type="file"
+                id="pick_boss_icon"
+                ref={pickBossIconImage}
+                style={{ display: "none" }}
                 name="picture"
-                control={control}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!e.target.files) return;
+
+                  handleBossImageUpload(e.target.files[0], "icon");
+                }}
               />
+              <AudioUploadButton
+                onClick={() => pickBossIconImage?.current?.click()}
+                leftIcon={<UploadIcon />}
+              >
+                Upload Boss Icon
+              </AudioUploadButton>
             </FormControl>
           </Flex>
           <Flex flex={1} direction="column">
@@ -168,19 +194,24 @@ const Boss: React.FC = () => {
             </Center>
 
             <FormControl mb="25px">
-              <FormLabelText>Image Source</FormLabelText>
-              <Controller
-                render={({ field: { onChange, value, name } }) => (
-                  <FormTextBox
-                    type="text"
-                    onChange={onChange}
-                    value={value}
-                    name={name}
-                  />
-                )}
-                name="picture_flash"
-                control={control}
+              <input
+                type="file"
+                id="pick_boss_center"
+                ref={pickBossCenterImage}
+                style={{ display: "none" }}
+                name="picture_choose"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!e.target.files) return;
+
+                  handleBossImageUpload(e.target.files[0], "center");
+                }}
               />
+              <AudioUploadButton
+                onClick={() => pickBossCenterImage?.current?.click()}
+                leftIcon={<UploadIcon />}
+              >
+                Upload Boss Center
+              </AudioUploadButton>
             </FormControl>
           </Flex>
           <Flex flex={1} direction="column">
@@ -193,19 +224,24 @@ const Boss: React.FC = () => {
               </BosstAvatarWrapper>
             </Center>
             <FormControl mb="25px">
-              <FormLabelText>Image Source</FormLabelText>
-              <Controller
-                render={({ field: { onChange, value, name } }) => (
-                  <FormTextBox
-                    type="text"
-                    onChange={onChange}
-                    value={value}
-                    name={name}
-                  />
-                )}
-                name="picture_choose"
-                control={control}
+              <input
+                type="file"
+                id="pick_boss_flash"
+                ref={pickBossFlashImage}
+                style={{ display: "none" }}
+                name="picture_flash"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!e.target.files) return;
+
+                  handleBossImageUpload(e.target.files[0], "flash");
+                }}
               />
+              <AudioUploadButton
+                onClick={() => pickBossFlashImage?.current?.click()}
+                leftIcon={<UploadIcon />}
+              >
+                Upload Boss Flash
+              </AudioUploadButton>
             </FormControl>
           </Flex>
         </SimpleGrid>

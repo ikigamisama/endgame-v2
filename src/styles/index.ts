@@ -7,7 +7,7 @@ import styled from '@emotion/styled'
 export const BackgroundEGWrapper = styled.div<VideoProerties> `
    width: 100%;
    height: ${(props) => (props.videoheight)};
-   position: absolute;
+   position: fixed;
    top: 0;
    left: 0;
    bottom: 0;
