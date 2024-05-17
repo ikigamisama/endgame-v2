@@ -36,5 +36,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#npm config
+# npm config
 package-lock.json
+
+# uploaded files
+public/img/*
+public/audio/characters/*
+
